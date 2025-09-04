@@ -79,7 +79,11 @@ contract DeployScript is Script, Sphinx {
     uint24 BANNY_BODY_CATEGORY = 0;
     address OPERATOR;
     address TRUSTED_FORWARDER;
-    uint256 TIME_UNTIL_START = 15 minutes; //7 days;
+    uint256 BAN_START_TIME = 1739847119;
+    uint256 BAN_MAINNET_AUTO_ISSUANCE_ = 957932309500316260835082;
+    uint256 BAN_BASE_AUTO_ISSUANCE_ = 1000000000000000000000000;
+    uint256 BAN_OP_AUTO_ISSUANCE_ = 1000000000000000000000000;
+    uint256 BAN_ARB_AUTO_ISSUANCE_ = 1000000000000000000000000;
 
     function configureSphinx() public override {
         // TODO: Update to contain revnet devs.
@@ -171,10 +175,25 @@ contract DeployScript is Script, Sphinx {
         REVStageConfig[] memory stageConfigurations = new REVStageConfig[](3);
 
         {
-            REVAutoIssuance[] memory autoIssuances = new REVAutoIssuance[](1);
-            autoIssuances[0] = REVAutoIssuance({
-                chainId: PREMINT_CHAIN_ID,
-                count: uint104(500_000 * DECIMAL_MULTIPLIER),
+            REVAutoIssuance[] memory autoIssuances = new REVAutoIssuance[](4);
+            issuanceConfs[0] = REVAutoIssuance({
+                chainId: 1,
+                count: NANA_MAINNET_AUTO_ISSUANCE_,
+                beneficiary: OPERATOR
+            });
+            issuanceConfs[1] = REVAutoIssuance({
+                chainId: 8453,
+                count: NANA_BASE_AUTO_ISSUANCE_,
+                beneficiary: OPERATOR
+            });
+            issuanceConfs[2] = REVAutoIssuance({
+                chainId: 10,
+                count: NANA_OP_AUTO_ISSUANCE_,
+                beneficiary: OPERATOR
+            });
+            issuanceConfs[3] = REVAutoIssuance({
+                chainId: 42161,
+                count: NANA_ARB_AUTO_ISSUANCE_,
                 beneficiary: OPERATOR
             });
 
