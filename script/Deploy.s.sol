@@ -70,7 +70,7 @@ contract DeployScript is Script, Sphinx {
     bytes32 RESOLVER_SALT = "_BAN_RESOLVER_";
     string NAME = "Banny Network";
     string SYMBOL = "BAN";
-    string PROJECT_URI = "ipfs://todo";
+    string PROJECT_URI = "ipfs://Qme34ww9HuwnsWF6sYDpDfpSdYHpPCGsEyJULk1BikCVYp";
     string BASE_URI = "ipfs://";
     uint32 NATIVE_CURRENCY = uint32(uint160(JBConstants.NATIVE_TOKEN));
     uint32 ETH_CURRENCY = JBCurrencyIds.ETH;
