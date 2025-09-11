@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
-import {JB721TierConfig} from "@bananapus/721-hook/src/structs/JB721TierConfig.sol";
-import {JB721TiersHook} from "@bananapus/721-hook/src/JB721TiersHook.sol";
+import {JB721TierConfig} from "@bananapus/721-hook-v5/src/structs/JB721TierConfig.sol";
+import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 
 import "./helpers/BannyverseDeploymentLib.sol";
-import "@rev-net/core/script/helpers/RevnetCoreDeploymentLib.sol";
+import "@rev-net/core-v5/script/helpers/RevnetCoreDeploymentLib.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
@@ -32,7 +32,7 @@ contract Drop1Script is Script, Sphinx {
 
         // Get the deployment addresses for the revnet contracts for this chain.
         revnet = RevnetCoreDeploymentLib.getDeployment(
-            vm.envOr("REVNET_CORE_DEPLOYMENT_PATH", string("node_modules/@rev-net/core/deployments/"))
+            vm.envOr("REVNET_CORE_DEPLOYMENT_PATH", string("node_modules/@rev-net/core-v5/deployments/"))
         );
 
         // Get the deployment addresses for the 721 hook contracts for this chain.
