@@ -79,11 +79,11 @@ contract DeployScript is Script, Sphinx {
     uint24 BANNY_BODY_CATEGORY = 0;
     address OPERATOR;
     address TRUSTED_FORWARDER;
-    uint256 BAN_START_TIME = 1739847119;
-    uint256 BAN_MAINNET_AUTO_ISSUANCE_ = 957932309500316260835082;
-    uint256 BAN_BASE_AUTO_ISSUANCE_ = 1000000000000000000000000;
-    uint256 BAN_OP_AUTO_ISSUANCE_ = 1000000000000000000000000;
-    uint256 BAN_ARB_AUTO_ISSUANCE_ = 1000000000000000000000000;
+    uint256 BAN_START_TIME = 1_739_847_119;
+    uint256 BAN_MAINNET_AUTO_ISSUANCE_ = 957_932_309_500_316_260_835_082;
+    uint256 BAN_BASE_AUTO_ISSUANCE_ = 1_000_000_000_000_000_000_000_000;
+    uint256 BAN_OP_AUTO_ISSUANCE_ = 1_000_000_000_000_000_000_000_000;
+    uint256 BAN_ARB_AUTO_ISSUANCE_ = 1_000_000_000_000_000_000_000_000;
 
     function configureSphinx() public override {
         // TODO: Update to contain revnet devs.
@@ -119,7 +119,9 @@ contract DeployScript is Script, Sphinx {
         );
         // Get the deployment addresses for the 721 hook contracts for this chain.
         swapTerminal = SwapTerminalDeploymentLib.getDeployment(
-            vm.envOr("NANA_SWAP_TERMINAL_DEPLOYMENT_PATH", string("node_modules/@bananapus/swap-terminal-v5/deployments/"))
+            vm.envOr(
+                "NANA_SWAP_TERMINAL_DEPLOYMENT_PATH", string("node_modules/@bananapus/swap-terminal-v5/deployments/")
+            )
         );
 
         TRUSTED_FORWARDER = core.controller.trustedForwarder();
@@ -176,26 +178,10 @@ contract DeployScript is Script, Sphinx {
 
         {
             REVAutoIssuance[] memory autoIssuances = new REVAutoIssuance[](4);
-            issuanceConfs[0] = REVAutoIssuance({
-                chainId: 1,
-                count: NANA_MAINNET_AUTO_ISSUANCE_,
-                beneficiary: OPERATOR
-            });
-            issuanceConfs[1] = REVAutoIssuance({
-                chainId: 8453,
-                count: NANA_BASE_AUTO_ISSUANCE_,
-                beneficiary: OPERATOR
-            });
-            issuanceConfs[2] = REVAutoIssuance({
-                chainId: 10,
-                count: NANA_OP_AUTO_ISSUANCE_,
-                beneficiary: OPERATOR
-            });
-            issuanceConfs[3] = REVAutoIssuance({
-                chainId: 42161,
-                count: NANA_ARB_AUTO_ISSUANCE_,
-                beneficiary: OPERATOR
-            });
+            issuanceConfs[0] = REVAutoIssuance({chainId: 1, count: NANA_MAINNET_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            issuanceConfs[1] = REVAutoIssuance({chainId: 8453, count: NANA_BASE_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            issuanceConfs[2] = REVAutoIssuance({chainId: 10, count: NANA_OP_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            issuanceConfs[3] = REVAutoIssuance({chainId: 42_161, count: NANA_ARB_AUTO_ISSUANCE_, beneficiary: OPERATOR});
 
             stageConfigurations[0] = REVStageConfig({
                 startsAtOrAfter: uint40(block.timestamp + TIME_UNTIL_START),
