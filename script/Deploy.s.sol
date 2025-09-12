@@ -86,7 +86,6 @@ contract DeployScript is Script, Sphinx {
     uint104 BAN_ARB_AUTO_ISSUANCE_ = 2_825_980_000_000_000_000_000;
 
     function configureSphinx() public override {
-        // TODO: Update to contain revnet devs.
         sphinxConfig.projectName = "banny-core-v5";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
         sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
