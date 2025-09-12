@@ -2,7 +2,7 @@
 pragma solidity 0.8.23;
 
 import "@bananapus/721-hook-v5/script/helpers/Hook721DeploymentLib.sol";
-import "@bananapus/buyback-hook-v5script/helpers/BuybackDeploymentLib.sol";
+import "@bananapus/buyback-hook-v5/script/helpers/BuybackDeploymentLib.sol";
 import "@bananapus/core-v5/script/helpers/CoreDeploymentLib.sol";
 import "@bananapus/suckers-v5/script/helpers/SuckerDeploymentLib.sol";
 import "@bananapus/swap-terminal-v5/script/helpers/SwapTerminalDeploymentLib.sol";
@@ -79,15 +79,15 @@ contract DeployScript is Script, Sphinx {
     uint24 BANNY_BODY_CATEGORY = 0;
     address OPERATOR;
     address TRUSTED_FORWARDER;
-    uint256 BAN_START_TIME = 1_739_847_119;
-    uint256 BAN_MAINNET_AUTO_ISSUANCE_ = 957_932_309_500_316_260_835_082;
-    uint256 BAN_BASE_AUTO_ISSUANCE_ = 1_000_000_000_000_000_000_000_000;
-    uint256 BAN_OP_AUTO_ISSUANCE_ = 1_000_000_000_000_000_000_000_000;
-    uint256 BAN_ARB_AUTO_ISSUANCE_ = 1_000_000_000_000_000_000_000_000;
+    uint48 BAN_START_TIME = 1_740_089_444;
+    uint104 BAN_MAINNET_AUTO_ISSUANCE_ = 545_296_034_092_246_678_345_976;
+    uint104 BAN_BASE_AUTO_ISSUANCE_ = 10_097_684_379_816_492_953_872;
+    uint104 BAN_OP_AUTO_ISSUANCE_ = 328_366_065_858_064_488_000;
+    uint104 BAN_ARB_AUTO_ISSUANCE_ = 2_825_980_000_000_000_000_000;
 
     function configureSphinx() public override {
         // TODO: Update to contain revnet devs.
-        sphinxConfig.projectName = "banny-core";
+        sphinxConfig.projectName = "banny-core-v5";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
         sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
     }
@@ -98,7 +98,9 @@ contract DeployScript is Script, Sphinx {
 
         // Get the deployment addresses for the 721 hook contracts for this chain.
         buybackHook = BuybackDeploymentLib.getDeployment(
-            vm.envOr("NANA_BUYBACK_HOOK_DEPLOYMENT_PATH", string("node_modules/@bananapus/buyback-hook-v5deployments/"))
+            vm.envOr(
+                "NANA_BUYBACK_HOOK_DEPLOYMENT_PATH", string("node_modules/@bananapus/buyback-hook-v5/deployments/")
+            )
         );
         // Get the deployment addresses for the nana CORE for this chain.
         // We want to do this outside of the `sphinx` modifier.
@@ -126,20 +128,6 @@ contract DeployScript is Script, Sphinx {
 
         TRUSTED_FORWARDER = core.controller.trustedForwarder();
 
-        // Since Juicebox has logic dependent on the timestamp we warp time to create a scenario closer to production.
-        // We force simulations to make the assumption that the `START_TIME` has not occured,
-        // and is not the current time.
-        // Because of the cross-chain allowing components of nana-core, all chains require the same start_time,
-        // for this reason we can't rely on the simulations block.time and we need a shared timestamp across all
-        // simulations.
-        // uint256 realTimestamp = vm.envUint("START_TIME");
-        uint256 realTimestamp = 1_739_830_244; // timestamp hardcoded at time of deploy.
-        if (realTimestamp <= block.timestamp - TIME_UNTIL_START) {
-            revert("Something went wrong while setting the 'START_TIME' environment variable.");
-        }
-
-        vm.warp(realTimestamp);
-
         bannyverseConfig = getBannyverseRevnetConfig();
 
         // Perform the deployment transactions.
@@ -159,7 +147,7 @@ contract DeployScript is Script, Sphinx {
             JBTerminalConfig({terminal: core.terminal, accountingContextsToAccept: accountingContextsToAccept});
 
         terminalConfigurations[1] = JBTerminalConfig({
-            terminal: IJBTerminal(address(swapTerminal.swap_terminal)),
+            terminal: IJBTerminal(address(swapTerminal.registry)),
             accountingContextsToAccept: new JBAccountingContext[](0)
         });
 
@@ -178,13 +166,13 @@ contract DeployScript is Script, Sphinx {
 
         {
             REVAutoIssuance[] memory autoIssuances = new REVAutoIssuance[](4);
-            issuanceConfs[0] = REVAutoIssuance({chainId: 1, count: NANA_MAINNET_AUTO_ISSUANCE_, beneficiary: OPERATOR});
-            issuanceConfs[1] = REVAutoIssuance({chainId: 8453, count: NANA_BASE_AUTO_ISSUANCE_, beneficiary: OPERATOR});
-            issuanceConfs[2] = REVAutoIssuance({chainId: 10, count: NANA_OP_AUTO_ISSUANCE_, beneficiary: OPERATOR});
-            issuanceConfs[3] = REVAutoIssuance({chainId: 42_161, count: NANA_ARB_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            autoIssuances[0] = REVAutoIssuance({chainId: 1, count: BAN_MAINNET_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            autoIssuances[1] = REVAutoIssuance({chainId: 8453, count: BAN_BASE_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            autoIssuances[2] = REVAutoIssuance({chainId: 10, count: BAN_OP_AUTO_ISSUANCE_, beneficiary: OPERATOR});
+            autoIssuances[3] = REVAutoIssuance({chainId: 42_161, count: BAN_ARB_AUTO_ISSUANCE_, beneficiary: OPERATOR});
 
             stageConfigurations[0] = REVStageConfig({
-                startsAtOrAfter: uint40(block.timestamp + TIME_UNTIL_START),
+                startsAtOrAfter: BAN_START_TIME,
                 autoIssuances: autoIssuances,
                 splitPercent: 3800, // 38%
                 splits: splits,
@@ -249,14 +237,13 @@ contract DeployScript is Script, Sphinx {
 
         // The project's buyback hook configuration.
         REVBuybackPoolConfig[] memory buybackPoolConfigurations = new REVBuybackPoolConfig[](1);
-        buybackPoolConfigurations[0] = REVBuybackPoolConfig({
-            token: JBConstants.NATIVE_TOKEN,
-            fee: 10_000,
-            twapWindow: 2 days,
-            twapSlippageTolerance: 9000
+        buybackPoolConfigurations[0] =
+            REVBuybackPoolConfig({token: JBConstants.NATIVE_TOKEN, fee: 10_000, twapWindow: 2 days});
+        REVBuybackHookConfig memory buybackHookConfiguration = REVBuybackHookConfig({
+            dataHook: buybackHook.registry,
+            hookToConfigure: buybackHook.hook,
+            poolConfigurations: buybackPoolConfigurations
         });
-        REVBuybackHookConfig memory buybackHookConfiguration =
-            REVBuybackHookConfig({hook: buybackHook.hook, poolConfigurations: buybackPoolConfigurations});
 
         // The project's NFT tiers.
         JB721TierConfig[] memory tiers = new JB721TierConfig[](4);
