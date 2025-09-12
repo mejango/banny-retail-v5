@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.23;
 
-import {IERC721} from "@bananapus/721-hook/src/abstract/ERC721.sol";
-import {IJB721TiersHook} from "@bananapus/721-hook/src/interfaces/IJB721TiersHook.sol";
-import {IJB721TiersHookStore} from "@bananapus/721-hook/src/interfaces/IJB721TiersHookStore.sol";
-import {IJB721TokenUriResolver} from "@bananapus/721-hook/src/interfaces/IJB721TokenUriResolver.sol";
-import {JB721Tier} from "@bananapus/721-hook/src/structs/JB721Tier.sol";
-import {JBIpfsDecoder} from "@bananapus/721-hook/src/libraries/JBIpfsDecoder.sol";
+import {IERC721} from "@bananapus/721-hook-v5/src/abstract/ERC721.sol";
+import {IJB721TiersHook} from "@bananapus/721-hook-v5/src/interfaces/IJB721TiersHook.sol";
+import {IJB721TiersHookStore} from "@bananapus/721-hook-v5/src/interfaces/IJB721TiersHookStore.sol";
+import {IJB721TokenUriResolver} from "@bananapus/721-hook-v5/src/interfaces/IJB721TokenUriResolver.sol";
+import {JB721Tier} from "@bananapus/721-hook-v5/src/structs/JB721Tier.sol";
+import {JBIpfsDecoder} from "@bananapus/721-hook-v5/src/libraries/JBIpfsDecoder.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {ERC2771Context} from "@openzeppelin/contracts/metatx/ERC2771Context.sol";
@@ -61,18 +61,19 @@ contract Banny721TokenUriResolver is
     uint8 private constant _BACKSIDE_CATEGORY = 2;
     uint8 private constant _NECKLACE_CATEGORY = 3;
     uint8 private constant _HEAD_CATEGORY = 4;
-    uint8 private constant _GLASSES_CATEGORY = 5;
-    uint8 private constant _MOUTH_CATEGORY = 6;
-    uint8 private constant _LEGS_CATEGORY = 7;
-    uint8 private constant _SUIT_CATEGORY = 8;
-    uint8 private constant _SUIT_BOTTOM_CATEGORY = 9;
-    uint8 private constant _SUIT_TOP_CATEGORY = 10;
-    uint8 private constant _HEADTOP_CATEGORY = 11;
-    uint8 private constant _HAND_CATEGORY = 12;
-    uint8 private constant _SPECIAL_SUIT_CATEGORY = 13;
-    uint8 private constant _SPECIAL_LEGS_CATEGORY = 14;
-    uint8 private constant _SPECIAL_HEAD_CATEGORY = 15;
-    uint8 private constant _SPECIAL_BODY_CATEGORY = 16;
+    uint8 private constant _EYES_CATEGORY = 5;
+    uint8 private constant _GLASSES_CATEGORY = 6;
+    uint8 private constant _MOUTH_CATEGORY = 7;
+    uint8 private constant _LEGS_CATEGORY = 8;
+    uint8 private constant _SUIT_CATEGORY = 9;
+    uint8 private constant _SUIT_BOTTOM_CATEGORY = 10;
+    uint8 private constant _SUIT_TOP_CATEGORY = 11;
+    uint8 private constant _HEADTOP_CATEGORY = 12;
+    uint8 private constant _HAND_CATEGORY = 13;
+    uint8 private constant _SPECIAL_SUIT_CATEGORY = 14;
+    uint8 private constant _SPECIAL_LEGS_CATEGORY = 15;
+    uint8 private constant _SPECIAL_HEAD_CATEGORY = 16;
+    uint8 private constant _SPECIAL_BODY_CATEGORY = 17;
 
     uint8 private constant ALIEN_UPC = 1;
     uint8 private constant PINK_UPC = 2;
@@ -458,10 +459,6 @@ contract Banny721TokenUriResolver is
         // Start with the banny body.
         contents = string.concat(contents, _bannyBodySvgOf({upc: product.id}));
 
-        // Add eyes.
-        if (product.id == ALIEN_UPC) contents = string.concat(contents, DEFAULT_ALIEN_EYES);
-        else contents = string.concat(contents, DEFAULT_STANDARD_EYES);
-
         if (shouldDressBannyBody) {
             // Get the outfit contents.
             string memory outfitContents = _outfitContentsFor({hook: hook, outfitIds: outfitIds});
@@ -749,6 +746,7 @@ contract Banny721TokenUriResolver is
         // Keep a reference to if certain accessories have been added.
         bool hasNecklace;
         bool hasHead;
+        bool hasEyes;
         bool hasMouth;
 
         // Keep a reference to the custom necklace. Needed because the custom necklace is layered differently than the
@@ -797,6 +795,15 @@ contract Banny721TokenUriResolver is
 
             if (category == _HEAD_CATEGORY) {
                 hasHead = true;
+            }
+
+            if (category == _EYES_CATEGORY) {
+                hasEyes = true;
+            } else if (category > _EYES_CATEGORY && !hasEyes && !hasHead) {
+                if (upc == ALIEN_UPC) contents = string.concat(contents, DEFAULT_ALIEN_EYES);
+                else contents = string.concat(contents, DEFAULT_STANDARD_EYES);
+
+                hasEyes = true;
             }
 
             if (category == _MOUTH_CATEGORY) {
