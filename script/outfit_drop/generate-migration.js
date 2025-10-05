@@ -17,7 +17,7 @@ function generateScriptForFile(inputFile, outputFile) {
     console.log(`\n=== Generating ${outputFile} from ${inputFile} ===`);
     
     // Load the raw data
-    const rawDataPath = path.join(__dirname, 'outfit_drop', inputFile);
+    const rawDataPath = path.join(__dirname, inputFile);
     const rawData = JSON.parse(fs.readFileSync(rawDataPath, 'utf8'));
     
     const items = rawData.data.nfts.items;
@@ -390,7 +390,7 @@ contract AirdropOutfitsScript is Script {
 `;
 
     // Write the script to file
-    const outputPath = path.join(__dirname, outputFile);
+    const outputPath = path.join(__dirname, '..', outputFile);
     fs.writeFileSync(outputPath, script);
     
     console.log(`Generated migration script with chain-specific filtering`);

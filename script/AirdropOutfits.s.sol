@@ -534,7 +534,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 1000000001 (Alien)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc7MintedIds[1]; // V4: 7000000002 -> V5: upc7MintedIds[1]
+                                outfitIds[0] = upc7MintedIds[1]; // V4: 7000000002 -> V5: upc7MintedIds[1]
                 outfitIds[1] = upc17MintedIds[0]; // V4: 17000000001 -> V5: upc17MintedIds[0]
                 outfitIds[2] = upc26MintedIds[3]; // V4: 26000000004 -> V5: upc26MintedIds[3]
                 outfitIds[3] = upc46MintedIds[0]; // V4: 46000000001 -> V5: upc46MintedIds[0]
@@ -550,7 +550,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000002 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](5);
-                outfitIds[0] = upc7MintedIds[0]; // V4: 7000000001 -> V5: upc7MintedIds[0]
+                                outfitIds[0] = upc7MintedIds[0]; // V4: 7000000001 -> V5: upc7MintedIds[0]
                 outfitIds[1] = upc14MintedIds[2]; // V4: 14000000003 -> V5: upc14MintedIds[2]
                 outfitIds[2] = upc19MintedIds[11]; // V4: 19000000012 -> V5: upc19MintedIds[11]
                 outfitIds[3] = upc26MintedIds[2]; // V4: 26000000003 -> V5: upc26MintedIds[2]
@@ -567,7 +567,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000004 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc18MintedIds[1]; // V4: 18000000002 -> V5: upc18MintedIds[1]
+                                outfitIds[0] = upc18MintedIds[1]; // V4: 18000000002 -> V5: upc18MintedIds[1]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -580,7 +580,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000005 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc21MintedIds[0]; // V4: 21000000001 -> V5: upc21MintedIds[0]
+                                outfitIds[0] = upc21MintedIds[0]; // V4: 21000000001 -> V5: upc21MintedIds[0]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -593,7 +593,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000006 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc19MintedIds[18]; // V4: 19000000019 -> V5: upc19MintedIds[18]
+                                outfitIds[0] = upc19MintedIds[18]; // V4: 19000000019 -> V5: upc19MintedIds[18]
                 outfitIds[1] = upc25MintedIds[8]; // V4: 25000000009 -> V5: upc25MintedIds[8]
 
                 resolver.decorateBannyWith(
@@ -607,7 +607,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000001 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc14MintedIds[0]; // V4: 14000000001 -> V5: upc14MintedIds[0]
+                                outfitIds[0] = upc14MintedIds[0]; // V4: 14000000001 -> V5: upc14MintedIds[0]
                 outfitIds[1] = upc26MintedIds[0]; // V4: 26000000001 -> V5: upc26MintedIds[0]
                 outfitIds[2] = upc35MintedIds[0]; // V4: 35000000001 -> V5: upc35MintedIds[0]
 
@@ -622,7 +622,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000003 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc10MintedIds[4]; // V4: 10000000005 -> V5: upc10MintedIds[4]
+                                outfitIds[0] = upc10MintedIds[4]; // V4: 10000000005 -> V5: upc10MintedIds[4]
                 outfitIds[1] = upc44MintedIds[2]; // V4: 44000000003 -> V5: upc44MintedIds[2]
 
                 resolver.decorateBannyWith(
@@ -636,7 +636,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000006 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc32MintedIds[0]; // V4: 32000000001 -> V5: upc32MintedIds[0]
+                                outfitIds[0] = upc32MintedIds[0]; // V4: 32000000001 -> V5: upc32MintedIds[0]
                 outfitIds[1] = upc44MintedIds[3]; // V4: 44000000004 -> V5: upc44MintedIds[3]
 
                 resolver.decorateBannyWith(
@@ -650,7 +650,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000007 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc31MintedIds[2]; // V4: 31000000003 -> V5: upc31MintedIds[2]
+                                outfitIds[0] = upc31MintedIds[2]; // V4: 31000000003 -> V5: upc31MintedIds[2]
                 outfitIds[1] = upc47MintedIds[2]; // V4: 47000000003 -> V5: upc47MintedIds[2]
 
                 resolver.decorateBannyWith(
@@ -664,7 +664,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000009 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc35MintedIds[1]; // V4: 35000000002 -> V5: upc35MintedIds[1]
+                                outfitIds[0] = upc35MintedIds[1]; // V4: 35000000002 -> V5: upc35MintedIds[1]
                 outfitIds[1] = upc43MintedIds[4]; // V4: 43000000005 -> V5: upc43MintedIds[4]
 
                 resolver.decorateBannyWith(
@@ -678,7 +678,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000010 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc32MintedIds[1]; // V4: 32000000002 -> V5: upc32MintedIds[1]
+                                outfitIds[0] = upc32MintedIds[1]; // V4: 32000000002 -> V5: upc32MintedIds[1]
                 outfitIds[1] = upc35MintedIds[3]; // V4: 35000000004 -> V5: upc35MintedIds[3]
                 outfitIds[2] = upc48MintedIds[0]; // V4: 48000000001 -> V5: upc48MintedIds[0]
 
@@ -693,7 +693,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000011 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc23MintedIds[0]; // V4: 23000000001 -> V5: upc23MintedIds[0]
+                                outfitIds[0] = upc23MintedIds[0]; // V4: 23000000001 -> V5: upc23MintedIds[0]
                 outfitIds[1] = upc39MintedIds[0]; // V4: 39000000001 -> V5: upc39MintedIds[0]
                 outfitIds[2] = upc43MintedIds[5]; // V4: 43000000006 -> V5: upc43MintedIds[5]
 
@@ -708,7 +708,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000013 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc19MintedIds[7]; // V4: 19000000008 -> V5: upc19MintedIds[7]
+                                outfitIds[0] = upc19MintedIds[7]; // V4: 19000000008 -> V5: upc19MintedIds[7]
                 outfitIds[1] = upc31MintedIds[5]; // V4: 31000000006 -> V5: upc31MintedIds[5]
                 outfitIds[2] = upc37MintedIds[0]; // V4: 37000000001 -> V5: upc37MintedIds[0]
                 outfitIds[3] = upc43MintedIds[6]; // V4: 43000000007 -> V5: upc43MintedIds[6]
@@ -724,7 +724,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000017 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc25MintedIds[4]; // V4: 25000000005 -> V5: upc25MintedIds[4]
+                                outfitIds[0] = upc25MintedIds[4]; // V4: 25000000005 -> V5: upc25MintedIds[4]
                 outfitIds[1] = upc49MintedIds[1]; // V4: 49000000002 -> V5: upc49MintedIds[1]
 
                 resolver.decorateBannyWith(
@@ -738,7 +738,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000022 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[14]; // V4: 19000000015 -> V5: upc19MintedIds[14]
+                                outfitIds[0] = upc19MintedIds[14]; // V4: 19000000015 -> V5: upc19MintedIds[14]
                 outfitIds[1] = upc38MintedIds[1]; // V4: 38000000002 -> V5: upc38MintedIds[1]
                 outfitIds[2] = upc48MintedIds[4]; // V4: 48000000005 -> V5: upc48MintedIds[4]
 
@@ -753,7 +753,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000023 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc14MintedIds[4]; // V4: 14000000005 -> V5: upc14MintedIds[4]
+                                outfitIds[0] = upc14MintedIds[4]; // V4: 14000000005 -> V5: upc14MintedIds[4]
                 outfitIds[1] = upc25MintedIds[7]; // V4: 25000000008 -> V5: upc25MintedIds[7]
                 outfitIds[2] = upc37MintedIds[2]; // V4: 37000000003 -> V5: upc37MintedIds[2]
                 outfitIds[3] = upc42MintedIds[6]; // V4: 42000000007 -> V5: upc42MintedIds[6]
@@ -769,7 +769,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000026 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc15MintedIds[3]; // V4: 15000000004 -> V5: upc15MintedIds[3]
+                                outfitIds[0] = upc15MintedIds[3]; // V4: 15000000004 -> V5: upc15MintedIds[3]
                 outfitIds[1] = upc29MintedIds[2]; // V4: 29000000003 -> V5: upc29MintedIds[2]
                 outfitIds[2] = upc39MintedIds[2]; // V4: 39000000003 -> V5: upc39MintedIds[2]
 
@@ -784,7 +784,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000004 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
+                                outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -797,7 +797,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000009 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
+                                outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
                 outfitIds[1] = upc19MintedIds[1]; // V4: 19000000002 -> V5: upc19MintedIds[1]
                 outfitIds[2] = upc25MintedIds[1]; // V4: 25000000002 -> V5: upc25MintedIds[1]
                 outfitIds[3] = upc43MintedIds[2]; // V4: 43000000003 -> V5: upc43MintedIds[2]
@@ -813,7 +813,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000010 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc10MintedIds[1]; // V4: 10000000002 -> V5: upc10MintedIds[1]
+                                outfitIds[0] = upc10MintedIds[1]; // V4: 10000000002 -> V5: upc10MintedIds[1]
                 outfitIds[1] = upc18MintedIds[0]; // V4: 18000000001 -> V5: upc18MintedIds[0]
                 outfitIds[2] = upc20MintedIds[0]; // V4: 20000000001 -> V5: upc20MintedIds[0]
                 outfitIds[3] = upc44MintedIds[0]; // V4: 44000000001 -> V5: upc44MintedIds[0]
@@ -829,7 +829,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000013 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc31MintedIds[1]; // V4: 31000000002 -> V5: upc31MintedIds[1]
+                                outfitIds[0] = upc31MintedIds[1]; // V4: 31000000002 -> V5: upc31MintedIds[1]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -842,7 +842,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000014 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc10MintedIds[5]; // V4: 10000000006 -> V5: upc10MintedIds[5]
+                                outfitIds[0] = upc10MintedIds[5]; // V4: 10000000006 -> V5: upc10MintedIds[5]
                 outfitIds[1] = upc19MintedIds[3]; // V4: 19000000004 -> V5: upc19MintedIds[3]
                 outfitIds[2] = upc25MintedIds[2]; // V4: 25000000003 -> V5: upc25MintedIds[2]
                 outfitIds[3] = upc49MintedIds[0]; // V4: 49000000001 -> V5: upc49MintedIds[0]
@@ -858,7 +858,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000015 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc15MintedIds[0]; // V4: 15000000001 -> V5: upc15MintedIds[0]
+                                outfitIds[0] = upc15MintedIds[0]; // V4: 15000000001 -> V5: upc15MintedIds[0]
                 outfitIds[1] = upc26MintedIds[1]; // V4: 26000000002 -> V5: upc26MintedIds[1]
 
                 resolver.decorateBannyWith(
@@ -872,7 +872,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000016 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc10MintedIds[6]; // V4: 10000000007 -> V5: upc10MintedIds[6]
+                                outfitIds[0] = upc10MintedIds[6]; // V4: 10000000007 -> V5: upc10MintedIds[6]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -885,7 +885,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000019 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[4]; // V4: 19000000005 -> V5: upc19MintedIds[4]
+                                outfitIds[0] = upc19MintedIds[4]; // V4: 19000000005 -> V5: upc19MintedIds[4]
                 outfitIds[1] = upc35MintedIds[2]; // V4: 35000000003 -> V5: upc35MintedIds[2]
                 outfitIds[2] = upc42MintedIds[1]; // V4: 42000000002 -> V5: upc42MintedIds[1]
 
@@ -900,7 +900,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000023 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc31MintedIds[6]; // V4: 31000000007 -> V5: upc31MintedIds[6]
+                                outfitIds[0] = upc31MintedIds[6]; // V4: 31000000007 -> V5: upc31MintedIds[6]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -913,7 +913,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000033 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc19MintedIds[8]; // V4: 19000000009 -> V5: upc19MintedIds[8]
+                                outfitIds[0] = upc19MintedIds[8]; // V4: 19000000009 -> V5: upc19MintedIds[8]
                 outfitIds[1] = upc43MintedIds[7]; // V4: 43000000008 -> V5: upc43MintedIds[7]
 
                 resolver.decorateBannyWith(
@@ -927,7 +927,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000039 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc13MintedIds[0]; // V4: 13000000001 -> V5: upc13MintedIds[0]
+                                outfitIds[0] = upc13MintedIds[0]; // V4: 13000000001 -> V5: upc13MintedIds[0]
                 outfitIds[1] = upc19MintedIds[10]; // V4: 19000000011 -> V5: upc19MintedIds[10]
                 outfitIds[2] = upc25MintedIds[5]; // V4: 25000000006 -> V5: upc25MintedIds[5]
                 outfitIds[3] = upc42MintedIds[3]; // V4: 42000000004 -> V5: upc42MintedIds[3]
@@ -943,7 +943,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000040 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc25MintedIds[6]; // V4: 25000000007 -> V5: upc25MintedIds[6]
+                                outfitIds[0] = upc25MintedIds[6]; // V4: 25000000007 -> V5: upc25MintedIds[6]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -956,7 +956,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000041 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](5);
-                outfitIds[0] = upc16MintedIds[0]; // V4: 16000000001 -> V5: upc16MintedIds[0]
+                                outfitIds[0] = upc16MintedIds[0]; // V4: 16000000001 -> V5: upc16MintedIds[0]
                 outfitIds[1] = upc17MintedIds[1]; // V4: 17000000002 -> V5: upc17MintedIds[1]
                 outfitIds[2] = upc31MintedIds[8]; // V4: 31000000009 -> V5: upc31MintedIds[8]
                 outfitIds[3] = upc33MintedIds[0]; // V4: 33000000001 -> V5: upc33MintedIds[0]
@@ -973,7 +973,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000043 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc32MintedIds[2]; // V4: 32000000003 -> V5: upc32MintedIds[2]
+                                outfitIds[0] = upc32MintedIds[2]; // V4: 32000000003 -> V5: upc32MintedIds[2]
                 outfitIds[1] = upc48MintedIds[2]; // V4: 48000000003 -> V5: upc48MintedIds[2]
 
                 resolver.decorateBannyWith(
@@ -987,7 +987,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000044 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc23MintedIds[1]; // V4: 23000000002 -> V5: upc23MintedIds[1]
+                                outfitIds[0] = upc23MintedIds[1]; // V4: 23000000002 -> V5: upc23MintedIds[1]
                 outfitIds[1] = upc41MintedIds[0]; // V4: 41000000001 -> V5: upc41MintedIds[0]
 
                 resolver.decorateBannyWith(
@@ -1001,7 +1001,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000045 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc23MintedIds[3]; // V4: 23000000004 -> V5: upc23MintedIds[3]
+                                outfitIds[0] = upc23MintedIds[3]; // V4: 23000000004 -> V5: upc23MintedIds[3]
                 outfitIds[1] = upc41MintedIds[2]; // V4: 41000000003 -> V5: upc41MintedIds[2]
 
                 resolver.decorateBannyWith(
@@ -1015,7 +1015,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000046 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc23MintedIds[4]; // V4: 23000000005 -> V5: upc23MintedIds[4]
+                                outfitIds[0] = upc23MintedIds[4]; // V4: 23000000005 -> V5: upc23MintedIds[4]
                 outfitIds[1] = upc41MintedIds[3]; // V4: 41000000004 -> V5: upc41MintedIds[3]
 
                 resolver.decorateBannyWith(
@@ -1029,7 +1029,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000047 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc23MintedIds[2]; // V4: 23000000003 -> V5: upc23MintedIds[2]
+                                outfitIds[0] = upc23MintedIds[2]; // V4: 23000000003 -> V5: upc23MintedIds[2]
                 outfitIds[1] = upc41MintedIds[1]; // V4: 41000000002 -> V5: upc41MintedIds[1]
 
                 resolver.decorateBannyWith(
@@ -1043,7 +1043,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000048 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc19MintedIds[12]; // V4: 19000000013 -> V5: upc19MintedIds[12]
+                                outfitIds[0] = upc19MintedIds[12]; // V4: 19000000013 -> V5: upc19MintedIds[12]
                 outfitIds[1] = upc31MintedIds[9]; // V4: 31000000010 -> V5: upc31MintedIds[9]
                 outfitIds[2] = upc35MintedIds[6]; // V4: 35000000007 -> V5: upc35MintedIds[6]
                 outfitIds[3] = upc47MintedIds[4]; // V4: 47000000005 -> V5: upc47MintedIds[4]
@@ -1059,7 +1059,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000052 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc10MintedIds[11]; // V4: 10000000012 -> V5: upc10MintedIds[11]
+                                outfitIds[0] = upc10MintedIds[11]; // V4: 10000000012 -> V5: upc10MintedIds[11]
                 outfitIds[1] = upc18MintedIds[2]; // V4: 18000000003 -> V5: upc18MintedIds[2]
                 outfitIds[2] = upc20MintedIds[7]; // V4: 20000000008 -> V5: upc20MintedIds[7]
 
@@ -1074,7 +1074,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000054 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc15MintedIds[1]; // V4: 15000000002 -> V5: upc15MintedIds[1]
+                                outfitIds[0] = upc15MintedIds[1]; // V4: 15000000002 -> V5: upc15MintedIds[1]
                 outfitIds[1] = upc26MintedIds[4]; // V4: 26000000005 -> V5: upc26MintedIds[4]
                 outfitIds[2] = upc44MintedIds[7]; // V4: 44000000008 -> V5: upc44MintedIds[7]
 
@@ -1089,7 +1089,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000055 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[15]; // V4: 19000000016 -> V5: upc19MintedIds[15]
+                                outfitIds[0] = upc19MintedIds[15]; // V4: 19000000016 -> V5: upc19MintedIds[15]
                 outfitIds[1] = upc39MintedIds[1]; // V4: 39000000002 -> V5: upc39MintedIds[1]
                 outfitIds[2] = upc44MintedIds[8]; // V4: 44000000009 -> V5: upc44MintedIds[8]
 
@@ -1104,7 +1104,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000056 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc15MintedIds[2]; // V4: 15000000003 -> V5: upc15MintedIds[2]
+                                outfitIds[0] = upc15MintedIds[2]; // V4: 15000000003 -> V5: upc15MintedIds[2]
                 outfitIds[1] = upc23MintedIds[6]; // V4: 23000000007 -> V5: upc23MintedIds[6]
                 outfitIds[2] = upc40MintedIds[0]; // V4: 40000000001 -> V5: upc40MintedIds[0]
                 outfitIds[3] = upc49MintedIds[3]; // V4: 49000000004 -> V5: upc49MintedIds[3]
@@ -1120,7 +1120,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000057 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[16]; // V4: 19000000017 -> V5: upc19MintedIds[16]
+                                outfitIds[0] = upc19MintedIds[16]; // V4: 19000000017 -> V5: upc19MintedIds[16]
                 outfitIds[1] = upc28MintedIds[7]; // V4: 28000000008 -> V5: upc28MintedIds[7]
                 outfitIds[2] = upc38MintedIds[2]; // V4: 38000000003 -> V5: upc38MintedIds[2]
 
@@ -1135,7 +1135,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000060 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc13MintedIds[2]; // V4: 13000000003 -> V5: upc13MintedIds[2]
+                                outfitIds[0] = upc13MintedIds[2]; // V4: 13000000003 -> V5: upc13MintedIds[2]
                 outfitIds[1] = upc48MintedIds[5]; // V4: 48000000006 -> V5: upc48MintedIds[5]
 
                 resolver.decorateBannyWith(
@@ -1149,7 +1149,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000076 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[17]; // V4: 19000000018 -> V5: upc19MintedIds[17]
+                                outfitIds[0] = upc19MintedIds[17]; // V4: 19000000018 -> V5: upc19MintedIds[17]
                 outfitIds[1] = upc29MintedIds[1]; // V4: 29000000002 -> V5: upc29MintedIds[1]
                 outfitIds[2] = upc38MintedIds[0]; // V4: 38000000001 -> V5: upc38MintedIds[0]
 
@@ -1164,7 +1164,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000078 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc31MintedIds[10]; // V4: 31000000011 -> V5: upc31MintedIds[10]
+                                outfitIds[0] = upc31MintedIds[10]; // V4: 31000000011 -> V5: upc31MintedIds[10]
                 outfitIds[1] = upc43MintedIds[16]; // V4: 43000000017 -> V5: upc43MintedIds[16]
 
                 resolver.decorateBannyWith(
@@ -1178,7 +1178,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000079 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[19]; // V4: 19000000020 -> V5: upc19MintedIds[19]
+                                outfitIds[0] = upc19MintedIds[19]; // V4: 19000000020 -> V5: upc19MintedIds[19]
                 outfitIds[1] = upc25MintedIds[9]; // V4: 25000000010 -> V5: upc25MintedIds[9]
                 outfitIds[2] = upc43MintedIds[17]; // V4: 43000000018 -> V5: upc43MintedIds[17]
 
@@ -1193,7 +1193,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000080 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc15MintedIds[4]; // V4: 15000000005 -> V5: upc15MintedIds[4]
+                                outfitIds[0] = upc15MintedIds[4]; // V4: 15000000005 -> V5: upc15MintedIds[4]
                 outfitIds[1] = upc19MintedIds[20]; // V4: 19000000021 -> V5: upc19MintedIds[20]
                 outfitIds[2] = upc25MintedIds[10]; // V4: 25000000011 -> V5: upc25MintedIds[10]
 
@@ -1208,7 +1208,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000085 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc31MintedIds[12]; // V4: 31000000013 -> V5: upc31MintedIds[12]
+                                outfitIds[0] = upc31MintedIds[12]; // V4: 31000000013 -> V5: upc31MintedIds[12]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -2522,7 +2522,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000001 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
+                                outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
                 outfitIds[1] = upc19MintedIds[0]; // V4: 19000000001 -> V5: upc19MintedIds[0]
                 outfitIds[2] = upc25MintedIds[0]; // V4: 25000000001 -> V5: upc25MintedIds[0]
                 outfitIds[3] = upc44MintedIds[0]; // V4: 44000000001 -> V5: upc44MintedIds[0]
@@ -2538,7 +2538,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000001 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc47MintedIds[0]; // V4: 47000000001 -> V5: upc47MintedIds[0]
+                                outfitIds[0] = upc47MintedIds[0]; // V4: 47000000001 -> V5: upc47MintedIds[0]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -2943,7 +2943,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000001 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
+                                outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
                 outfitIds[1] = upc37MintedIds[0]; // V4: 37000000001 -> V5: upc37MintedIds[0]
 
                 resolver.decorateBannyWith(
@@ -2957,7 +2957,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000002 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc14MintedIds[1]; // V4: 14000000002 -> V5: upc14MintedIds[1]
+                                outfitIds[0] = upc14MintedIds[1]; // V4: 14000000002 -> V5: upc14MintedIds[1]
                 outfitIds[1] = upc32MintedIds[0]; // V4: 32000000001 -> V5: upc32MintedIds[0]
 
                 resolver.decorateBannyWith(
@@ -2971,7 +2971,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 2000000003 (Pink)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc25MintedIds[7]; // V4: 25000000008 -> V5: upc25MintedIds[7]
+                                outfitIds[0] = upc25MintedIds[7]; // V4: 25000000008 -> V5: upc25MintedIds[7]
                 outfitIds[1] = upc37MintedIds[1]; // V4: 37000000002 -> V5: upc37MintedIds[1]
                 outfitIds[2] = upc45MintedIds[0]; // V4: 45000000001 -> V5: upc45MintedIds[0]
 
@@ -2986,7 +2986,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000001 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc25MintedIds[3]; // V4: 25000000004 -> V5: upc25MintedIds[3]
+                                outfitIds[0] = upc25MintedIds[3]; // V4: 25000000004 -> V5: upc25MintedIds[3]
                 outfitIds[1] = upc47MintedIds[2]; // V4: 47000000003 -> V5: upc47MintedIds[2]
 
                 resolver.decorateBannyWith(
@@ -3000,7 +3000,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000002 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc31MintedIds[1]; // V4: 31000000002 -> V5: upc31MintedIds[1]
+                                outfitIds[0] = upc31MintedIds[1]; // V4: 31000000002 -> V5: upc31MintedIds[1]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3013,7 +3013,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000003 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc10MintedIds[4]; // V4: 10000000005 -> V5: upc10MintedIds[4]
+                                outfitIds[0] = upc10MintedIds[4]; // V4: 10000000005 -> V5: upc10MintedIds[4]
                 outfitIds[1] = upc19MintedIds[4]; // V4: 19000000005 -> V5: upc19MintedIds[4]
                 outfitIds[2] = upc28MintedIds[4]; // V4: 28000000005 -> V5: upc28MintedIds[4]
                 outfitIds[3] = upc47MintedIds[4]; // V4: 47000000005 -> V5: upc47MintedIds[4]
@@ -3029,7 +3029,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000006 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc14MintedIds[2]; // V4: 14000000003 -> V5: upc14MintedIds[2]
+                                outfitIds[0] = upc14MintedIds[2]; // V4: 14000000003 -> V5: upc14MintedIds[2]
                 outfitIds[1] = upc19MintedIds[6]; // V4: 19000000007 -> V5: upc19MintedIds[6]
                 outfitIds[2] = upc28MintedIds[0]; // V4: 28000000001 -> V5: upc28MintedIds[0]
 
@@ -3044,7 +3044,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000007 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc19MintedIds[8]; // V4: 19000000009 -> V5: upc19MintedIds[8]
+                                outfitIds[0] = upc19MintedIds[8]; // V4: 19000000009 -> V5: upc19MintedIds[8]
                 outfitIds[1] = upc28MintedIds[6]; // V4: 28000000007 -> V5: upc28MintedIds[6]
                 outfitIds[2] = upc44MintedIds[4]; // V4: 44000000005 -> V5: upc44MintedIds[4]
 
@@ -3059,7 +3059,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000008 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc15MintedIds[1]; // V4: 15000000002 -> V5: upc15MintedIds[1]
+                                outfitIds[0] = upc15MintedIds[1]; // V4: 15000000002 -> V5: upc15MintedIds[1]
                 outfitIds[1] = upc40MintedIds[0]; // V4: 40000000001 -> V5: upc40MintedIds[0]
 
                 resolver.decorateBannyWith(
@@ -3073,7 +3073,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000010 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc25MintedIds[8]; // V4: 25000000009 -> V5: upc25MintedIds[8]
+                                outfitIds[0] = upc25MintedIds[8]; // V4: 25000000009 -> V5: upc25MintedIds[8]
                 outfitIds[1] = upc43MintedIds[7]; // V4: 43000000008 -> V5: upc43MintedIds[7]
 
                 resolver.decorateBannyWith(
@@ -3087,7 +3087,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000001 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc15MintedIds[0]; // V4: 15000000001 -> V5: upc15MintedIds[0]
+                                outfitIds[0] = upc15MintedIds[0]; // V4: 15000000001 -> V5: upc15MintedIds[0]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3100,7 +3100,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000003 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](5);
-                outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
+                                outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
                 outfitIds[1] = upc19MintedIds[0]; // V4: 19000000001 -> V5: upc19MintedIds[0]
                 outfitIds[2] = upc25MintedIds[0]; // V4: 25000000001 -> V5: upc25MintedIds[0]
                 outfitIds[3] = upc33MintedIds[0]; // V4: 33000000001 -> V5: upc33MintedIds[0]
@@ -3117,7 +3117,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000045 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
+                                outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
                 outfitIds[1] = upc25MintedIds[1]; // V4: 25000000002 -> V5: upc25MintedIds[1]
                 outfitIds[2] = upc43MintedIds[1]; // V4: 43000000002 -> V5: upc43MintedIds[1]
 
@@ -3132,7 +3132,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000046 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc47MintedIds[0]; // V4: 47000000001 -> V5: upc47MintedIds[0]
+                                outfitIds[0] = upc47MintedIds[0]; // V4: 47000000001 -> V5: upc47MintedIds[0]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3145,7 +3145,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000048 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc10MintedIds[2]; // V4: 10000000003 -> V5: upc10MintedIds[2]
+                                outfitIds[0] = upc10MintedIds[2]; // V4: 10000000003 -> V5: upc10MintedIds[2]
                 outfitIds[1] = upc19MintedIds[2]; // V4: 19000000003 -> V5: upc19MintedIds[2]
                 outfitIds[2] = upc28MintedIds[3]; // V4: 28000000004 -> V5: upc28MintedIds[3]
 
@@ -3160,7 +3160,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000049 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc10MintedIds[3]; // V4: 10000000004 -> V5: upc10MintedIds[3]
+                                outfitIds[0] = upc10MintedIds[3]; // V4: 10000000004 -> V5: upc10MintedIds[3]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3173,7 +3173,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000050 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc14MintedIds[0]; // V4: 14000000001 -> V5: upc14MintedIds[0]
+                                outfitIds[0] = upc14MintedIds[0]; // V4: 14000000001 -> V5: upc14MintedIds[0]
                 outfitIds[1] = upc31MintedIds[0]; // V4: 31000000001 -> V5: upc31MintedIds[0]
                 outfitIds[2] = upc38MintedIds[0]; // V4: 38000000001 -> V5: upc38MintedIds[0]
                 outfitIds[3] = upc43MintedIds[2]; // V4: 43000000003 -> V5: upc43MintedIds[2]
@@ -3189,7 +3189,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000054 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc25MintedIds[4]; // V4: 25000000005 -> V5: upc25MintedIds[4]
+                                outfitIds[0] = upc25MintedIds[4]; // V4: 25000000005 -> V5: upc25MintedIds[4]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3202,7 +3202,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000060 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = 0; // Fallback: using V4 outfitId
+                                outfitIds[0] = 0; // Fallback: using V4 outfitId
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3215,7 +3215,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000073 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc10MintedIds[6]; // V4: 10000000007 -> V5: upc10MintedIds[6]
+                                outfitIds[0] = upc10MintedIds[6]; // V4: 10000000007 -> V5: upc10MintedIds[6]
                 outfitIds[1] = upc19MintedIds[5]; // V4: 19000000006 -> V5: upc19MintedIds[5]
                 outfitIds[2] = upc25MintedIds[5]; // V4: 25000000006 -> V5: upc25MintedIds[5]
                 outfitIds[3] = upc43MintedIds[4]; // V4: 43000000005 -> V5: upc43MintedIds[4]
@@ -3231,7 +3231,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000079 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc27MintedIds[0]; // V4: 27000000001 -> V5: upc27MintedIds[0]
+                                outfitIds[0] = upc27MintedIds[0]; // V4: 27000000001 -> V5: upc27MintedIds[0]
                 outfitIds[1] = upc38MintedIds[1]; // V4: 38000000002 -> V5: upc38MintedIds[1]
                 outfitIds[2] = upc48MintedIds[0]; // V4: 48000000001 -> V5: upc48MintedIds[0]
 
@@ -3246,7 +3246,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000080 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc13MintedIds[0]; // V4: 13000000001 -> V5: upc13MintedIds[0]
+                                outfitIds[0] = upc13MintedIds[0]; // V4: 13000000001 -> V5: upc13MintedIds[0]
                 outfitIds[1] = upc20MintedIds[0]; // V4: 20000000001 -> V5: upc20MintedIds[0]
                 outfitIds[2] = upc44MintedIds[3]; // V4: 44000000004 -> V5: upc44MintedIds[3]
 
@@ -3261,7 +3261,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000081 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc19MintedIds[7]; // V4: 19000000008 -> V5: upc19MintedIds[7]
+                                outfitIds[0] = upc19MintedIds[7]; // V4: 19000000008 -> V5: upc19MintedIds[7]
                 outfitIds[1] = upc25MintedIds[6]; // V4: 25000000007 -> V5: upc25MintedIds[6]
                 outfitIds[2] = upc35MintedIds[1]; // V4: 35000000002 -> V5: upc35MintedIds[1]
                 outfitIds[3] = upc43MintedIds[5]; // V4: 43000000006 -> V5: upc43MintedIds[5]
@@ -3277,7 +3277,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000082 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc43MintedIds[6]; // V4: 43000000007 -> V5: upc43MintedIds[6]
+                                outfitIds[0] = upc43MintedIds[6]; // V4: 43000000007 -> V5: upc43MintedIds[6]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3290,7 +3290,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000084 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc39MintedIds[0]; // V4: 39000000001 -> V5: upc39MintedIds[0]
+                                outfitIds[0] = upc39MintedIds[0]; // V4: 39000000001 -> V5: upc39MintedIds[0]
                 outfitIds[1] = upc41MintedIds[0]; // V4: 41000000001 -> V5: upc41MintedIds[0]
 
                 resolver.decorateBannyWith(
@@ -3304,7 +3304,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000085 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc28MintedIds[7]; // V4: 28000000008 -> V5: upc28MintedIds[7]
+                                outfitIds[0] = upc28MintedIds[7]; // V4: 28000000008 -> V5: upc28MintedIds[7]
 
                 resolver.decorateBannyWith(
                     address(hook),
@@ -3991,7 +3991,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 3000000001 (Orange)
             {
                 uint256[] memory outfitIds = new uint256[](4);
-                outfitIds[0] = upc19MintedIds[0]; // V4: 19000000001 -> V5: upc19MintedIds[0]
+                                outfitIds[0] = upc19MintedIds[0]; // V4: 19000000001 -> V5: upc19MintedIds[0]
                 outfitIds[1] = upc25MintedIds[0]; // V4: 25000000001 -> V5: upc25MintedIds[0]
                 outfitIds[2] = upc38MintedIds[0]; // V4: 38000000001 -> V5: upc38MintedIds[0]
                 outfitIds[3] = upc47MintedIds[0]; // V4: 47000000001 -> V5: upc47MintedIds[0]
@@ -4007,7 +4007,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000003 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
+                                outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
                 outfitIds[1] = upc19MintedIds[2]; // V4: 19000000003 -> V5: upc19MintedIds[2]
                 outfitIds[2] = upc28MintedIds[0]; // V4: 28000000001 -> V5: upc28MintedIds[0]
 
@@ -4022,7 +4022,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000004 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
+                                outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
                 outfitIds[1] = upc20MintedIds[0]; // V4: 20000000001 -> V5: upc20MintedIds[0]
 
                 resolver.decorateBannyWith(
@@ -4036,7 +4036,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000005 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](2);
-                outfitIds[0] = upc31MintedIds[0]; // V4: 31000000001 -> V5: upc31MintedIds[0]
+                                outfitIds[0] = upc31MintedIds[0]; // V4: 31000000001 -> V5: upc31MintedIds[0]
                 outfitIds[1] = upc49MintedIds[1]; // V4: 49000000002 -> V5: upc49MintedIds[1]
 
                 resolver.decorateBannyWith(
@@ -4050,7 +4050,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000007 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](3);
-                outfitIds[0] = upc10MintedIds[1]; // V4: 10000000002 -> V5: upc10MintedIds[1]
+                                outfitIds[0] = upc10MintedIds[1]; // V4: 10000000002 -> V5: upc10MintedIds[1]
                 outfitIds[1] = upc20MintedIds[1]; // V4: 20000000002 -> V5: upc20MintedIds[1]
                 outfitIds[2] = upc43MintedIds[0]; // V4: 43000000001 -> V5: upc43MintedIds[0]
 
@@ -4065,7 +4065,7 @@ contract AirdropOutfitsScript is Script {
             // Dress Banny 4000000009 (Original)
             {
                 uint256[] memory outfitIds = new uint256[](1);
-                outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
+                                outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
 
                 resolver.decorateBannyWith(
                     address(hook),
