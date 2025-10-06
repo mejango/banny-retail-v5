@@ -42,57 +42,57 @@ contract AirdropOutfitsScript is Script {
     
     function _runEthereum() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 1); // Ethereum mainnet
     }
     
     function _runOptimism() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 10); // Optimism
     }
     
     function _runBase() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 8453); // Base
     }
     
     function _runArbitrum() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 42161); // Arbitrum
     }
     
     function _runEthereumSepolia() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 11155111); // Ethereum Sepolia
     }
     
     function _runOptimismSepolia() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 11155420); // Optimism Sepolia
     }
     
     function _runBaseSepolia() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 84532); // Base Sepolia
     }
     
     function _runArbitrumSepolia() internal {
         // Contract addresses are the same across all chains
-        address hookAddress = address(0); // TODO: Set to your V5 721Hook address
-        address resolverAddress = address(0); // TODO: Set to your V5 Banny721TokenUriResolver address
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146a4498a70e0bf2e4585acf9cade85954;
         _processMigration(hookAddress, resolverAddress, 421614); // Arbitrum Sepolia
     }
     
