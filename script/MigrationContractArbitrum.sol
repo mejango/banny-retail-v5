@@ -14,237 +14,208 @@ contract MigrationContractArbitrum {
     
     function executeMigration(
         address hookAddress,
-        address resolverAddress
+        address resolverAddress,
+        address v4HookAddress,
+        address v4ResolverAddress
     ) external {
-        address deployer = msg.sender;
         
         // Validate addresses
         require(hookAddress != address(0), "Hook address not set");
         require(resolverAddress != address(0), "Resolver address not set");
+        require(v4HookAddress != address(0), "V4 Hook address not set");
+        require(v4ResolverAddress != address(0), "V4 Resolver address not set");
         
         JB721TiersHook hook = JB721TiersHook(hookAddress);
         Banny721TokenUriResolver resolver = Banny721TokenUriResolver(resolverAddress);
+        IERC721 v4Hook = IERC721(v4HookAddress);
+        Banny721TokenUriResolver v4Resolver = Banny721TokenUriResolver(v4ResolverAddress);
         
         // Arbitrum migration - 205 items
         
         // Step 1: Mint all assets to deployer initially
         
         // Create array of all tierIds to mint
-        uint256[] memory allTierIds = new uint256[](205);
-        uint256 tierIndex = 0;
+        uint16[] memory allTierIds = new uint16[](205);
+        uint16 tierIndex = 0;
         
-        // Add 2 instances of UPC 3
-        for (uint256 i = 0; i < 2; i++) {
-            allTierIds[tierIndex] = 3;
-            tierIndex++;
+        // Helper function to add UPC instances to allTierIds
+        function _addUpcInstances(uint16 upc, uint256 quantity) internal {
+            for (uint256 i = 0; i < quantity; i++) {
+                allTierIds[tierIndex] = upc;
+                tierIndex++;
+            }
         }
-        // Add 9 instances of UPC 4
-        for (uint256 i = 0; i < 9; i++) {
-            allTierIds[tierIndex] = 4;
-            tierIndex++;
-        }
-        // Add 3 instances of UPC 5
-        for (uint256 i = 0; i < 3; i++) {
-            allTierIds[tierIndex] = 5;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 6
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 6;
-            tierIndex++;
-        }
-        // Add 2 instances of UPC 10
-        for (uint256 i = 0; i < 2; i++) {
-            allTierIds[tierIndex] = 10;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 11
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 11;
-            tierIndex++;
-        }
-        // Add 4 instances of UPC 19
-        for (uint256 i = 0; i < 4; i++) {
-            allTierIds[tierIndex] = 19;
-            tierIndex++;
-        }
-        // Add 2 instances of UPC 20
-        for (uint256 i = 0; i < 2; i++) {
-            allTierIds[tierIndex] = 20;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 25
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 25;
-            tierIndex++;
-        }
-        // Add 2 instances of UPC 28
-        for (uint256 i = 0; i < 2; i++) {
-            allTierIds[tierIndex] = 28;
-            tierIndex++;
-        }
-        // Add 2 instances of UPC 31
-        for (uint256 i = 0; i < 2; i++) {
-            allTierIds[tierIndex] = 31;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 32
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 32;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 38
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 38;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 39
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 39;
-            tierIndex++;
-        }
-        // Add 1 instances of UPC 43
-        for (uint256 i = 0; i < 1; i++) {
-            allTierIds[tierIndex] = 43;
-            tierIndex++;
-        }
-        // Add 27 instances of UPC 47
-        for (uint256 i = 0; i < 27; i++) {
-            allTierIds[tierIndex] = 47;
-            tierIndex++;
-        }
-        // Add 145 instances of UPC 49
-        for (uint256 i = 0; i < 145; i++) {
-            allTierIds[tierIndex] = 49;
-            tierIndex++;
-        }
+        
+        _addUpcInstances(3, 2); // Add 2 instances of UPC 3
+        _addUpcInstances(4, 9); // Add 9 instances of UPC 4
+        _addUpcInstances(5, 3); // Add 3 instances of UPC 5
+        _addUpcInstances(6, 1); // Add 1 instances of UPC 6
+        _addUpcInstances(10, 2); // Add 2 instances of UPC 10
+        _addUpcInstances(11, 1); // Add 1 instances of UPC 11
+        _addUpcInstances(19, 4); // Add 4 instances of UPC 19
+        _addUpcInstances(20, 2); // Add 2 instances of UPC 20
+        _addUpcInstances(25, 1); // Add 1 instances of UPC 25
+        _addUpcInstances(28, 2); // Add 2 instances of UPC 28
+        _addUpcInstances(31, 2); // Add 2 instances of UPC 31
+        _addUpcInstances(32, 1); // Add 1 instances of UPC 32
+        _addUpcInstances(38, 1); // Add 1 instances of UPC 38
+        _addUpcInstances(39, 1); // Add 1 instances of UPC 39
+        _addUpcInstances(43, 1); // Add 1 instances of UPC 43
+        _addUpcInstances(47, 27); // Add 27 instances of UPC 47
+        _addUpcInstances(49, 145); // Add 145 instances of UPC 49
         
         // Mint all tierIds at once
         uint256[] memory mintedIds = hook.mintFor(allTierIds, deployer);
         
-        // UPC 3 minted tokenIds (2 items)
-        uint256[] memory upc3MintedIds = new uint256[](2);
-        for (uint256 i = 0; i < 2; i++) {
-            upc3MintedIds[i] = mintedIds[0 + i];
+        // Define struct to hold all UPC minted tokenIds
+        struct MintedIds {
+            uint256[2] upc3;
+            uint256[9] upc4;
+            uint256[3] upc5;
+            uint256[1] upc6;
+            uint256[2] upc10;
+            uint256[1] upc11;
+            uint256[4] upc19;
+            uint256[2] upc20;
+            uint256[1] upc25;
+            uint256[2] upc28;
+            uint256[2] upc31;
+            uint256[1] upc32;
+            uint256[1] upc38;
+            uint256[1] upc39;
+            uint256[1] upc43;
+            uint256[27] upc47;
+            uint256[145] upc49;
         }
-        // UPC 4 minted tokenIds (9 items)
-        uint256[] memory upc4MintedIds = new uint256[](9);
+        
+        // Create and populate the struct
+        MintedIds memory sortedMintedIds;
+        
+        // Populate UPC 3 minted tokenIds (2 items)
+        for (uint256 i = 0; i < 2; i++) {
+            sortedMintedIds.upc3[i] = mintedIds[0 + i];
+        }
+        // Populate UPC 4 minted tokenIds (9 items)
         for (uint256 i = 0; i < 9; i++) {
-            upc4MintedIds[i] = mintedIds[2 + i];
+            sortedMintedIds.upc4[i] = mintedIds[2 + i];
         }
-        // UPC 5 minted tokenIds (3 items)
-        uint256[] memory upc5MintedIds = new uint256[](3);
+        // Populate UPC 5 minted tokenIds (3 items)
         for (uint256 i = 0; i < 3; i++) {
-            upc5MintedIds[i] = mintedIds[11 + i];
+            sortedMintedIds.upc5[i] = mintedIds[11 + i];
         }
-        // UPC 6 minted tokenIds (1 items)
-        uint256[] memory upc6MintedIds = new uint256[](1);
+        // Populate UPC 6 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc6MintedIds[i] = mintedIds[14 + i];
+            sortedMintedIds.upc6[i] = mintedIds[14 + i];
         }
-        // UPC 10 minted tokenIds (2 items)
-        uint256[] memory upc10MintedIds = new uint256[](2);
+        // Populate UPC 10 minted tokenIds (2 items)
         for (uint256 i = 0; i < 2; i++) {
-            upc10MintedIds[i] = mintedIds[15 + i];
+            sortedMintedIds.upc10[i] = mintedIds[15 + i];
         }
-        // UPC 11 minted tokenIds (1 items)
-        uint256[] memory upc11MintedIds = new uint256[](1);
+        // Populate UPC 11 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc11MintedIds[i] = mintedIds[17 + i];
+            sortedMintedIds.upc11[i] = mintedIds[17 + i];
         }
-        // UPC 19 minted tokenIds (4 items)
-        uint256[] memory upc19MintedIds = new uint256[](4);
+        // Populate UPC 19 minted tokenIds (4 items)
         for (uint256 i = 0; i < 4; i++) {
-            upc19MintedIds[i] = mintedIds[18 + i];
+            sortedMintedIds.upc19[i] = mintedIds[18 + i];
         }
-        // UPC 20 minted tokenIds (2 items)
-        uint256[] memory upc20MintedIds = new uint256[](2);
+        // Populate UPC 20 minted tokenIds (2 items)
         for (uint256 i = 0; i < 2; i++) {
-            upc20MintedIds[i] = mintedIds[22 + i];
+            sortedMintedIds.upc20[i] = mintedIds[22 + i];
         }
-        // UPC 25 minted tokenIds (1 items)
-        uint256[] memory upc25MintedIds = new uint256[](1);
+        // Populate UPC 25 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc25MintedIds[i] = mintedIds[24 + i];
+            sortedMintedIds.upc25[i] = mintedIds[24 + i];
         }
-        // UPC 28 minted tokenIds (2 items)
-        uint256[] memory upc28MintedIds = new uint256[](2);
+        // Populate UPC 28 minted tokenIds (2 items)
         for (uint256 i = 0; i < 2; i++) {
-            upc28MintedIds[i] = mintedIds[25 + i];
+            sortedMintedIds.upc28[i] = mintedIds[25 + i];
         }
-        // UPC 31 minted tokenIds (2 items)
-        uint256[] memory upc31MintedIds = new uint256[](2);
+        // Populate UPC 31 minted tokenIds (2 items)
         for (uint256 i = 0; i < 2; i++) {
-            upc31MintedIds[i] = mintedIds[27 + i];
+            sortedMintedIds.upc31[i] = mintedIds[27 + i];
         }
-        // UPC 32 minted tokenIds (1 items)
-        uint256[] memory upc32MintedIds = new uint256[](1);
+        // Populate UPC 32 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc32MintedIds[i] = mintedIds[29 + i];
+            sortedMintedIds.upc32[i] = mintedIds[29 + i];
         }
-        // UPC 38 minted tokenIds (1 items)
-        uint256[] memory upc38MintedIds = new uint256[](1);
+        // Populate UPC 38 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc38MintedIds[i] = mintedIds[30 + i];
+            sortedMintedIds.upc38[i] = mintedIds[30 + i];
         }
-        // UPC 39 minted tokenIds (1 items)
-        uint256[] memory upc39MintedIds = new uint256[](1);
+        // Populate UPC 39 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc39MintedIds[i] = mintedIds[31 + i];
+            sortedMintedIds.upc39[i] = mintedIds[31 + i];
         }
-        // UPC 43 minted tokenIds (1 items)
-        uint256[] memory upc43MintedIds = new uint256[](1);
+        // Populate UPC 43 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            upc43MintedIds[i] = mintedIds[32 + i];
+            sortedMintedIds.upc43[i] = mintedIds[32 + i];
         }
-        // UPC 47 minted tokenIds (27 items)
-        uint256[] memory upc47MintedIds = new uint256[](27);
+        // Populate UPC 47 minted tokenIds (27 items)
         for (uint256 i = 0; i < 27; i++) {
-            upc47MintedIds[i] = mintedIds[33 + i];
+            sortedMintedIds.upc47[i] = mintedIds[33 + i];
         }
-        // UPC 49 minted tokenIds (145 items)
-        uint256[] memory upc49MintedIds = new uint256[](145);
+        // Populate UPC 49 minted tokenIds (145 items)
         for (uint256 i = 0; i < 145; i++) {
-            upc49MintedIds[i] = mintedIds[60 + i];
+            sortedMintedIds.upc49[i] = mintedIds[60 + i];
         }
         // Step 2: Process each Banny body and dress them
         
         // Dress Banny 3000000001 (Orange)
         {
             uint256[] memory outfitIds = new uint256[](4);
-                        outfitIds[0] = upc19MintedIds[0]; // V4: 19000000001 -> V5: upc19MintedIds[0]
-            outfitIds[1] = upc25MintedIds[0]; // V4: 25000000001 -> V5: upc25MintedIds[0]
-            outfitIds[2] = upc38MintedIds[0]; // V4: 38000000001 -> V5: upc38MintedIds[0]
-            outfitIds[3] = upc47MintedIds[0]; // V4: 47000000001 -> V5: upc47MintedIds[0]
+            outfitIds[0] = sortedMintedIds.upc19[0]; // V4: 19000000001 -> V5: sortedMintedIds.upc19[0]
+            outfitIds[1] = sortedMintedIds.upc25[0]; // V4: 25000000001 -> V5: sortedMintedIds.upc25[0]
+            outfitIds[2] = sortedMintedIds.upc38[0]; // V4: 38000000001 -> V5: sortedMintedIds.upc38[0]
+            outfitIds[3] = sortedMintedIds.upc47[0]; // V4: 47000000001 -> V5: sortedMintedIds.upc47[0]
 
             resolver.decorateBannyWith(
                 address(hook),
                 3000000001,
-                upc5MintedIds[0],
+                sortedMintedIds.upc5[0],
                 outfitIds
             );
+            
+            // Verify V4 to V5 dressing consistency for this Banny
+            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000001);
+            require(v4BackgroundId == 5000000001, "V4/V5 background mismatch for Banny 3000000001");
+            require(v4OutfitIds.length == 4, "V4/V5 outfit count mismatch for Banny 3000000001");
+            
+            require(v4OutfitIds[0] == 19000000001, "V4/V5 outfit 0 mismatch for Banny 3000000001");
+            require(v4OutfitIds[1] == 25000000001, "V4/V5 outfit 1 mismatch for Banny 3000000001");
+            require(v4OutfitIds[2] == 38000000001, "V4/V5 outfit 2 mismatch for Banny 3000000001");
+            require(v4OutfitIds[3] == 47000000001, "V4/V5 outfit 3 mismatch for Banny 3000000001");
         }
         
         // Dress Banny 4000000003 (Original)
         {
             uint256[] memory outfitIds = new uint256[](3);
-                        outfitIds[0] = upc11MintedIds[0]; // V4: 11000000001 -> V5: upc11MintedIds[0]
-            outfitIds[1] = upc19MintedIds[2]; // V4: 19000000003 -> V5: upc19MintedIds[2]
-            outfitIds[2] = upc28MintedIds[0]; // V4: 28000000001 -> V5: upc28MintedIds[0]
+            outfitIds[0] = sortedMintedIds.upc11[0]; // V4: 11000000001 -> V5: sortedMintedIds.upc11[0]
+            outfitIds[1] = sortedMintedIds.upc19[2]; // V4: 19000000003 -> V5: sortedMintedIds.upc19[2]
+            outfitIds[2] = sortedMintedIds.upc28[0]; // V4: 28000000001 -> V5: sortedMintedIds.upc28[0]
 
             resolver.decorateBannyWith(
                 address(hook),
                 4000000003,
-                upc6MintedIds[0],
+                sortedMintedIds.upc6[0],
                 outfitIds
             );
+            
+            // Verify V4 to V5 dressing consistency for this Banny
+            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000003);
+            require(v4BackgroundId == 6000000001, "V4/V5 background mismatch for Banny 4000000003");
+            require(v4OutfitIds.length == 3, "V4/V5 outfit count mismatch for Banny 4000000003");
+            
+            require(v4OutfitIds[0] == 11000000001, "V4/V5 outfit 0 mismatch for Banny 4000000003");
+            require(v4OutfitIds[1] == 19000000003, "V4/V5 outfit 1 mismatch for Banny 4000000003");
+            require(v4OutfitIds[2] == 28000000001, "V4/V5 outfit 2 mismatch for Banny 4000000003");
         }
         
         // Dress Banny 4000000004 (Original)
         {
             uint256[] memory outfitIds = new uint256[](2);
-                        outfitIds[0] = upc10MintedIds[0]; // V4: 10000000001 -> V5: upc10MintedIds[0]
-            outfitIds[1] = upc20MintedIds[0]; // V4: 20000000001 -> V5: upc20MintedIds[0]
+            outfitIds[0] = sortedMintedIds.upc10[0]; // V4: 10000000001 -> V5: sortedMintedIds.upc10[0]
+            outfitIds[1] = sortedMintedIds.upc20[0]; // V4: 20000000001 -> V5: sortedMintedIds.upc20[0]
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -252,13 +223,21 @@ contract MigrationContractArbitrum {
                 0,
                 outfitIds
             );
+            
+            // Verify V4 to V5 dressing consistency for this Banny
+            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000004);
+            require(v4BackgroundId == 0, "V4/V5 background mismatch for Banny 4000000004");
+            require(v4OutfitIds.length == 2, "V4/V5 outfit count mismatch for Banny 4000000004");
+            
+            require(v4OutfitIds[0] == 10000000001, "V4/V5 outfit 0 mismatch for Banny 4000000004");
+            require(v4OutfitIds[1] == 20000000001, "V4/V5 outfit 1 mismatch for Banny 4000000004");
         }
         
         // Dress Banny 4000000005 (Original)
         {
             uint256[] memory outfitIds = new uint256[](2);
-                        outfitIds[0] = upc31MintedIds[0]; // V4: 31000000001 -> V5: upc31MintedIds[0]
-            outfitIds[1] = upc49MintedIds[1]; // V4: 49000000002 -> V5: upc49MintedIds[1]
+            outfitIds[0] = sortedMintedIds.upc31[0]; // V4: 31000000001 -> V5: sortedMintedIds.upc31[0]
+            outfitIds[1] = sortedMintedIds.upc49[1]; // V4: 49000000002 -> V5: sortedMintedIds.upc49[1]
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -266,27 +245,44 @@ contract MigrationContractArbitrum {
                 0,
                 outfitIds
             );
+            
+            // Verify V4 to V5 dressing consistency for this Banny
+            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000005);
+            require(v4BackgroundId == 0, "V4/V5 background mismatch for Banny 4000000005");
+            require(v4OutfitIds.length == 2, "V4/V5 outfit count mismatch for Banny 4000000005");
+            
+            require(v4OutfitIds[0] == 31000000001, "V4/V5 outfit 0 mismatch for Banny 4000000005");
+            require(v4OutfitIds[1] == 49000000002, "V4/V5 outfit 1 mismatch for Banny 4000000005");
         }
         
         // Dress Banny 4000000007 (Original)
         {
             uint256[] memory outfitIds = new uint256[](3);
-                        outfitIds[0] = upc10MintedIds[1]; // V4: 10000000002 -> V5: upc10MintedIds[1]
-            outfitIds[1] = upc20MintedIds[1]; // V4: 20000000002 -> V5: upc20MintedIds[1]
-            outfitIds[2] = upc43MintedIds[0]; // V4: 43000000001 -> V5: upc43MintedIds[0]
+            outfitIds[0] = sortedMintedIds.upc10[1]; // V4: 10000000002 -> V5: sortedMintedIds.upc10[1]
+            outfitIds[1] = sortedMintedIds.upc20[1]; // V4: 20000000002 -> V5: sortedMintedIds.upc20[1]
+            outfitIds[2] = sortedMintedIds.upc43[0]; // V4: 43000000001 -> V5: sortedMintedIds.upc43[0]
 
             resolver.decorateBannyWith(
                 address(hook),
                 4000000007,
-                upc5MintedIds[1],
+                sortedMintedIds.upc5[1],
                 outfitIds
             );
+            
+            // Verify V4 to V5 dressing consistency for this Banny
+            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000007);
+            require(v4BackgroundId == 5000000002, "V4/V5 background mismatch for Banny 4000000007");
+            require(v4OutfitIds.length == 3, "V4/V5 outfit count mismatch for Banny 4000000007");
+            
+            require(v4OutfitIds[0] == 10000000002, "V4/V5 outfit 0 mismatch for Banny 4000000007");
+            require(v4OutfitIds[1] == 20000000002, "V4/V5 outfit 1 mismatch for Banny 4000000007");
+            require(v4OutfitIds[2] == 43000000001, "V4/V5 outfit 2 mismatch for Banny 4000000007");
         }
         
         // Dress Banny 4000000009 (Original)
         {
             uint256[] memory outfitIds = new uint256[](1);
-                        outfitIds[0] = upc28MintedIds[1]; // V4: 28000000002 -> V5: upc28MintedIds[1]
+            outfitIds[0] = sortedMintedIds.upc28[1]; // V4: 28000000002 -> V5: sortedMintedIds.upc28[1]
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -294,12 +290,23 @@ contract MigrationContractArbitrum {
                 0,
                 outfitIds
             );
+            
+            // Verify V4 to V5 dressing consistency for this Banny
+            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000009);
+            require(v4BackgroundId == 0, "V4/V5 background mismatch for Banny 4000000009");
+            require(v4OutfitIds.length == 1, "V4/V5 outfit count mismatch for Banny 4000000009");
+            
+            require(v4OutfitIds[0] == 28000000002, "V4/V5 outfit 0 mismatch for Banny 4000000009");
         }
         
         // Step 3: Transfer all assets to rightful owners using constructor data
         for (uint256 i = 0; i < transferOwners.length; i++) {
+            // Verify V4 ownership before transferring V5
+            address v4Owner = v4Hook.ownerOf(mintedIds[i]);
+            require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
+            
             IERC721(address(hook)).transferFrom(
-                deployer, 
+                address(this), 
                 transferOwners[i], 
                 mintedIds[i]
             );
