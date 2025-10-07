@@ -8,6 +8,7 @@ import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";
 import {MigrationContractBase} from "./MigrationContractBase.sol";
 import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
+import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
 
 contract AirdropOutfitsScript is Script, Sphinx {
@@ -114,37 +115,464 @@ contract AirdropOutfitsScript is Script, Sphinx {
     }
     
     function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, uint256 chainId) internal {
-        address deployer = vm.addr(vm.envUint("PRIVATE_KEY"));
-        
         // Validate addresses
         require(hookAddress != address(0), "Hook address not set");
         require(resolverAddress != address(0), "Resolver address not set");
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
         
-        vm.startBroadcast();
+        // Step 1: Mint all assets to the contract address (deployer has minting permissions)
+        JB721TiersHook hook = JB721TiersHook(hookAddress);
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
+            // Ethereum tier IDs
+            uint16[] memory allTierIds = new uint16[](536);
+            
+            // Add 1 instances of tier ID 1
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[0 + i] = 1;
+            }
+            // Add 6 instances of tier ID 2
+            for (uint256 i = 0; i < 6; i++) {
+                allTierIds[1 + i] = 2;
+            }
+            // Add 26 instances of tier ID 3
+            for (uint256 i = 0; i < 26; i++) {
+                allTierIds[7 + i] = 3;
+            }
+            // Add 85 instances of tier ID 4
+            for (uint256 i = 0; i < 85; i++) {
+                allTierIds[33 + i] = 4;
+            }
+            // Add 8 instances of tier ID 5
+            for (uint256 i = 0; i < 8; i++) {
+                allTierIds[118 + i] = 5;
+            }
+            // Add 13 instances of tier ID 6
+            for (uint256 i = 0; i < 13; i++) {
+                allTierIds[126 + i] = 6;
+            }
+            // Add 2 instances of tier ID 7
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[139 + i] = 7;
+            }
+            // Add 14 instances of tier ID 10
+            for (uint256 i = 0; i < 14; i++) {
+                allTierIds[141 + i] = 10;
+            }
+            // Add 1 instances of tier ID 11
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[155 + i] = 11;
+            }
+            // Add 4 instances of tier ID 13
+            for (uint256 i = 0; i < 4; i++) {
+                allTierIds[156 + i] = 13;
+            }
+            // Add 6 instances of tier ID 14
+            for (uint256 i = 0; i < 6; i++) {
+                allTierIds[160 + i] = 14;
+            }
+            // Add 5 instances of tier ID 15
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[166 + i] = 15;
+            }
+            // Add 1 instances of tier ID 16
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[171 + i] = 16;
+            }
+            // Add 5 instances of tier ID 17
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[172 + i] = 17;
+            }
+            // Add 3 instances of tier ID 18
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[177 + i] = 18;
+            }
+            // Add 22 instances of tier ID 19
+            for (uint256 i = 0; i < 22; i++) {
+                allTierIds[180 + i] = 19;
+            }
+            // Add 8 instances of tier ID 20
+            for (uint256 i = 0; i < 8; i++) {
+                allTierIds[202 + i] = 20;
+            }
+            // Add 2 instances of tier ID 21
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[210 + i] = 21;
+            }
+            // Add 8 instances of tier ID 23
+            for (uint256 i = 0; i < 8; i++) {
+                allTierIds[212 + i] = 23;
+            }
+            // Add 12 instances of tier ID 25
+            for (uint256 i = 0; i < 12; i++) {
+                allTierIds[220 + i] = 25;
+            }
+            // Add 7 instances of tier ID 26
+            for (uint256 i = 0; i < 7; i++) {
+                allTierIds[232 + i] = 26;
+            }
+            // Add 9 instances of tier ID 28
+            for (uint256 i = 0; i < 9; i++) {
+                allTierIds[239 + i] = 28;
+            }
+            // Add 3 instances of tier ID 29
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[248 + i] = 29;
+            }
+            // Add 13 instances of tier ID 31
+            for (uint256 i = 0; i < 13; i++) {
+                allTierIds[251 + i] = 31;
+            }
+            // Add 5 instances of tier ID 32
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[264 + i] = 32;
+            }
+            // Add 2 instances of tier ID 33
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[269 + i] = 33;
+            }
+            // Add 9 instances of tier ID 35
+            for (uint256 i = 0; i < 9; i++) {
+                allTierIds[271 + i] = 35;
+            }
+            // Add 4 instances of tier ID 37
+            for (uint256 i = 0; i < 4; i++) {
+                allTierIds[280 + i] = 37;
+            }
+            // Add 3 instances of tier ID 38
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[284 + i] = 38;
+            }
+            // Add 4 instances of tier ID 39
+            for (uint256 i = 0; i < 4; i++) {
+                allTierIds[287 + i] = 39;
+            }
+            // Add 3 instances of tier ID 40
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[291 + i] = 40;
+            }
+            // Add 5 instances of tier ID 41
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[294 + i] = 41;
+            }
+            // Add 19 instances of tier ID 42
+            for (uint256 i = 0; i < 19; i++) {
+                allTierIds[299 + i] = 42;
+            }
+            // Add 18 instances of tier ID 43
+            for (uint256 i = 0; i < 18; i++) {
+                allTierIds[318 + i] = 43;
+            }
+            // Add 34 instances of tier ID 44
+            for (uint256 i = 0; i < 34; i++) {
+                allTierIds[336 + i] = 44;
+            }
+            // Add 1 instances of tier ID 46
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[370 + i] = 46;
+            }
+            // Add 14 instances of tier ID 47
+            for (uint256 i = 0; i < 14; i++) {
+                allTierIds[371 + i] = 47;
+            }
+            // Add 6 instances of tier ID 48
+            for (uint256 i = 0; i < 6; i++) {
+                allTierIds[385 + i] = 48;
+            }
+            // Add 145 instances of tier ID 49
+            for (uint256 i = 0; i < 145; i++) {
+                allTierIds[391 + i] = 49;
+            }
             address[] memory transferOwners = _getEthereumTransferOwners();
             MigrationContractEthereum migrationContract = new MigrationContractEthereum(transferOwners);
             console.log("Ethereum migration contract deployed at:", address(migrationContract));
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            // Mint all assets to the contract address
+            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
+            console.log("Minted", mintedIds.length, "tokens to contract");
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
         } else if (chainId == 10) {
+            // Optimism tier IDs
+            uint16[] memory allTierIds = new uint16[](11);
+            
+            // Add 2 instances of tier ID 3
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[0 + i] = 3;
+            }
+            // Add 3 instances of tier ID 4
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[2 + i] = 4;
+            }
+            // Add 1 instances of tier ID 11
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[5 + i] = 11;
+            }
+            // Add 1 instances of tier ID 17
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[6 + i] = 17;
+            }
+            // Add 1 instances of tier ID 19
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[7 + i] = 19;
+            }
+            // Add 1 instances of tier ID 25
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[8 + i] = 25;
+            }
+            // Add 1 instances of tier ID 44
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[9 + i] = 44;
+            }
+            // Add 1 instances of tier ID 47
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[10 + i] = 47;
+            }
             address[] memory transferOwners = _getOptimismTransferOwners();
             MigrationContractOptimism migrationContract = new MigrationContractOptimism(transferOwners);
             console.log("Optimism migration contract deployed at:", address(migrationContract));
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            // Mint all assets to the contract address
+            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
+            console.log("Minted", mintedIds.length, "tokens to contract");
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
         } else if (chainId == 8453) {
+            // Base tier IDs
+            uint16[] memory allTierIds = new uint16[](228);
+            
+            // Add 3 instances of tier ID 2
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[0 + i] = 2;
+            }
+            // Add 10 instances of tier ID 3
+            for (uint256 i = 0; i < 10; i++) {
+                allTierIds[3 + i] = 3;
+            }
+            // Add 94 instances of tier ID 4
+            for (uint256 i = 0; i < 94; i++) {
+                allTierIds[13 + i] = 4;
+            }
+            // Add 5 instances of tier ID 5
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[107 + i] = 5;
+            }
+            // Add 5 instances of tier ID 6
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[112 + i] = 6;
+            }
+            // Add 1 instances of tier ID 7
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[117 + i] = 7;
+            }
+            // Add 11 instances of tier ID 10
+            for (uint256 i = 0; i < 11; i++) {
+                allTierIds[118 + i] = 10;
+            }
+            // Add 3 instances of tier ID 11
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[129 + i] = 11;
+            }
+            // Add 2 instances of tier ID 13
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[132 + i] = 13;
+            }
+            // Add 4 instances of tier ID 14
+            for (uint256 i = 0; i < 4; i++) {
+                allTierIds[134 + i] = 14;
+            }
+            // Add 2 instances of tier ID 15
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[138 + i] = 15;
+            }
+            // Add 1 instances of tier ID 17
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[140 + i] = 17;
+            }
+            // Add 12 instances of tier ID 19
+            for (uint256 i = 0; i < 12; i++) {
+                allTierIds[141 + i] = 19;
+            }
+            // Add 1 instances of tier ID 20
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[153 + i] = 20;
+            }
+            // Add 1 instances of tier ID 24
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[154 + i] = 24;
+            }
+            // Add 9 instances of tier ID 25
+            for (uint256 i = 0; i < 9; i++) {
+                allTierIds[155 + i] = 25;
+            }
+            // Add 1 instances of tier ID 27
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[164 + i] = 27;
+            }
+            // Add 10 instances of tier ID 28
+            for (uint256 i = 0; i < 10; i++) {
+                allTierIds[165 + i] = 28;
+            }
+            // Add 6 instances of tier ID 31
+            for (uint256 i = 0; i < 6; i++) {
+                allTierIds[175 + i] = 31;
+            }
+            // Add 2 instances of tier ID 32
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[181 + i] = 32;
+            }
+            // Add 1 instances of tier ID 33
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[183 + i] = 33;
+            }
+            // Add 1 instances of tier ID 34
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[184 + i] = 34;
+            }
+            // Add 4 instances of tier ID 35
+            for (uint256 i = 0; i < 4; i++) {
+                allTierIds[185 + i] = 35;
+            }
+            // Add 2 instances of tier ID 37
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[189 + i] = 37;
+            }
+            // Add 3 instances of tier ID 38
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[191 + i] = 38;
+            }
+            // Add 2 instances of tier ID 39
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[194 + i] = 39;
+            }
+            // Add 3 instances of tier ID 40
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[196 + i] = 40;
+            }
+            // Add 2 instances of tier ID 41
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[199 + i] = 41;
+            }
+            // Add 2 instances of tier ID 42
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[201 + i] = 42;
+            }
+            // Add 8 instances of tier ID 43
+            for (uint256 i = 0; i < 8; i++) {
+                allTierIds[203 + i] = 43;
+            }
+            // Add 5 instances of tier ID 44
+            for (uint256 i = 0; i < 5; i++) {
+                allTierIds[211 + i] = 44;
+            }
+            // Add 1 instances of tier ID 45
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[216 + i] = 45;
+            }
+            // Add 8 instances of tier ID 47
+            for (uint256 i = 0; i < 8; i++) {
+                allTierIds[217 + i] = 47;
+            }
+            // Add 1 instances of tier ID 48
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[225 + i] = 48;
+            }
+            // Add 2 instances of tier ID 49
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[226 + i] = 49;
+            }
             address[] memory transferOwners = _getBaseTransferOwners();
             MigrationContractBase migrationContract = new MigrationContractBase(transferOwners);
             console.log("Base migration contract deployed at:", address(migrationContract));
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            // Mint all assets to the contract address
+            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
+            console.log("Minted", mintedIds.length, "tokens to contract");
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
         } else if (chainId == 42161) {
+            // Arbitrum tier IDs
+            uint16[] memory allTierIds = new uint16[](205);
+            
+            // Add 2 instances of tier ID 3
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[0 + i] = 3;
+            }
+            // Add 9 instances of tier ID 4
+            for (uint256 i = 0; i < 9; i++) {
+                allTierIds[2 + i] = 4;
+            }
+            // Add 3 instances of tier ID 5
+            for (uint256 i = 0; i < 3; i++) {
+                allTierIds[11 + i] = 5;
+            }
+            // Add 1 instances of tier ID 6
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[14 + i] = 6;
+            }
+            // Add 2 instances of tier ID 10
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[15 + i] = 10;
+            }
+            // Add 1 instances of tier ID 11
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[17 + i] = 11;
+            }
+            // Add 4 instances of tier ID 19
+            for (uint256 i = 0; i < 4; i++) {
+                allTierIds[18 + i] = 19;
+            }
+            // Add 2 instances of tier ID 20
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[22 + i] = 20;
+            }
+            // Add 1 instances of tier ID 25
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[24 + i] = 25;
+            }
+            // Add 2 instances of tier ID 28
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[25 + i] = 28;
+            }
+            // Add 2 instances of tier ID 31
+            for (uint256 i = 0; i < 2; i++) {
+                allTierIds[27 + i] = 31;
+            }
+            // Add 1 instances of tier ID 32
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[29 + i] = 32;
+            }
+            // Add 1 instances of tier ID 38
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[30 + i] = 38;
+            }
+            // Add 1 instances of tier ID 39
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[31 + i] = 39;
+            }
+            // Add 1 instances of tier ID 43
+            for (uint256 i = 0; i < 1; i++) {
+                allTierIds[32 + i] = 43;
+            }
+            // Add 27 instances of tier ID 47
+            for (uint256 i = 0; i < 27; i++) {
+                allTierIds[33 + i] = 47;
+            }
+            // Add 145 instances of tier ID 49
+            for (uint256 i = 0; i < 145; i++) {
+                allTierIds[60 + i] = 49;
+            }
             address[] memory transferOwners = _getArbitrumTransferOwners();
             MigrationContractArbitrum migrationContract = new MigrationContractArbitrum(transferOwners);
             console.log("Arbitrum migration contract deployed at:", address(migrationContract));
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            // Mint all assets to the contract address
+            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
+            console.log("Minted", mintedIds.length, "tokens to contract");
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
         } else {
             revert("Unsupported chain for contract deployment");
         }

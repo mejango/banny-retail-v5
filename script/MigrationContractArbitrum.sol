@@ -6,6 +6,27 @@ import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Banny721TokenUriResolver} from "../src/Banny721TokenUriResolver.sol";
 
 contract MigrationContractArbitrum {
+    // Define struct to hold all UPC minted tokenIds
+    struct MintedIds {
+        uint256[2] upc3;
+        uint256[9] upc4;
+        uint256[3] upc5;
+        uint256[1] upc6;
+        uint256[2] upc10;
+        uint256[1] upc11;
+        uint256[4] upc19;
+        uint256[2] upc20;
+        uint256[1] upc25;
+        uint256[2] upc28;
+        uint256[2] upc31;
+        uint256[1] upc32;
+        uint256[1] upc38;
+        uint256[1] upc39;
+        uint256[1] upc43;
+        uint256[27] upc47;
+        uint256[145] upc49;
+    }
+    
     address[] private transferOwners;
     
     constructor(address[] memory _transferOwners) {
@@ -16,7 +37,8 @@ contract MigrationContractArbitrum {
         address hookAddress,
         address resolverAddress,
         address v4HookAddress,
-        address v4ResolverAddress
+        address v4ResolverAddress,
+        uint256[] memory mintedIds
     ) external {
         
         // Validate addresses
@@ -32,61 +54,10 @@ contract MigrationContractArbitrum {
         
         // Arbitrum migration - 205 items
         
-        // Step 1: Mint all assets to deployer initially
+        // Step 1: Assets are already minted to this contract by the deployer
         
-        // Create array of all tierIds to mint
-        uint16[] memory allTierIds = new uint16[](205);
-        uint16 tierIndex = 0;
         
-        // Helper function to add UPC instances to allTierIds
-        function _addUpcInstances(uint16 upc, uint256 quantity) internal {
-            for (uint256 i = 0; i < quantity; i++) {
-                allTierIds[tierIndex] = upc;
-                tierIndex++;
-            }
-        }
-        
-        _addUpcInstances(3, 2); // Add 2 instances of UPC 3
-        _addUpcInstances(4, 9); // Add 9 instances of UPC 4
-        _addUpcInstances(5, 3); // Add 3 instances of UPC 5
-        _addUpcInstances(6, 1); // Add 1 instances of UPC 6
-        _addUpcInstances(10, 2); // Add 2 instances of UPC 10
-        _addUpcInstances(11, 1); // Add 1 instances of UPC 11
-        _addUpcInstances(19, 4); // Add 4 instances of UPC 19
-        _addUpcInstances(20, 2); // Add 2 instances of UPC 20
-        _addUpcInstances(25, 1); // Add 1 instances of UPC 25
-        _addUpcInstances(28, 2); // Add 2 instances of UPC 28
-        _addUpcInstances(31, 2); // Add 2 instances of UPC 31
-        _addUpcInstances(32, 1); // Add 1 instances of UPC 32
-        _addUpcInstances(38, 1); // Add 1 instances of UPC 38
-        _addUpcInstances(39, 1); // Add 1 instances of UPC 39
-        _addUpcInstances(43, 1); // Add 1 instances of UPC 43
-        _addUpcInstances(47, 27); // Add 27 instances of UPC 47
-        _addUpcInstances(49, 145); // Add 145 instances of UPC 49
-        
-        // Mint all tierIds at once
-        uint256[] memory mintedIds = hook.mintFor(allTierIds, deployer);
-        
-        // Define struct to hold all UPC minted tokenIds
-        struct MintedIds {
-            uint256[2] upc3;
-            uint256[9] upc4;
-            uint256[3] upc5;
-            uint256[1] upc6;
-            uint256[2] upc10;
-            uint256[1] upc11;
-            uint256[4] upc19;
-            uint256[2] upc20;
-            uint256[1] upc25;
-            uint256[2] upc28;
-            uint256[2] upc31;
-            uint256[1] upc32;
-            uint256[1] upc38;
-            uint256[1] upc39;
-            uint256[1] upc43;
-            uint256[27] upc47;
-            uint256[145] upc49;
-        }
+        // Assets are already minted to this contract by the deployer
         
         // Create and populate the struct
         MintedIds memory sortedMintedIds;
