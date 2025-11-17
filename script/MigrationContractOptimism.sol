@@ -28,8 +28,7 @@ contract MigrationContractOptimism {
         address hookAddress,
         address resolverAddress,
         address v4HookAddress,
-        address v4ResolverAddress,
-        uint256[] memory mintedIds
+        address v4ResolverAddress
     ) external {
         
         // Validate addresses
@@ -51,40 +50,50 @@ contract MigrationContractOptimism {
         // Assets are already minted to this contract by the deployer
         
         // Create and populate the struct
+        // Token IDs are generated as: UPC * 1000000000 + unitNumber (where unitNumber starts at 1)
         MintedIds memory sortedMintedIds;
         
         // Populate UPC 3 minted tokenIds (2 items)
         for (uint256 i = 0; i < 2; i++) {
-            sortedMintedIds.upc3[i] = mintedIds[0 + i];
+            sortedMintedIds.upc3[i] = 3 * 1000000000 + (i + 1);
         }
         // Populate UPC 4 minted tokenIds (3 items)
         for (uint256 i = 0; i < 3; i++) {
-            sortedMintedIds.upc4[i] = mintedIds[2 + i];
+            sortedMintedIds.upc4[i] = 4 * 1000000000 + (i + 1);
         }
         // Populate UPC 11 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            sortedMintedIds.upc11[i] = mintedIds[5 + i];
+            sortedMintedIds.upc11[i] = 11 * 1000000000 + (i + 1);
         }
         // Populate UPC 17 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            sortedMintedIds.upc17[i] = mintedIds[6 + i];
+            sortedMintedIds.upc17[i] = 17 * 1000000000 + (i + 1);
         }
         // Populate UPC 19 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            sortedMintedIds.upc19[i] = mintedIds[7 + i];
+            sortedMintedIds.upc19[i] = 19 * 1000000000 + (i + 1);
         }
         // Populate UPC 25 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            sortedMintedIds.upc25[i] = mintedIds[8 + i];
+            sortedMintedIds.upc25[i] = 25 * 1000000000 + (i + 1);
         }
         // Populate UPC 44 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            sortedMintedIds.upc44[i] = mintedIds[9 + i];
+            sortedMintedIds.upc44[i] = 44 * 1000000000 + (i + 1);
         }
         // Populate UPC 47 minted tokenIds (1 items)
         for (uint256 i = 0; i < 1; i++) {
-            sortedMintedIds.upc47[i] = mintedIds[10 + i];
+            sortedMintedIds.upc47[i] = 47 * 1000000000 + (i + 1);
         }
+        // Step 1.5: Approve resolver to transfer outfit and background assets (not banny bodies)
+        // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
+        
+        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc11[0]);
+        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[0]);
+        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[0]);
+        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc44[0]);
+        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc47[0]);
+        
         // Step 2: Process each Banny body and dress them
         
         // Dress Banny 3000000001 (Orange)
@@ -134,15 +143,27 @@ contract MigrationContractOptimism {
         }
         
         // Step 3: Transfer all assets to rightful owners using constructor data
+        // Generate token IDs in the same order as items appear (matching mint order)
+        // Token ID format: UPC * 1000000000 + unitNumber
+        uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
+        
+        generatedTokenIds[0] = 3000000001; // UPC 3, unit 1 (V4: 3000000001)
+        generatedTokenIds[1] = 3000000002; // UPC 3, unit 2 (V4: 3000000002)
+        generatedTokenIds[2] = 4000000001; // UPC 4, unit 1 (V4: 4000000001)
+        generatedTokenIds[3] = 4000000002; // UPC 4, unit 2 (V4: 4000000002)
+        generatedTokenIds[4] = 4000000003; // UPC 4, unit 3 (V4: 4000000003)
+        generatedTokenIds[5] = 17000000001; // UPC 17, unit 1 (V4: 17000000001)
+        
         for (uint256 i = 0; i < transferOwners.length; i++) {
+            uint256 tokenId = generatedTokenIds[i];
             // Verify V4 ownership before transferring V5
-            address v4Owner = v4Hook.ownerOf(mintedIds[i]);
+            address v4Owner = v4Hook.ownerOf(tokenId);
             require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
             
             IERC721(address(hook)).transferFrom(
                 address(this), 
                 transferOwners[i], 
-                mintedIds[i]
+                tokenId
             );
         }
     }

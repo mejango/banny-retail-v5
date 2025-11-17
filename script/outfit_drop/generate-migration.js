@@ -200,6 +200,168 @@ function generateTierIdLoops(tierIds) {
     return loops;
 }
 
+function generatePriceMap(items) {
+    // Create a map of UPC to price from raw.json
+    const upcToPrice = new Map();
+    items.forEach(item => {
+        const upc = item.metadata.upc;
+        const price = item.metadata.price;
+        if (!upcToPrice.has(upc)) {
+            upcToPrice.set(upc, price);
+        }
+    });
+    
+    // Generate a helper function that returns price for a given UPC
+    const sortedUpcs = Array.from(upcToPrice.keys()).sort((a, b) => a - b);
+    let code = '';
+    
+    if (sortedUpcs.length > 0) {
+        sortedUpcs.forEach(upc => {
+            const price = upcToPrice.get(upc);
+            code += `\n        if (upc == ${upc}) return ${price};`;
+        });
+        code += '\n        return 0;';
+    } else {
+        code = '        return 0;';
+    }
+    
+    return code;
+}
+
+function generateTokenIdArray(chainItems, transferData, tierIdQuantities) {
+    // Build allItems array in transfer order (bannys, outfits, backgrounds)
+    const bannys = [];
+    const outfits = [];
+    const backgrounds = [];
+    const usedOutfitIds = new Set();
+    const usedBackgroundIds = new Set();
+    
+    chainItems.forEach(item => {
+        const tokenId = item.metadata.tokenId;
+        const upc = item.metadata.upc;
+        const category = item.metadata.category;
+        const owner = toChecksumAddress(item.owner || (item.wallet ? item.wallet.address : '0x0000000000000000000000000000000000000000'));
+        const productName = item.metadata.productName;
+        
+        if (category === 0) {
+            bannys.push({
+                tokenId,
+                upc,
+                backgroundId: item.metadata.backgroundId || 0,
+                outfitIds: item.metadata.outfitIds || [],
+                owner,
+                productName
+            });
+            if (item.metadata.backgroundId && item.metadata.backgroundId !== 0) {
+                usedBackgroundIds.add(item.metadata.backgroundId);
+            }
+            (item.metadata.outfitIds || []).forEach(outfitId => {
+                usedOutfitIds.add(outfitId);
+            });
+        } else if (category === 1) {
+            backgrounds.push({
+                tokenId,
+                upc,
+                owner,
+                productName
+            });
+        } else {
+            outfits.push({
+                tokenId,
+                upc,
+                category,
+                owner,
+                productName
+            });
+        }
+    });
+    
+    // Build itemsForTransfer in the same order as transferData
+    const allItemsOrdered = [...bannys, ...outfits, ...backgrounds];
+    const itemsForTransfer = [];
+    
+    allItemsOrdered.forEach(item => {
+        // Skip if owner is zero address
+        if (item.owner === '0x0000000000000000000000000000000000000000') {
+            return;
+        }
+        
+        // Skip if this is an outfit being worn
+        if (item.tokenId && usedOutfitIds.has(item.tokenId)) {
+            return;
+        }
+        
+        // Skip if this is a background being used
+        if (item.tokenId && usedBackgroundIds.has(item.tokenId)) {
+            return;
+        }
+        
+        itemsForTransfer.push(item);
+    });
+    
+    // Build tier ID array in mint order (sorted by UPC) to determine unit numbers
+    const tierIdQuantitiesForMinting = new Map();
+    chainItems.forEach(item => {
+        const upc = item.metadata.upc;
+        tierIdQuantitiesForMinting.set(upc, (tierIdQuantitiesForMinting.get(upc) || 0) + 1);
+    });
+    
+    const uniqueUpcs = Array.from(tierIdQuantitiesForMinting.keys()).sort((a, b) => a - b);
+    const tierIdsInMintOrder = [];
+    uniqueUpcs.forEach(upc => {
+        const quantity = tierIdQuantitiesForMinting.get(upc);
+        for (let i = 0; i < quantity; i++) {
+            tierIdsInMintOrder.push(upc);
+        }
+    });
+    
+    // Create a map from V4 tokenId to its position in the mint order
+    // This allows us to determine the unit number for each item
+    const v4TokenIdToMintIndex = new Map();
+    const upcCounters = new Map();
+    
+    tierIdsInMintOrder.forEach((upc, mintIndex) => {
+        const counter = (upcCounters.get(upc) || 0) + 1;
+        upcCounters.set(upc, counter);
+        
+        // Find the V4 token ID that corresponds to this mint position
+        const upcItems = chainItems.filter(item => item.metadata.upc === upc);
+        // Sort by original order in chainItems to maintain consistency
+        const sortedUpcItems = [...upcItems].sort((a, b) => {
+            return chainItems.indexOf(a) - chainItems.indexOf(b);
+        });
+        
+        if (counter <= sortedUpcItems.length) {
+            const item = sortedUpcItems[counter - 1];
+            if (item) {
+                v4TokenIdToMintIndex.set(item.metadata.tokenId, { upc, unitNumber: counter });
+            }
+        }
+    });
+    
+    // Generate token IDs for each item in transfer order
+    // Token IDs are generated as: UPC * 1000000000 + unitNumber
+    let code = '';
+    
+    itemsForTransfer.forEach((item, index) => {
+        const v4TokenId = item.tokenId;
+        const mapping = v4TokenIdToMintIndex.get(v4TokenId);
+        
+        if (mapping) {
+            const { upc, unitNumber } = mapping;
+            const tokenId = upc * 1000000000 + unitNumber;
+            code += `\n        generatedTokenIds[${index}] = ${tokenId}; // UPC ${upc}, unit ${unitNumber} (V4: ${v4TokenId})`;
+        } else {
+            // Fallback: use UPC from item and increment unit counter
+            const upc = item.upc;
+            // This shouldn't happen, but if it does, we'll use a simple counter
+            code += `\n        generatedTokenIds[${index}] = ${upc} * 1000000000 + 1; // Fallback (V4: ${v4TokenId})`;
+        }
+    });
+    
+    return code;
+}
+
 function generateContractVersion(items, tierIds = null) {
     // Calculate tier IDs for each chain if not provided
     if (!tierIds) {
@@ -286,8 +448,15 @@ import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
+import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
+import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
+import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
 
 contract AirdropOutfitsScript is Script, Sphinx {
+    // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
+    // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
+    // Using 150 as a safe batch size to stay well under the limit
+    uint256 private constant BATCH_SIZE = 150;
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
@@ -331,7 +500,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 1);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 1);
     }
     
     function _runOptimism() internal {
@@ -339,7 +509,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 10);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 10);
     }
     
     function _runBase() internal {
@@ -347,7 +518,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 8453);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 8453);
     }
     
     function _runArbitrum() internal {
@@ -355,7 +527,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 42161);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 42161);
     }
     
     function _runEthereumSepolia() internal {
@@ -363,7 +536,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 11155111);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11155111);
     }
     
     function _runOptimismSepolia() internal {
@@ -371,7 +545,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 11155420);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11155420);
     }
     
     function _runBaseSepolia() internal {
@@ -379,7 +554,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 84532);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 84532);
     }
     
     function _runArbitrumSepolia() internal {
@@ -387,18 +563,23 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 421614);
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 421614);
     }
     
-    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, uint256 chainId) internal {
+    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, uint256 chainId) internal {
         // Validate addresses
         require(hookAddress != address(0), "Hook address not set");
         require(resolverAddress != address(0), "Resolver address not set");
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(terminalAddress != address(0), "Terminal address not set");
         
-        // Step 1: Mint all assets to the contract address (deployer has minting permissions)
+        IJBTerminal terminal = IJBTerminal(terminalAddress);
         JB721TiersHook hook = JB721TiersHook(hookAddress);
+        
+        // Get project ID from hook
+        uint256 projectId = hook.PROJECT_ID();
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
@@ -409,11 +590,17 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractEthereum migrationContract = new MigrationContractEthereum(transferOwners);
             console.log("Ethereum migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.optimismTierIds.length});
@@ -422,11 +609,17 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractOptimism migrationContract = new MigrationContractOptimism(transferOwners);
             console.log("Optimism migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else if (chainId == 8453) {
             // Base tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.baseTierIds.length});
@@ -435,11 +628,17 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractBase migrationContract = new MigrationContractBase(transferOwners);
             console.log("Base migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.arbitrumTierIds.length});
@@ -448,16 +647,82 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractArbitrum migrationContract = new MigrationContractArbitrum(transferOwners);
             console.log("Arbitrum migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else {
             revert("Unsupported chain for contract deployment");
         }
         
         vm.stopBroadcast();
+    }
+    
+    function _mintViaPay(
+        IJBTerminal terminal,
+        JB721TiersHook hook,
+        uint256 projectId,
+        uint16[] memory tierIds,
+        address beneficiary
+    ) internal {
+        uint256 totalTierIds = tierIds.length;
+        
+        // Process tier IDs in batches
+        for (uint256 i = 0; i < totalTierIds; i += BATCH_SIZE) {
+            uint256 batchSize = i + BATCH_SIZE > totalTierIds ? totalTierIds - i : BATCH_SIZE;
+            uint16[] memory batchTierIds = new uint16[](batchSize);
+            
+            // Copy tier IDs for this batch
+            for (uint256 j = 0; j < batchSize; j++) {
+                batchTierIds[j] = tierIds[i + j];
+            }
+            
+            // Build the metadata using the tiers to mint and the overspending flag
+            bytes[] memory data = new bytes[](1);
+            data[0] = abi.encode(false, batchTierIds);
+            
+            // Get the hook ID
+            bytes4[] memory ids = new bytes4[](1);
+            ids[0] = JBMetadataResolver.getId("pay", hook.METADATA_ID_TARGET());
+            
+            // Generate the metadata
+            bytes memory hookMetadata = JBMetadataResolver.createMetadata(ids, data);
+            
+            // Calculate the amount needed for this batch
+            uint256 batchAmount = _calculateTotalPriceForTiers(batchTierIds);
+            
+            // Pay the terminal to mint the NFTs for this batch
+            terminal.pay{value: batchAmount}({
+                projectId: projectId,
+                amount: batchAmount,
+                token: JBConstants.NATIVE_TOKEN,
+                beneficiary: beneficiary,
+                minReturnedTokens: 0,
+                memo: "Airdrop mint",
+                metadata: hookMetadata
+            });
+        }
+    }
+    
+    function _getPriceForUPC(uint16 upc) internal pure returns (uint256) {
+        // Price map: UPC -> price in wei
+        // This is generated from raw.json prices
+${generatePriceMap(items)}
+    }
+    
+    function _calculateTotalPriceForTiers(uint16[] memory tierIds) internal pure returns (uint256) {
+        uint256 total = 0;
+        for (uint256 i = 0; i < tierIds.length; i++) {
+            total += _getPriceForUPC(tierIds[i]);
+        }
+        return total;
     }${transferDataFunctions}
 }`;
 }
@@ -610,8 +875,7 @@ contract MigrationContract${chain.name} {
         address hookAddress,
         address resolverAddress,
         address v4HookAddress,
-        address v4ResolverAddress,
-        uint256[] memory mintedIds
+        address v4ResolverAddress
     ) external {
         
         // Validate addresses
@@ -663,20 +927,69 @@ contract MigrationContract${chain.name} {
     
     contract += `
         // Create and populate the struct
+        // Token IDs are generated as: UPC * 1000000000 + unitNumber (where unitNumber starts at 1)
         MintedIds memory sortedMintedIds;
         `;
     
-    let currentIndex = 0;
     uniqueUpcs.forEach(upc => {
         const quantity = tierIdQuantities.get(upc);
         contract += `
         // Populate UPC ${upc} minted tokenIds (${quantity} items)
         for (uint256 i = 0; i < ${quantity}; i++) {
-            sortedMintedIds.upc${upc}[i] = mintedIds[${currentIndex} + i];
+            sortedMintedIds.upc${upc}[i] = ${upc} * 1000000000 + (i + 1);
         }`;
         upcToMintedIds.set(upc, `sortedMintedIds.upc${upc}`);
-        currentIndex += quantity;
     });
+
+    // Collect all outfit and background token IDs that need approval
+    const tokensToApprove = new Set();
+    
+    bannys.forEach(banny => {
+        // Collect outfit IDs
+        banny.outfitIds.forEach(v4OutfitId => {
+            const matchingItem = chainItems.find(item => item.metadata.tokenId === v4OutfitId);
+            if (matchingItem) {
+                const upc = matchingItem.metadata.upc;
+                const upcArrayName = upcToMintedIds.get(upc);
+                const upcItems = chainItems.filter(item => item.metadata.upc === upc);
+                const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === v4OutfitId);
+                if (itemIndex >= 0) {
+                    tokensToApprove.add(`${upcArrayName}[${itemIndex}]`);
+                }
+            }
+        });
+        
+        // Collect background IDs
+        if (banny.backgroundId && banny.backgroundId !== 0) {
+            const backgroundItem = chainItems.find(item => item.metadata.tokenId === banny.backgroundId);
+            if (backgroundItem) {
+                const upc = backgroundItem.metadata.upc;
+                const upcArrayName = upcToMintedIds.get(upc);
+                const upcItems = chainItems.filter(item => item.metadata.upc === upc);
+                const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === banny.backgroundId);
+                if (itemIndex >= 0) {
+                    tokensToApprove.add(`${upcArrayName}[${itemIndex}]`);
+                }
+            }
+        }
+    });
+    
+    // Generate approval code for all outfit and background tokens
+    if (tokensToApprove.size > 0) {
+        contract += `
+        // Step 1.5: Approve resolver to transfer outfit and background assets (not banny bodies)
+        // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
+        `;
+        
+        const tokensArray = Array.from(tokensToApprove);
+        tokensArray.forEach(tokenExpr => {
+            contract += `
+        IERC721(address(hook)).approve(address(resolver), ${tokenExpr});`;
+        });
+        
+        contract += `
+        `;
+    }
 
     contract += `
         // Step 2: Process each Banny body and dress them
@@ -748,15 +1061,21 @@ contract MigrationContract${chain.name} {
 
     contract += `
         // Step 3: Transfer all assets to rightful owners using constructor data
+        // Generate token IDs in the same order as items appear (matching mint order)
+        // Token ID format: UPC * 1000000000 + unitNumber
+        uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
+        ${generateTokenIdArray(chainItems, transferData, tierIdQuantities)}
+        
         for (uint256 i = 0; i < transferOwners.length; i++) {
+            uint256 tokenId = generatedTokenIds[i];
             // Verify V4 ownership before transferring V5
-            address v4Owner = v4Hook.ownerOf(mintedIds[i]);
+            address v4Owner = v4Hook.ownerOf(tokenId);
             require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
             
             IERC721(address(hook)).transferFrom(
                 address(this), 
                 transferOwners[i], 
-                mintedIds[i]
+                tokenId
             );
         }
     }

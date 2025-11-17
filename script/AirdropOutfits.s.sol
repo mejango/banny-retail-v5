@@ -10,8 +10,15 @@ import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
+import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
+import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
+import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
 
 contract AirdropOutfitsScript is Script, Sphinx {
+    // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
+    // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
+    // Using 150 as a safe batch size to stay well under the limit
+    uint256 private constant BATCH_SIZE = 150;
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
@@ -55,7 +62,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 1);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 1);
     }
     
     function _runOptimism() internal {
@@ -63,7 +71,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 10);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 10);
     }
     
     function _runBase() internal {
@@ -71,7 +80,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 8453);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 8453);
     }
     
     function _runArbitrum() internal {
@@ -79,7 +89,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 42161);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 42161);
     }
     
     function _runEthereumSepolia() internal {
@@ -87,7 +98,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 11155111);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11155111);
     }
     
     function _runOptimismSepolia() internal {
@@ -95,7 +107,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 11155420);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11155420);
     }
     
     function _runBaseSepolia() internal {
@@ -103,7 +116,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 84532);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 84532);
     }
     
     function _runArbitrumSepolia() internal {
@@ -111,18 +125,23 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, 421614);
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 421614);
     }
     
-    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, uint256 chainId) internal {
+    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, uint256 chainId) internal {
         // Validate addresses
         require(hookAddress != address(0), "Hook address not set");
         require(resolverAddress != address(0), "Resolver address not set");
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(terminalAddress != address(0), "Terminal address not set");
         
-        // Step 1: Mint all assets to the contract address (deployer has minting permissions)
+        IJBTerminal terminal = IJBTerminal(terminalAddress);
         JB721TiersHook hook = JB721TiersHook(hookAddress);
+        
+        // Get project ID from hook
+        uint256 projectId = hook.PROJECT_ID();
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
@@ -289,11 +308,17 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractEthereum migrationContract = new MigrationContractEthereum(transferOwners);
             console.log("Ethereum migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](11);
@@ -334,11 +359,17 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractOptimism migrationContract = new MigrationContractOptimism(transferOwners);
             console.log("Optimism migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else if (chainId == 8453) {
             // Base tier IDs
             uint16[] memory allTierIds = new uint16[](228);
@@ -487,11 +518,17 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractBase migrationContract = new MigrationContractBase(transferOwners);
             console.log("Base migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](205);
@@ -568,16 +605,126 @@ contract AirdropOutfitsScript is Script, Sphinx {
             MigrationContractArbitrum migrationContract = new MigrationContractArbitrum(transferOwners);
             console.log("Arbitrum migration contract deployed at:", address(migrationContract));
             
-            // Mint all assets to the contract address
-            uint256[] memory mintedIds = hook.mintFor(allTierIds, address(migrationContract));
-            console.log("Minted", mintedIds.length, "tokens to contract");
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, mintedIds);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
         } else {
             revert("Unsupported chain for contract deployment");
         }
         
         vm.stopBroadcast();
+    }
+    
+    function _mintViaPay(
+        IJBTerminal terminal,
+        JB721TiersHook hook,
+        uint256 projectId,
+        uint16[] memory tierIds,
+        address beneficiary
+    ) internal {
+        uint256 totalTierIds = tierIds.length;
+        
+        // Process tier IDs in batches
+        for (uint256 i = 0; i < totalTierIds; i += BATCH_SIZE) {
+            uint256 batchSize = i + BATCH_SIZE > totalTierIds ? totalTierIds - i : BATCH_SIZE;
+            uint16[] memory batchTierIds = new uint16[](batchSize);
+            
+            // Copy tier IDs for this batch
+            for (uint256 j = 0; j < batchSize; j++) {
+                batchTierIds[j] = tierIds[i + j];
+            }
+            
+            // Build the metadata using the tiers to mint and the overspending flag
+            bytes[] memory data = new bytes[](1);
+            data[0] = abi.encode(false, batchTierIds);
+            
+            // Get the hook ID
+            bytes4[] memory ids = new bytes4[](1);
+            ids[0] = JBMetadataResolver.getId("pay", hook.METADATA_ID_TARGET());
+            
+            // Generate the metadata
+            bytes memory hookMetadata = JBMetadataResolver.createMetadata(ids, data);
+            
+            // Calculate the amount needed for this batch
+            uint256 batchAmount = _calculateTotalPriceForTiers(batchTierIds);
+            
+            // Pay the terminal to mint the NFTs for this batch
+            terminal.pay{value: batchAmount}({
+                projectId: projectId,
+                amount: batchAmount,
+                token: JBConstants.NATIVE_TOKEN,
+                beneficiary: beneficiary,
+                minReturnedTokens: 0,
+                memo: "Airdrop mint",
+                metadata: hookMetadata
+            });
+        }
+    }
+    
+    function _getPriceForUPC(uint16 upc) internal pure returns (uint256) {
+        // Price map: UPC -> price in wei
+        // This is generated from raw.json prices
+
+        if (upc == 1) return 1000000000000000000;
+        if (upc == 2) return 100000000000000000;
+        if (upc == 3) return 10000000000000000;
+        if (upc == 4) return 100000000000000;
+        if (upc == 5) return 10000000000000000;
+        if (upc == 6) return 10000000000000000;
+        if (upc == 7) return 10000000000000000;
+        if (upc == 10) return 1000000000000000;
+        if (upc == 11) return 10000000000000000;
+        if (upc == 13) return 10000000000000000;
+        if (upc == 14) return 10000000000000000;
+        if (upc == 15) return 10000000000000000;
+        if (upc == 16) return 100000000000000000;
+        if (upc == 17) return 10000000000000000;
+        if (upc == 18) return 10000000000000000;
+        if (upc == 19) return 1000000000000000;
+        if (upc == 20) return 10000000000000000;
+        if (upc == 21) return 100000000000000000;
+        if (upc == 23) return 10000000000000000;
+        if (upc == 24) return 150000000000000000;
+        if (upc == 25) return 1000000000000000;
+        if (upc == 26) return 10000000000000000;
+        if (upc == 27) return 100000000000000000;
+        if (upc == 28) return 1000000000000000;
+        if (upc == 29) return 100000000000000000;
+        if (upc == 31) return 1000000000000000;
+        if (upc == 32) return 10000000000000000;
+        if (upc == 33) return 15000000000000000;
+        if (upc == 34) return 10000000000000000;
+        if (upc == 35) return 10000000000000000;
+        if (upc == 37) return 10000000000000000;
+        if (upc == 38) return 10000000000000000;
+        if (upc == 39) return 10000000000000000;
+        if (upc == 40) return 10000000000000000;
+        if (upc == 41) return 10000000000000000;
+        if (upc == 42) return 1000000000000000;
+        if (upc == 43) return 1000000000000000;
+        if (upc == 44) return 1787000000000000;
+        if (upc == 45) return 100000000000000000;
+        if (upc == 46) return 100000000000000000;
+        if (upc == 47) return 1000000000000000;
+        if (upc == 48) return 100000000000000000;
+        if (upc == 49) return 1000000000000000;
+        return 0;
+    }
+    
+    function _calculateTotalPriceForTiers(uint16[] memory tierIds) internal pure returns (uint256) {
+        uint256 total = 0;
+        for (uint256 i = 0; i < tierIds.length; i++) {
+            total += _getPriceForUPC(tierIds[i]);
+        }
+        return total;
     }
     function _getEthereumTransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](399);
