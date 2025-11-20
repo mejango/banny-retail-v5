@@ -21,7 +21,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
     uint256 private constant BATCH_SIZE = 150;
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
-        sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
+        // sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
+        sphinxConfig.mainnets = ["arbitrum"];
         sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
     }
 
@@ -671,51 +672,52 @@ contract AirdropOutfitsScript is Script, Sphinx {
     
     function _getPriceForUPC(uint16 upc) internal pure returns (uint256) {
         // Price map: UPC -> price in wei
-        // This is generated from raw.json prices
+        // Prices match Drop1.s.sol tier configurations (tier IDs 5-51 map to UPCs 5-51)
+        // Note: UPCs 1-4, 8-9, 12, 22, 30, 36, 45 are not used in the migration
 
         if (upc == 1) return 1000000000000000000;
         if (upc == 2) return 100000000000000000;
         if (upc == 3) return 10000000000000000;
         if (upc == 4) return 100000000000000;
-        if (upc == 5) return 10000000000000000;
-        if (upc == 6) return 10000000000000000;
-        if (upc == 7) return 10000000000000000;
-        if (upc == 10) return 1000000000000000;
-        if (upc == 11) return 10000000000000000;
-        if (upc == 13) return 10000000000000000;
-        if (upc == 14) return 10000000000000000;
-        if (upc == 15) return 10000000000000000;
-        if (upc == 16) return 100000000000000000;
-        if (upc == 17) return 10000000000000000;
-        if (upc == 18) return 10000000000000000;
-        if (upc == 19) return 1000000000000000;
-        if (upc == 20) return 10000000000000000;
-        if (upc == 21) return 100000000000000000;
-        if (upc == 23) return 10000000000000000;
-        if (upc == 24) return 150000000000000000;
-        if (upc == 25) return 1000000000000000;
-        if (upc == 26) return 10000000000000000;
-        if (upc == 27) return 100000000000000000;
-        if (upc == 28) return 1000000000000000;
-        if (upc == 29) return 100000000000000000;
-        if (upc == 31) return 1000000000000000;
-        if (upc == 32) return 10000000000000000;
-        if (upc == 33) return 15000000000000000;
-        if (upc == 34) return 10000000000000000;
-        if (upc == 35) return 10000000000000000;
-        if (upc == 37) return 10000000000000000;
-        if (upc == 38) return 10000000000000000;
-        if (upc == 39) return 10000000000000000;
-        if (upc == 40) return 10000000000000000;
-        if (upc == 41) return 10000000000000000;
-        if (upc == 42) return 1000000000000000;
-        if (upc == 43) return 1000000000000000;
-        if (upc == 44) return 1787000000000000;
-        if (upc == 45) return 100000000000000000;
-        if (upc == 46) return 100000000000000000;
-        if (upc == 47) return 1000000000000000;
-        if (upc == 48) return 100000000000000000;
-        if (upc == 49) return 1000000000000000;
+        if (upc == 5) return 10000000000000000;  // Work Station
+        if (upc == 6) return 10000000000000000;  // Hay Field
+        if (upc == 7) return 10000000000000000;  // Pew Pew
+        if (upc == 10) return 1000000000000000;  // Astronaut Head
+        if (upc == 11) return 10000000000000000; // Nerd Glasses
+        if (upc == 13) return 10000000000000000; // Cyberpunk Glasses
+        if (upc == 14) return 10000000000000000; // Investor Shades
+        if (upc == 15) return 10000000000000000; // Proff Glasses
+        if (upc == 16) return 100000000000000000; // Gap Teeth
+        if (upc == 17) return 10000000000000000; // Dorthy Shoes
+        if (upc == 18) return 10000000000000000; // Astronaut Boots
+        if (upc == 19) return 1000000000000000;  // Flops
+        if (upc == 20) return 10000000000000000; // Astronaut Suit
+        if (upc == 21) return 100000000000000000; // Sweatsuit
+        if (upc == 23) return 10000000000000000; // Geisha Gown
+        if (upc == 24) return 10000000000000000; // Baggies
+        if (upc == 25) return 150000000000000000; // Jonny Utah Shirt
+        if (upc == 26) return 1000000000000000;  // Doc Coat
+        if (upc == 27) return 100000000000000000; // Goat Jersey
+        if (upc == 28) return 1000000000000000;  // Irie Shirt
+        if (upc == 29) return 100000000000000000; // Punk Jacket
+        if (upc == 31) return 1000000000000000;  // Zucco Tshirt
+        if (upc == 32) return 10000000000000000; // Ice Cube
+        if (upc == 33) return 15000000000000000; // Club Beanie
+        if (upc == 34) return 10000000000000000; // Dorthy Hair
+        if (upc == 35) return 10000000000000000; // Farmer Hat
+        if (upc == 37) return 10000000000000000; // Headphones
+        if (upc == 38) return 10000000000000000; // Natty Dred
+        if (upc == 39) return 10000000000000000; // Peach Hair
+        if (upc == 40) return 10000000000000000; // Proff Hair
+        if (upc == 41) return 10000000000000000; // Catana
+        if (upc == 42) return 1000000000000000;  // Chefs Knife
+        if (upc == 43) return 1000000000000000;  // Cheap Beer
+        if (upc == 44) return 1787000000000000;  // Constitution
+        if (upc == 45) return 100000000000000000; // DJ Deck
+        if (upc == 46) return 100000000000000000; // Gas Can
+        if (upc == 47) return 1000000000000000;  // Lightsaber
+        if (upc == 48) return 100000000000000000; // Potion
+        if (upc == 49) return 1000000000000000;  // Dagger
         return 0;
     }
     

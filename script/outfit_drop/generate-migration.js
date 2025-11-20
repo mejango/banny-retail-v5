@@ -941,53 +941,18 @@ contract MigrationContract${chain.name} {
         upcToMintedIds.set(upc, `sortedMintedIds.upc${upc}`);
     });
 
-    // Collect all outfit and background token IDs that need approval
-    const tokensToApprove = new Set();
+    // Check if there are any outfits or backgrounds that need approval
+    const hasOutfitsOrBackgrounds = bannys.some(banny => 
+        (banny.outfitIds && banny.outfitIds.length > 0) || 
+        (banny.backgroundId && banny.backgroundId !== 0)
+    );
     
-    bannys.forEach(banny => {
-        // Collect outfit IDs
-        banny.outfitIds.forEach(v4OutfitId => {
-            const matchingItem = chainItems.find(item => item.metadata.tokenId === v4OutfitId);
-            if (matchingItem) {
-                const upc = matchingItem.metadata.upc;
-                const upcArrayName = upcToMintedIds.get(upc);
-                const upcItems = chainItems.filter(item => item.metadata.upc === upc);
-                const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === v4OutfitId);
-                if (itemIndex >= 0) {
-                    tokensToApprove.add(`${upcArrayName}[${itemIndex}]`);
-                }
-            }
-        });
-        
-        // Collect background IDs
-        if (banny.backgroundId && banny.backgroundId !== 0) {
-            const backgroundItem = chainItems.find(item => item.metadata.tokenId === banny.backgroundId);
-            if (backgroundItem) {
-                const upc = backgroundItem.metadata.upc;
-                const upcArrayName = upcToMintedIds.get(upc);
-                const upcItems = chainItems.filter(item => item.metadata.upc === upc);
-                const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === banny.backgroundId);
-                if (itemIndex >= 0) {
-                    tokensToApprove.add(`${upcArrayName}[${itemIndex}]`);
-                }
-            }
-        }
-    });
-    
-    // Generate approval code for all outfit and background tokens
-    if (tokensToApprove.size > 0) {
+    // Generate approval code using setApprovalForAll
+    if (hasOutfitsOrBackgrounds) {
         contract += `
-        // Step 1.5: Approve resolver to transfer outfit and background assets (not banny bodies)
+        // Step 1.5: Approve resolver to transfer all tokens owned by this contract
         // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
-        `;
-        
-        const tokensArray = Array.from(tokensToApprove);
-        tokensArray.forEach(tokenExpr => {
-            contract += `
-        IERC721(address(hook)).approve(address(resolver), ${tokenExpr});`;
-        });
-        
-        contract += `
+        IERC721(address(hook)).setApprovalForAll(address(resolver), true);
         `;
     }
 

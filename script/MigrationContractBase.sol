@@ -220,77 +220,9 @@ contract MigrationContractBase {
         for (uint256 i = 0; i < 2; i++) {
             sortedMintedIds.upc49[i] = 49 * 1000000000 + (i + 1);
         }
-        // Step 1.5: Approve resolver to transfer outfit and background assets (not banny bodies)
+        // Step 1.5: Approve resolver to transfer all tokens owned by this contract
         // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
-        
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc37[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc14[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc32[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc6[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[7]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc37[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc45[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc6[3]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[3]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc47[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc31[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc47[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc14[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[6]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc6[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[8]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[6]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc44[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc15[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc40[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[8]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[7]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc5[3]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc15[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc11[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc33[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc44[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc6[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc47[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[3]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[3]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc14[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc31[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc38[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[6]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[5]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[5]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[4]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc27[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc38[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc48[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc13[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc20[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc44[3]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc5[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[7]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[6]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc35[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[5]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[6]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc39[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc41[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc5[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[7]);
+        IERC721(address(hook)).setApprovalForAll(address(resolver), true);
         
         // Step 2: Process each Banny body and dress them
         

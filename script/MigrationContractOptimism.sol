@@ -85,14 +85,9 @@ contract MigrationContractOptimism {
         for (uint256 i = 0; i < 1; i++) {
             sortedMintedIds.upc47[i] = 47 * 1000000000 + (i + 1);
         }
-        // Step 1.5: Approve resolver to transfer outfit and background assets (not banny bodies)
+        // Step 1.5: Approve resolver to transfer all tokens owned by this contract
         // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
-        
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc11[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc44[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc47[0]);
+        IERC721(address(hook)).setApprovalForAll(address(resolver), true);
         
         // Step 2: Process each Banny body and dress them
         

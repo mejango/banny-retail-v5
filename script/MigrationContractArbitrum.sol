@@ -130,27 +130,9 @@ contract MigrationContractArbitrum {
         for (uint256 i = 0; i < 145; i++) {
             sortedMintedIds.upc49[i] = 49 * 1000000000 + (i + 1);
         }
-        // Step 1.5: Approve resolver to transfer outfit and background assets (not banny bodies)
+        // Step 1.5: Approve resolver to transfer all tokens owned by this contract
         // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
-        
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc25[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc38[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc47[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc5[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc11[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc19[2]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc6[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc20[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc31[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc49[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc10[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc20[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc43[0]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc5[1]);
-        IERC721(address(hook)).approve(address(resolver), sortedMintedIds.upc28[1]);
+        IERC721(address(hook)).setApprovalForAll(address(resolver), true);
         
         // Step 2: Process each Banny body and dress them
         
