@@ -501,7 +501,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 1);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            1
+        );
     }
     
     function _runOptimism() internal {
@@ -510,7 +519,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 10);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            10
+        );
     }
     
     function _runBase() internal {
@@ -519,7 +537,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 8453);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            8453
+        );
     }
     
     function _runArbitrum() internal {
@@ -528,7 +555,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 42161);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            42161
+        );
     }
     
     function _runEthereumSepolia() internal {
@@ -537,7 +573,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11155111);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            11155111
+        );
     }
     
     function _runOptimismSepolia() internal {
@@ -546,7 +591,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11155420);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            11155420
+        );
     }
     
     function _runBaseSepolia() internal {
@@ -555,7 +609,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 84532);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            84532
+        );
     }
     
     function _runArbitrumSepolia() internal {
@@ -564,10 +627,19 @@ contract AirdropOutfitsScript is Script, Sphinx {
         address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
         address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
         address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 421614);
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            421614
+        );
     }
     
-    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, uint256 chainId) internal {
+    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, address v4ResolverFallback, uint256 chainId) internal {
         // Validate addresses
         require(hookAddress != address(0), "Hook address not set");
         require(resolverAddress != address(0), "Resolver address not set");
@@ -600,7 +672,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             );
             console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.optimismTierIds.length});
@@ -619,7 +691,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             );
             console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 8453) {
             // Base tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.baseTierIds.length});
@@ -638,7 +710,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             );
             console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.arbitrumTierIds.length});
@@ -657,7 +729,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             );
             console.log("Minted", allTierIds.length, "tokens to contract");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else {
             revert("Unsupported chain for contract deployment");
         }
@@ -875,7 +947,8 @@ contract MigrationContract${chain.name} {
         address hookAddress,
         address resolverAddress,
         address v4HookAddress,
-        address v4ResolverAddress
+        address v4ResolverAddress,
+        address fallbackV4ResolverAddress
     ) external {
         
         // Validate addresses
@@ -883,11 +956,13 @@ contract MigrationContract${chain.name} {
         require(resolverAddress != address(0), "Resolver address not set");
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(fallbackV4ResolverAddress != address(0), "V4 fallback resolver address not set");
         
         JB721TiersHook hook = JB721TiersHook(hookAddress);
         Banny721TokenUriResolver resolver = Banny721TokenUriResolver(resolverAddress);
         IERC721 v4Hook = IERC721(v4HookAddress);
         Banny721TokenUriResolver v4Resolver = Banny721TokenUriResolver(v4ResolverAddress);
+        Banny721TokenUriResolver fallbackV4Resolver = Banny721TokenUriResolver(fallbackV4ResolverAddress);
         
         // ${chain.name} migration - ${chainItems.length} items
         
@@ -967,6 +1042,7 @@ contract MigrationContract${chain.name} {
         // Dress Banny ${banny.tokenId} (${banny.productName})
         {
             uint256[] memory outfitIds = new uint256[](${banny.outfitIds.length});
+            uint256[] memory expectedV4Outfits = new uint256[](${banny.outfitIds.length});
             `;
 
             banny.outfitIds.forEach((v4OutfitId, outfitIndex) => {
@@ -982,19 +1058,20 @@ contract MigrationContract${chain.name} {
                     contract += `            outfitIds[${outfitIndex}] = ${upcArrayName}[${itemIndex}]; // V4: ${v4OutfitId} -> V5: ${upcArrayName}[${itemIndex}]\n`;
                 } else {
                     // Fallback to V4 outfitId if we can't find the mapping
-                    contract += `            outfitIds[${outfitIndex}] = ${v4OutfitId}; // Fallback: using V4 outfitId\n`;
+                    contract += `            outfitIds[${outfitIndex}] = ${v4OutfitId}; // Fallback: using V4 outfitId\n`;                                      
                 }
+                contract += `            expectedV4Outfits[${outfitIndex}] = ${v4OutfitId};\n`;
             });
 
             // Map backgroundId to V5 minted tokenId
             let v5BackgroundId = banny.backgroundId;
             if (banny.backgroundId && banny.backgroundId !== 0) {
-                const backgroundItem = chainItems.find(item => item.metadata.tokenId === banny.backgroundId);
+                const backgroundItem = chainItems.find(item => item.metadata.tokenId === banny.backgroundId);                                                   
                 if (backgroundItem) {
                     const upc = backgroundItem.metadata.upc;
                     const upcArrayName = upcToMintedIds.get(upc);
-                    const upcItems = chainItems.filter(item => item.metadata.upc === upc);
-                    const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === banny.backgroundId);
+                    const upcItems = chainItems.filter(item => item.metadata.upc === upc);                                                                      
+                    const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === banny.backgroundId);                                                 
                     v5BackgroundId = `${upcArrayName}[${itemIndex}]`;
                 }
             }
@@ -1007,16 +1084,16 @@ contract MigrationContract${chain.name} {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, ${banny.tokenId});
-            require(v4BackgroundId == ${banny.backgroundId}, "V4/V5 background mismatch for Banny ${banny.tokenId}");
-            require(v4OutfitIds.length == ${banny.outfitIds.length}, "V4/V5 outfit count mismatch for Banny ${banny.tokenId}");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                ${banny.tokenId},
+                ${banny.backgroundId},
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny ${banny.tokenId}"
+            );
             `;
-
-            banny.outfitIds.forEach((v4OutfitId, outfitIndex) => {
-                contract += `
-            require(v4OutfitIds[${outfitIndex}] == ${v4OutfitId}, "V4/V5 outfit ${outfitIndex} mismatch for Banny ${banny.tokenId}");`;
-            });
 
             contract += `
         }
@@ -1043,6 +1120,41 @@ contract MigrationContract${chain.name} {
                 tokenId
             );
         }
+    }
+
+    function _matchesV4AssetIds(
+        uint256 backgroundId,
+        uint256[] memory outfitIds,
+        uint256 expectedBackgroundId,
+        uint256[] memory expectedOutfitIds
+    ) internal pure returns (bool) {
+        if (backgroundId != expectedBackgroundId) return false;
+        if (outfitIds.length != expectedOutfitIds.length) return false;
+        for (uint256 i = 0; i < outfitIds.length; i++) {
+            if (outfitIds[i] != expectedOutfitIds[i]) return false;
+        }
+        return true;
+    }
+
+    function _expectV4AssetIds(
+        Banny721TokenUriResolver primaryResolver,
+        Banny721TokenUriResolver fallbackResolver,
+        address v4HookAddress,
+        uint256 tokenId,
+        uint256 expectedBackgroundId,
+        uint256[] memory expectedOutfitIds,
+        string memory errorMessage
+    ) internal view {
+        (uint256 backgroundId, uint256[] memory outfitIds) = primaryResolver.assetIdsOf(v4HookAddress, tokenId);
+        if (_matchesV4AssetIds(backgroundId, outfitIds, expectedBackgroundId, expectedOutfitIds)) {
+            return;
+        }
+
+        (backgroundId, outfitIds) = fallbackResolver.assetIdsOf(v4HookAddress, tokenId);
+        require(
+            _matchesV4AssetIds(backgroundId, outfitIds, expectedBackgroundId, expectedOutfitIds),
+            errorMessage
+        );
     }
 }`;
 

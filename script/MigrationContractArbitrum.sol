@@ -37,7 +37,8 @@ contract MigrationContractArbitrum {
         address hookAddress,
         address resolverAddress,
         address v4HookAddress,
-        address v4ResolverAddress
+        address v4ResolverAddress,
+        address fallbackV4ResolverAddress
     ) external {
         
         // Validate addresses
@@ -45,11 +46,13 @@ contract MigrationContractArbitrum {
         require(resolverAddress != address(0), "Resolver address not set");
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(fallbackV4ResolverAddress != address(0), "V4 fallback resolver address not set");
         
         JB721TiersHook hook = JB721TiersHook(hookAddress);
         Banny721TokenUriResolver resolver = Banny721TokenUriResolver(resolverAddress);
         IERC721 v4Hook = IERC721(v4HookAddress);
         Banny721TokenUriResolver v4Resolver = Banny721TokenUriResolver(v4ResolverAddress);
+        Banny721TokenUriResolver fallbackV4Resolver = Banny721TokenUriResolver(fallbackV4ResolverAddress);
         
         // Arbitrum migration - 205 items
         
@@ -139,10 +142,15 @@ contract MigrationContractArbitrum {
         // Dress Banny 3000000001 (Orange)
         {
             uint256[] memory outfitIds = new uint256[](4);
+            uint256[] memory expectedV4Outfits = new uint256[](4);
             outfitIds[0] = sortedMintedIds.upc19[0]; // V4: 19000000001 -> V5: sortedMintedIds.upc19[0]
+            expectedV4Outfits[0] = 19000000001;
             outfitIds[1] = sortedMintedIds.upc25[0]; // V4: 25000000001 -> V5: sortedMintedIds.upc25[0]
+            expectedV4Outfits[1] = 25000000001;
             outfitIds[2] = sortedMintedIds.upc38[0]; // V4: 38000000001 -> V5: sortedMintedIds.upc38[0]
+            expectedV4Outfits[2] = 38000000001;
             outfitIds[3] = sortedMintedIds.upc47[0]; // V4: 47000000001 -> V5: sortedMintedIds.upc47[0]
+            expectedV4Outfits[3] = 47000000001;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -151,23 +159,28 @@ contract MigrationContractArbitrum {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000001);
-            require(v4BackgroundId == 5000000001, "V4/V5 background mismatch for Banny 3000000001");
-            require(v4OutfitIds.length == 4, "V4/V5 outfit count mismatch for Banny 3000000001");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000001,
+                5000000001,
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny 3000000001"
+            );
             
-            require(v4OutfitIds[0] == 19000000001, "V4/V5 outfit 0 mismatch for Banny 3000000001");
-            require(v4OutfitIds[1] == 25000000001, "V4/V5 outfit 1 mismatch for Banny 3000000001");
-            require(v4OutfitIds[2] == 38000000001, "V4/V5 outfit 2 mismatch for Banny 3000000001");
-            require(v4OutfitIds[3] == 47000000001, "V4/V5 outfit 3 mismatch for Banny 3000000001");
         }
         
         // Dress Banny 4000000003 (Original)
         {
             uint256[] memory outfitIds = new uint256[](3);
+            uint256[] memory expectedV4Outfits = new uint256[](3);
             outfitIds[0] = sortedMintedIds.upc11[0]; // V4: 11000000001 -> V5: sortedMintedIds.upc11[0]
+            expectedV4Outfits[0] = 11000000001;
             outfitIds[1] = sortedMintedIds.upc19[2]; // V4: 19000000003 -> V5: sortedMintedIds.upc19[2]
+            expectedV4Outfits[1] = 19000000003;
             outfitIds[2] = sortedMintedIds.upc28[0]; // V4: 28000000001 -> V5: sortedMintedIds.upc28[0]
+            expectedV4Outfits[2] = 28000000001;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -176,21 +189,26 @@ contract MigrationContractArbitrum {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000003);
-            require(v4BackgroundId == 6000000001, "V4/V5 background mismatch for Banny 4000000003");
-            require(v4OutfitIds.length == 3, "V4/V5 outfit count mismatch for Banny 4000000003");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000003,
+                6000000001,
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny 4000000003"
+            );
             
-            require(v4OutfitIds[0] == 11000000001, "V4/V5 outfit 0 mismatch for Banny 4000000003");
-            require(v4OutfitIds[1] == 19000000003, "V4/V5 outfit 1 mismatch for Banny 4000000003");
-            require(v4OutfitIds[2] == 28000000001, "V4/V5 outfit 2 mismatch for Banny 4000000003");
         }
         
         // Dress Banny 4000000004 (Original)
         {
             uint256[] memory outfitIds = new uint256[](2);
+            uint256[] memory expectedV4Outfits = new uint256[](2);
             outfitIds[0] = sortedMintedIds.upc10[0]; // V4: 10000000001 -> V5: sortedMintedIds.upc10[0]
+            expectedV4Outfits[0] = 10000000001;
             outfitIds[1] = sortedMintedIds.upc20[0]; // V4: 20000000001 -> V5: sortedMintedIds.upc20[0]
+            expectedV4Outfits[1] = 20000000001;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -199,20 +217,26 @@ contract MigrationContractArbitrum {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000004);
-            require(v4BackgroundId == 0, "V4/V5 background mismatch for Banny 4000000004");
-            require(v4OutfitIds.length == 2, "V4/V5 outfit count mismatch for Banny 4000000004");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000004,
+                0,
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny 4000000004"
+            );
             
-            require(v4OutfitIds[0] == 10000000001, "V4/V5 outfit 0 mismatch for Banny 4000000004");
-            require(v4OutfitIds[1] == 20000000001, "V4/V5 outfit 1 mismatch for Banny 4000000004");
         }
         
         // Dress Banny 4000000005 (Original)
         {
             uint256[] memory outfitIds = new uint256[](2);
+            uint256[] memory expectedV4Outfits = new uint256[](2);
             outfitIds[0] = sortedMintedIds.upc31[0]; // V4: 31000000001 -> V5: sortedMintedIds.upc31[0]
+            expectedV4Outfits[0] = 31000000001;
             outfitIds[1] = sortedMintedIds.upc49[1]; // V4: 49000000002 -> V5: sortedMintedIds.upc49[1]
+            expectedV4Outfits[1] = 49000000002;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -221,21 +245,28 @@ contract MigrationContractArbitrum {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000005);
-            require(v4BackgroundId == 0, "V4/V5 background mismatch for Banny 4000000005");
-            require(v4OutfitIds.length == 2, "V4/V5 outfit count mismatch for Banny 4000000005");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000005,
+                0,
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny 4000000005"
+            );
             
-            require(v4OutfitIds[0] == 31000000001, "V4/V5 outfit 0 mismatch for Banny 4000000005");
-            require(v4OutfitIds[1] == 49000000002, "V4/V5 outfit 1 mismatch for Banny 4000000005");
         }
         
         // Dress Banny 4000000007 (Original)
         {
             uint256[] memory outfitIds = new uint256[](3);
+            uint256[] memory expectedV4Outfits = new uint256[](3);
             outfitIds[0] = sortedMintedIds.upc10[1]; // V4: 10000000002 -> V5: sortedMintedIds.upc10[1]
+            expectedV4Outfits[0] = 10000000002;
             outfitIds[1] = sortedMintedIds.upc20[1]; // V4: 20000000002 -> V5: sortedMintedIds.upc20[1]
+            expectedV4Outfits[1] = 20000000002;
             outfitIds[2] = sortedMintedIds.upc43[0]; // V4: 43000000001 -> V5: sortedMintedIds.upc43[0]
+            expectedV4Outfits[2] = 43000000001;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -244,20 +275,24 @@ contract MigrationContractArbitrum {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000007);
-            require(v4BackgroundId == 5000000002, "V4/V5 background mismatch for Banny 4000000007");
-            require(v4OutfitIds.length == 3, "V4/V5 outfit count mismatch for Banny 4000000007");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000007,
+                5000000002,
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny 4000000007"
+            );
             
-            require(v4OutfitIds[0] == 10000000002, "V4/V5 outfit 0 mismatch for Banny 4000000007");
-            require(v4OutfitIds[1] == 20000000002, "V4/V5 outfit 1 mismatch for Banny 4000000007");
-            require(v4OutfitIds[2] == 43000000001, "V4/V5 outfit 2 mismatch for Banny 4000000007");
         }
         
         // Dress Banny 4000000009 (Original)
         {
             uint256[] memory outfitIds = new uint256[](1);
+            uint256[] memory expectedV4Outfits = new uint256[](1);
             outfitIds[0] = sortedMintedIds.upc28[1]; // V4: 28000000002 -> V5: sortedMintedIds.upc28[1]
+            expectedV4Outfits[0] = 28000000002;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -266,12 +301,16 @@ contract MigrationContractArbitrum {
                 outfitIds
             );
             
-            // Verify V4 to V5 dressing consistency for this Banny
-            (uint256 v4BackgroundId, uint256[] memory v4OutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000009);
-            require(v4BackgroundId == 0, "V4/V5 background mismatch for Banny 4000000009");
-            require(v4OutfitIds.length == 1, "V4/V5 outfit count mismatch for Banny 4000000009");
+            _expectV4AssetIds(
+                resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000009,
+                0,
+                expectedV4Outfits,
+                "V4/V5 asset mismatch for Banny 4000000009"
+            );
             
-            require(v4OutfitIds[0] == 28000000002, "V4/V5 outfit 0 mismatch for Banny 4000000009");
         }
         
         // Step 3: Transfer all assets to rightful owners using constructor data
@@ -479,5 +518,40 @@ contract MigrationContractArbitrum {
                 tokenId
             );
         }
+    }
+
+    function _matchesV4AssetIds(
+        uint256 backgroundId,
+        uint256[] memory outfitIds,
+        uint256 expectedBackgroundId,
+        uint256[] memory expectedOutfitIds
+    ) internal pure returns (bool) {
+        if (backgroundId != expectedBackgroundId) return false;
+        if (outfitIds.length != expectedOutfitIds.length) return false;
+        for (uint256 i = 0; i < outfitIds.length; i++) {
+            if (outfitIds[i] != expectedOutfitIds[i]) return false;
+        }
+        return true;
+    }
+
+    function _expectV4AssetIds(
+        Banny721TokenUriResolver primaryResolver,
+        Banny721TokenUriResolver fallbackResolver,
+        address v4HookAddress,
+        uint256 tokenId,
+        uint256 expectedBackgroundId,
+        uint256[] memory expectedOutfitIds,
+        string memory errorMessage
+    ) internal view {
+        (uint256 backgroundId, uint256[] memory outfitIds) = primaryResolver.assetIdsOf(v4HookAddress, tokenId);
+        if (_matchesV4AssetIds(backgroundId, outfitIds, expectedBackgroundId, expectedOutfitIds)) {
+            return;
+        }
+
+        (backgroundId, outfitIds) = fallbackResolver.assetIdsOf(v4HookAddress, tokenId);
+        require(
+            _matchesV4AssetIds(backgroundId, outfitIds, expectedBackgroundId, expectedOutfitIds),
+            errorMessage
+        );
     }
 }

@@ -19,19 +19,15 @@ contract AirdropOutfitsScript is Script, Sphinx {
     // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
     // Using 150 as a safe batch size to stay well under the limit
     uint256 private constant BATCH_SIZE = 150;
-
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
-        // sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
-        sphinxConfig.mainnets = ["arbitrum"];
+        sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
         sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
     }
 
     function run() public sphinx {
         uint256 chainId = block.chainid;
-
-        console.log("balance of safe ", safeAddress().balance);
-
+        
         if (chainId == 1) {
             // Ethereum Mainnet
             _runEthereum();
@@ -41,126 +37,189 @@ contract AirdropOutfitsScript is Script, Sphinx {
         } else if (chainId == 8453) {
             // Base
             _runBase();
-        } else if (chainId == 42_161) {
+        } else if (chainId == 42161) {
             // Arbitrum
             _runArbitrum();
-        } else if (chainId == 11_155_111) {
+        } else if (chainId == 11155111) {
             // Ethereum Sepolia
             _runEthereumSepolia();
-        } else if (chainId == 11_155_420) {
+        } else if (chainId == 11155420) {
             // Optimism Sepolia
             _runOptimismSepolia();
-        } else if (chainId == 84_532) {
+        } else if (chainId == 84532) {
             // Base Sepolia
             _runBaseSepolia();
-        } else if (chainId == 421_614) {
+        } else if (chainId == 421614) {
             // Arbitrum Sepolia
             _runArbitrumSepolia();
         } else {
             revert("Unsupported chain");
         }
     }
-
+    
     function _runEthereum() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 1);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            1
+        );
     }
-
+    
     function _runOptimism() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 10);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            10
+        );
     }
-
+    
     function _runBase() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 8453);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            8453
+        );
     }
-
+    
     function _runArbitrum() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 42_161);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            42161
+        );
     }
-
+    
     function _runEthereumSepolia() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11_155_111);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            11155111
+        );
     }
-
+    
     function _runOptimismSepolia() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 11_155_420);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            11155420
+        );
     }
-
+    
     function _runBaseSepolia() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 84_532);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            84532
+        );
     }
-
+    
     function _runArbitrumSepolia() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
         address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
         address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        _processMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, terminalAddress, 421_614);
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            421614
+        );
     }
-
-    function _processMigration(
-        address hookAddress,
-        address resolverAddress,
-        address v4HookAddress,
-        address v4ResolverAddress,
-        address terminalAddress,
-        uint256 chainId
-    )
-        internal
-    {
+    
+    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, address v4ResolverFallback, uint256 chainId) internal {
         // Validate addresses
         require(hookAddress != address(0), "Hook address not set");
         require(resolverAddress != address(0), "Resolver address not set");
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
         require(terminalAddress != address(0), "Terminal address not set");
-
+        
         IJBTerminal terminal = IJBTerminal(terminalAddress);
         JB721TiersHook hook = JB721TiersHook(hookAddress);
-
+        
         // Get project ID from hook
         uint256 projectId = hook.PROJECT_ID();
-
+        
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
             // Ethereum tier IDs
             uint16[] memory allTierIds = new uint16[](536);
-
+            
             // Add 1 instances of tier ID 1
             for (uint256 i = 0; i < 1; i++) {
                 allTierIds[0 + i] = 1;
@@ -320,16 +379,22 @@ contract AirdropOutfitsScript is Script, Sphinx {
             address[] memory transferOwners = _getEthereumTransferOwners();
             MigrationContractEthereum migrationContract = new MigrationContractEthereum(transferOwners);
             console.log("Ethereum migration contract deployed at:", address(migrationContract));
-
+            
             // Mint all assets to the contract address via pay()
-            _mintViaPay(terminal, hook, projectId, allTierIds, address(migrationContract));
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
             console.log("Minted", allTierIds.length, "tokens to contract");
-
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](11);
-
+            
             // Add 2 instances of tier ID 3
             for (uint256 i = 0; i < 2; i++) {
                 allTierIds[0 + i] = 3;
@@ -365,16 +430,22 @@ contract AirdropOutfitsScript is Script, Sphinx {
             address[] memory transferOwners = _getOptimismTransferOwners();
             MigrationContractOptimism migrationContract = new MigrationContractOptimism(transferOwners);
             console.log("Optimism migration contract deployed at:", address(migrationContract));
-
+            
             // Mint all assets to the contract address via pay()
-            _mintViaPay(terminal, hook, projectId, allTierIds, address(migrationContract));
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
             console.log("Minted", allTierIds.length, "tokens to contract");
-
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 8453) {
             // Base tier IDs
             uint16[] memory allTierIds = new uint16[](228);
-
+            
             // Add 3 instances of tier ID 2
             for (uint256 i = 0; i < 3; i++) {
                 allTierIds[0 + i] = 2;
@@ -518,16 +589,22 @@ contract AirdropOutfitsScript is Script, Sphinx {
             address[] memory transferOwners = _getBaseTransferOwners();
             MigrationContractBase migrationContract = new MigrationContractBase(transferOwners);
             console.log("Base migration contract deployed at:", address(migrationContract));
-
+            
             // Mint all assets to the contract address via pay()
-            _mintViaPay(terminal, hook, projectId, allTierIds, address(migrationContract));
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
             console.log("Minted", allTierIds.length, "tokens to contract");
-
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
-        } else if (chainId == 42_161) {
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+        } else if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](205);
-
+            
             // Add 2 instances of tier ID 3
             for (uint256 i = 0; i < 2; i++) {
                 allTierIds[0 + i] = 3;
@@ -599,52 +676,58 @@ contract AirdropOutfitsScript is Script, Sphinx {
             address[] memory transferOwners = _getArbitrumTransferOwners();
             MigrationContractArbitrum migrationContract = new MigrationContractArbitrum(transferOwners);
             console.log("Arbitrum migration contract deployed at:", address(migrationContract));
-
+            
             // Mint all assets to the contract address via pay()
-            _mintViaPay(terminal, hook, projectId, allTierIds, address(migrationContract));
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
             console.log("Minted", allTierIds.length, "tokens to contract");
-
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress);
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else {
             revert("Unsupported chain for contract deployment");
         }
+        
+        vm.stopBroadcast();
     }
-
+    
     function _mintViaPay(
         IJBTerminal terminal,
         JB721TiersHook hook,
         uint256 projectId,
         uint16[] memory tierIds,
         address beneficiary
-    )
-        internal
-    {
+    ) internal {
         uint256 totalTierIds = tierIds.length;
-
+        
         // Process tier IDs in batches
         for (uint256 i = 0; i < totalTierIds; i += BATCH_SIZE) {
             uint256 batchSize = i + BATCH_SIZE > totalTierIds ? totalTierIds - i : BATCH_SIZE;
             uint16[] memory batchTierIds = new uint16[](batchSize);
-
+            
             // Copy tier IDs for this batch
             for (uint256 j = 0; j < batchSize; j++) {
                 batchTierIds[j] = tierIds[i + j];
             }
-
+            
             // Build the metadata using the tiers to mint and the overspending flag
             bytes[] memory data = new bytes[](1);
             data[0] = abi.encode(false, batchTierIds);
-
+            
             // Get the hook ID
             bytes4[] memory ids = new bytes4[](1);
             ids[0] = JBMetadataResolver.getId("pay", hook.METADATA_ID_TARGET());
-
+            
             // Generate the metadata
             bytes memory hookMetadata = JBMetadataResolver.createMetadata(ids, data);
-
+            
             // Calculate the amount needed for this batch
             uint256 batchAmount = _calculateTotalPriceForTiers(batchTierIds);
-
+            
             // Pay the terminal to mint the NFTs for this batch
             terminal.pay{value: batchAmount}({
                 projectId: projectId,
@@ -657,59 +740,57 @@ contract AirdropOutfitsScript is Script, Sphinx {
             });
         }
     }
-
+    
     function _getPriceForUPC(uint16 upc) internal pure returns (uint256) {
         // Price map: UPC -> price in wei
-        // Prices match Drop1.s.sol tier configurations (tier IDs 5-51 map to UPCs 5-51)
-        // UPCs 1-4 are Banny bodies (Alien, Pink, Orange, OG) - not in Drop1.s.sol
-        // Note: UPCs 8-9, 12, 22, 30, 36, 50-51 are not used in the migration
+        // This is generated from raw.json prices
 
-        if (upc == 1) return 1_000_000_000_000_000_000;
-        if (upc == 2) return 100_000_000_000_000_000;
-        if (upc == 3) return 10_000_000_000_000_000;
-        if (upc == 4) return 100_000_000_000_000;
-        if (upc == 5) return 10_000_000_000_000_000; // Work Station
-        if (upc == 6) return 10_000_000_000_000_000; // Hay Field
-        if (upc == 7) return 10_000_000_000_000_000; // Pew Pew
-        if (upc == 10) return 1_000_000_000_000_000; // Astronaut Head
-        if (upc == 11) return 10_000_000_000_000_000; // Nerd Glasses
-        if (upc == 13) return 10_000_000_000_000_000; // Cyberpunk Glasses
-        if (upc == 14) return 10_000_000_000_000_000; // Investor Shades
-        if (upc == 15) return 10_000_000_000_000_000; // Proff Glasses
-        if (upc == 16) return 100_000_000_000_000_000; // Gap Teeth
-        if (upc == 17) return 10_000_000_000_000_000; // Dorthy Shoes
-        if (upc == 18) return 10_000_000_000_000_000; // Astronaut Boots
-        if (upc == 19) return 1_000_000_000_000_000; // Flops
-        if (upc == 20) return 10_000_000_000_000_000; // Astronaut Suit
-        if (upc == 21) return 100_000_000_000_000_000; // Sweatsuit
-        if (upc == 23) return 10_000_000_000_000_000; // Geisha Gown
-        if (upc == 24) return 150_000_000_000_000_000; // Baggies
-        if (upc == 25) return 1_000_000_000_000_000; // Jonny Utah Shirt
-        if (upc == 26) return 10_000_000_000_000_000; // Doc Coat
-        if (upc == 27) return 100_000_000_000_000_000; // Goat Jersey
-        if (upc == 28) return 1_000_000_000_000_000; // Irie Shirt
-        if (upc == 29) return 100_000_000_000_000_000; // Punk Jacket
-        if (upc == 31) return 1_000_000_000_000_000; // Zucco Tshirt
-        if (upc == 32) return 10_000_000_000_000_000; // Ice Cube
-        if (upc == 33) return 15_000_000_000_000_000; // Club Beanie
-        if (upc == 34) return 10_000_000_000_000_000; // Dorthy Hair
-        if (upc == 35) return 10_000_000_000_000_000; // Farmer Hat
-        if (upc == 37) return 10_000_000_000_000_000; // Headphones
-        if (upc == 38) return 10_000_000_000_000_000; // Natty Dred
-        if (upc == 39) return 10_000_000_000_000_000; // Peach Hair
-        if (upc == 40) return 10_000_000_000_000_000; // Proff Hair
-        if (upc == 41) return 10_000_000_000_000_000; // Catana
-        if (upc == 42) return 1_000_000_000_000_000; // Chefs Knife
-        if (upc == 43) return 1_000_000_000_000_000; // Cheap Beer
-        if (upc == 44) return 1_787_000_000_000_000; // Constitution
-        if (upc == 45) return 100_000_000_000_000_000; // DJ Deck
-        if (upc == 46) return 100_000_000_000_000_000; // Gas Can
-        if (upc == 47) return 1_000_000_000_000_000; // Lightsaber
-        if (upc == 48) return 100_000_000_000_000_000; // Potion
-        if (upc == 49) return 1_000_000_000_000_000; // Dagger
+        if (upc == 1) return 1000000000000000000;
+        if (upc == 2) return 100000000000000000;
+        if (upc == 3) return 10000000000000000;
+        if (upc == 4) return 100000000000000;
+        if (upc == 5) return 10000000000000000;
+        if (upc == 6) return 10000000000000000;
+        if (upc == 7) return 10000000000000000;
+        if (upc == 10) return 1000000000000000;
+        if (upc == 11) return 10000000000000000;
+        if (upc == 13) return 10000000000000000;
+        if (upc == 14) return 10000000000000000;
+        if (upc == 15) return 10000000000000000;
+        if (upc == 16) return 100000000000000000;
+        if (upc == 17) return 10000000000000000;
+        if (upc == 18) return 10000000000000000;
+        if (upc == 19) return 1000000000000000;
+        if (upc == 20) return 10000000000000000;
+        if (upc == 21) return 100000000000000000;
+        if (upc == 23) return 10000000000000000;
+        if (upc == 24) return 150000000000000000;
+        if (upc == 25) return 1000000000000000;
+        if (upc == 26) return 10000000000000000;
+        if (upc == 27) return 100000000000000000;
+        if (upc == 28) return 1000000000000000;
+        if (upc == 29) return 100000000000000000;
+        if (upc == 31) return 1000000000000000;
+        if (upc == 32) return 10000000000000000;
+        if (upc == 33) return 15000000000000000;
+        if (upc == 34) return 10000000000000000;
+        if (upc == 35) return 10000000000000000;
+        if (upc == 37) return 10000000000000000;
+        if (upc == 38) return 10000000000000000;
+        if (upc == 39) return 10000000000000000;
+        if (upc == 40) return 10000000000000000;
+        if (upc == 41) return 10000000000000000;
+        if (upc == 42) return 1000000000000000;
+        if (upc == 43) return 1000000000000000;
+        if (upc == 44) return 1787000000000000;
+        if (upc == 45) return 100000000000000000;
+        if (upc == 46) return 100000000000000000;
+        if (upc == 47) return 1000000000000000;
+        if (upc == 48) return 100000000000000000;
+        if (upc == 49) return 1000000000000000;
         return 0;
     }
-
+    
     function _calculateTotalPriceForTiers(uint16[] memory tierIds) internal pure returns (uint256) {
         uint256 total = 0;
         for (uint256 i = 0; i < tierIds.length; i++) {
@@ -717,10 +798,9 @@ contract AirdropOutfitsScript is Script, Sphinx {
         }
         return total;
     }
-
     function _getEthereumTransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](399);
-
+        
         transferOwners[0] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
         transferOwners[1] = 0xA2Fa6144168751D116336B58C5288feaF8bb12C1;
         transferOwners[2] = 0x63A2368F4B509438ca90186cb1C15156713D5834;
@@ -1122,10 +1202,10 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[398] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
         return transferOwners;
     }
-
+    
     function _getOptimismTransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](6);
-
+        
         transferOwners[0] = 0x25910143C255828F623786f46fe9A8941B7983bB;
         transferOwners[1] = 0x292ff025168D2B51f0Ef49f164D281c36761BA2b;
         transferOwners[2] = 0xA7a5A2745f10D5C23d75a6fd228A408cEDe1CAE5;
@@ -1134,10 +1214,10 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[5] = 0xA2Fa6144168751D116336B58C5288feaF8bb12C1;
         return transferOwners;
     }
-
+    
     function _getBaseTransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](160);
-
+        
         transferOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[1] = 0x565B93a15d38aCD79c120b15432D21E21eD274d6;
         transferOwners[2] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
@@ -1300,10 +1380,10 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[159] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
         return transferOwners;
     }
-
+    
     function _getArbitrumTransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](187);
-
+        
         transferOwners[0] = 0x2aa64E6d80390F5C017F0313cB908051BE2FD35e;
         transferOwners[1] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[2] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
@@ -1493,4 +1573,5 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[186] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         return transferOwners;
     }
+    
 }
