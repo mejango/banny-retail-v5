@@ -663,7 +663,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
     function _getPriceForUPC(uint16 upc) internal pure returns (uint256) {
         // Price map: UPC -> price in wei
         // Prices match Drop1.s.sol tier configurations (tier IDs 5-51 map to UPCs 5-51)
-        // Note: UPCs 1-4, 8-9, 12, 22, 30, 36, 45 are not used in the migration
+        // UPCs 1-4 are Banny bodies (Alien, Pink, Orange, OG) - not in Drop1.s.sol
+        // Note: UPCs 8-9, 12, 22, 30, 36, 50-51 are not used in the migration
 
         if (upc == 1) return 1_000_000_000_000_000_000;
         if (upc == 2) return 100_000_000_000_000_000;
@@ -684,9 +685,9 @@ contract AirdropOutfitsScript is Script, Sphinx {
         if (upc == 20) return 10_000_000_000_000_000; // Astronaut Suit
         if (upc == 21) return 100_000_000_000_000_000; // Sweatsuit
         if (upc == 23) return 10_000_000_000_000_000; // Geisha Gown
-        if (upc == 24) return 10_000_000_000_000_000; // Baggies
-        if (upc == 25) return 150_000_000_000_000_000; // Jonny Utah Shirt
-        if (upc == 26) return 1_000_000_000_000_000; // Doc Coat
+        if (upc == 24) return 150_000_000_000_000_000; // Baggies
+        if (upc == 25) return 1_000_000_000_000_000; // Jonny Utah Shirt
+        if (upc == 26) return 10_000_000_000_000_000; // Doc Coat
         if (upc == 27) return 100_000_000_000_000_000; // Goat Jersey
         if (upc == 28) return 1_000_000_000_000_000; // Irie Shirt
         if (upc == 29) return 100_000_000_000_000_000; // Punk Jacket
