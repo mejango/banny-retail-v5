@@ -29,31 +29,31 @@ function toChecksumAddress(address) {
 function generateMigrationScript() {
     // Generate contract-based migration script and chain-specific contracts from raw.json
     generateScriptForFile('raw.json', 'AirdropOutfits.s.sol');
-    
+
     // Generate chain-specific migration contracts
     generateChainSpecificContracts('raw.json');
 }
 
 function generateScriptForFile(inputFile, outputFile) {
     console.log(`\n=== Generating ${outputFile} from ${inputFile} ===`);
-    
+
     // Load the raw data
     const rawDataPath = path.join(__dirname, inputFile);
     const rawData = JSON.parse(fs.readFileSync(rawDataPath, 'utf8'));
-    
+
     const items = rawData.data.nfts.items;
-    
+
     // Calculate tier IDs for each chain
     const ethereumItems = items.filter(item => item.chainId === 1);
     const optimismItems = items.filter(item => item.chainId === 10);
     const baseItems = items.filter(item => item.chainId === 8453);
     const arbitrumItems = items.filter(item => item.chainId === 42161);
-    
+
     const ethereumTierIds = [];
     const optimismTierIds = [];
     const baseTierIds = [];
     const arbitrumTierIds = [];
-    
+
     // Build tier ID arrays for each chain
     [ethereumItems, optimismItems, baseItems, arbitrumItems].forEach((chainItems, index) => {
         const tierIdQuantities = new Map();
@@ -61,7 +61,7 @@ function generateScriptForFile(inputFile, outputFile) {
             const upc = item.metadata.upc;
             tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
         });
-        
+
         const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
         const tierIds = [];
         uniqueUpcs.forEach(upc => {
@@ -70,20 +70,20 @@ function generateScriptForFile(inputFile, outputFile) {
                 tierIds.push(upc);
             }
         });
-        
+
         if (index === 0) ethereumTierIds.push(...tierIds);
         else if (index === 1) optimismTierIds.push(...tierIds);
         else if (index === 2) baseTierIds.push(...tierIds);
         else if (index === 3) arbitrumTierIds.push(...tierIds);
     });
-    
+
     // Generate the contract-based migration script
     const script = generateContractVersion(items, { ethereumTierIds, optimismTierIds, baseTierIds, arbitrumTierIds });
-    
+
     // Write the script to file
     const outputPath = path.join(__dirname, '..', outputFile);
     fs.writeFileSync(outputPath, script);
-    
+
     console.log(`Generated migration script with chain-specific filtering`);
     console.log(`Script written to: ${outputPath}`);
 }
@@ -94,14 +94,14 @@ function buildTransferDataForChain(chainItems) {
     const bannys = [];
     const outfits = [];
     const backgrounds = [];
-    
+
     chainItems.forEach(item => {
         const tokenId = item.metadata.tokenId;
         const upc = item.metadata.upc;
         const category = item.metadata.category;
         const owner = toChecksumAddress(item.owner || (item.wallet ? item.wallet.address : '0x0000000000000000000000000000000000000000'));
         const productName = item.metadata.productName;
-        
+
         if (category === 0) {
             // Banny body
             bannys.push({
@@ -135,7 +135,7 @@ function buildTransferDataForChain(chainItems) {
     // Collect all outfitIds and backgroundIds that are being used
     const usedOutfitIds = new Set();
     const usedBackgroundIds = new Set();
-    
+
     bannys.forEach(banny => {
         if (banny.backgroundId && banny.backgroundId !== 0) {
             usedBackgroundIds.add(banny.backgroundId);
@@ -148,28 +148,28 @@ function buildTransferDataForChain(chainItems) {
     // Build transfer data array
     const allItems = [...bannys, ...outfits, ...backgrounds];
     const transferData = [];
-    
+
     allItems.forEach((item, index) => {
         // Skip if owner is zero address
         if (item.owner === '0x0000000000000000000000000000000000000000') {
             return;
         }
-        
+
         // Skip if this is an outfit being worn
         if (item.tokenId && usedOutfitIds.has(item.tokenId)) {
             return;
         }
-        
+
         // Skip if this is a background being used
         if (item.tokenId && usedBackgroundIds.has(item.tokenId)) {
             return;
         }
-        
+
         transferData.push({
             owner: item.owner
         });
     });
-    
+
     return transferData;
 }
 
@@ -177,7 +177,7 @@ function generateTierIdLoops(tierIds) {
     // Group consecutive tier IDs to create efficient for loops
     const groups = [];
     let currentGroup = null;
-    
+
     tierIds.forEach((tierId, index) => {
         if (currentGroup && currentGroup.tierId === tierId) {
             currentGroup.count++;
@@ -187,7 +187,7 @@ function generateTierIdLoops(tierIds) {
         }
     });
     if (currentGroup) groups.push(currentGroup);
-    
+
     let loops = '';
     groups.forEach(group => {
         loops += `
@@ -196,7 +196,7 @@ function generateTierIdLoops(tierIds) {
                 allTierIds[${group.startIndex} + i] = ${group.tierId};
             }`;
     });
-    
+
     return loops;
 }
 
@@ -210,11 +210,11 @@ function generatePriceMap(items) {
             upcToPrice.set(upc, price);
         }
     });
-    
+
     // Generate a helper function that returns price for a given UPC
     const sortedUpcs = Array.from(upcToPrice.keys()).sort((a, b) => a - b);
     let code = '';
-    
+
     if (sortedUpcs.length > 0) {
         sortedUpcs.forEach(upc => {
             const price = upcToPrice.get(upc);
@@ -224,7 +224,7 @@ function generatePriceMap(items) {
     } else {
         code = '        return 0;';
     }
-    
+
     return code;
 }
 
@@ -235,14 +235,14 @@ function generateTokenIdArray(chainItems, transferData, tierIdQuantities) {
     const backgrounds = [];
     const usedOutfitIds = new Set();
     const usedBackgroundIds = new Set();
-    
+
     chainItems.forEach(item => {
         const tokenId = item.metadata.tokenId;
         const upc = item.metadata.upc;
         const category = item.metadata.category;
         const owner = toChecksumAddress(item.owner || (item.wallet ? item.wallet.address : '0x0000000000000000000000000000000000000000'));
         const productName = item.metadata.productName;
-        
+
         if (category === 0) {
             bannys.push({
                 tokenId,
@@ -275,37 +275,37 @@ function generateTokenIdArray(chainItems, transferData, tierIdQuantities) {
             });
         }
     });
-    
+
     // Build itemsForTransfer in the same order as transferData
     const allItemsOrdered = [...bannys, ...outfits, ...backgrounds];
     const itemsForTransfer = [];
-    
+
     allItemsOrdered.forEach(item => {
         // Skip if owner is zero address
         if (item.owner === '0x0000000000000000000000000000000000000000') {
             return;
         }
-        
+
         // Skip if this is an outfit being worn
         if (item.tokenId && usedOutfitIds.has(item.tokenId)) {
             return;
         }
-        
+
         // Skip if this is a background being used
         if (item.tokenId && usedBackgroundIds.has(item.tokenId)) {
             return;
         }
-        
+
         itemsForTransfer.push(item);
     });
-    
+
     // Build tier ID array in mint order (sorted by UPC) to determine unit numbers
     const tierIdQuantitiesForMinting = new Map();
     chainItems.forEach(item => {
         const upc = item.metadata.upc;
         tierIdQuantitiesForMinting.set(upc, (tierIdQuantitiesForMinting.get(upc) || 0) + 1);
     });
-    
+
     const uniqueUpcs = Array.from(tierIdQuantitiesForMinting.keys()).sort((a, b) => a - b);
     const tierIdsInMintOrder = [];
     uniqueUpcs.forEach(upc => {
@@ -314,23 +314,23 @@ function generateTokenIdArray(chainItems, transferData, tierIdQuantities) {
             tierIdsInMintOrder.push(upc);
         }
     });
-    
+
     // Create a map from V4 tokenId to its position in the mint order
     // This allows us to determine the unit number for each item
     const v4TokenIdToMintIndex = new Map();
     const upcCounters = new Map();
-    
+
     tierIdsInMintOrder.forEach((upc, mintIndex) => {
         const counter = (upcCounters.get(upc) || 0) + 1;
         upcCounters.set(upc, counter);
-        
+
         // Find the V4 token ID that corresponds to this mint position
         const upcItems = chainItems.filter(item => item.metadata.upc === upc);
         // Sort by original order in chainItems to maintain consistency
         const sortedUpcItems = [...upcItems].sort((a, b) => {
             return chainItems.indexOf(a) - chainItems.indexOf(b);
         });
-        
+
         if (counter <= sortedUpcItems.length) {
             const item = sortedUpcItems[counter - 1];
             if (item) {
@@ -338,15 +338,15 @@ function generateTokenIdArray(chainItems, transferData, tierIdQuantities) {
             }
         }
     });
-    
+
     // Generate token IDs for each item in transfer order
     // Token IDs are generated as: UPC * 1000000000 + unitNumber
     let code = '';
-    
+
     itemsForTransfer.forEach((item, index) => {
         const v4TokenId = item.tokenId;
         const mapping = v4TokenIdToMintIndex.get(v4TokenId);
-        
+
         if (mapping) {
             const { upc, unitNumber } = mapping;
             const tokenId = upc * 1000000000 + unitNumber;
@@ -358,7 +358,7 @@ function generateTokenIdArray(chainItems, transferData, tierIdQuantities) {
             code += `\n        generatedTokenIds[${index}] = ${upc} * 1000000000 + 1; // Fallback (V4: ${v4TokenId})`;
         }
     });
-    
+
     return code;
 }
 
@@ -369,12 +369,12 @@ function generateContractVersion(items, tierIds = null) {
         const optimismItems = items.filter(item => item.chainId === 10);
         const baseItems = items.filter(item => item.chainId === 8453);
         const arbitrumItems = items.filter(item => item.chainId === 42161);
-        
+
         const ethereumTierIds = [];
         const optimismTierIds = [];
         const baseTierIds = [];
         const arbitrumTierIds = [];
-        
+
         // Build tier ID arrays for each chain
         [ethereumItems, optimismItems, baseItems, arbitrumItems].forEach((chainItems, index) => {
             const tierIdQuantities = new Map();
@@ -382,7 +382,7 @@ function generateContractVersion(items, tierIds = null) {
                 const upc = item.metadata.upc;
                 tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
             });
-            
+
             const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
             const tierIds = [];
             uniqueUpcs.forEach(upc => {
@@ -391,16 +391,16 @@ function generateContractVersion(items, tierIds = null) {
                     tierIds.push(upc);
                 }
             });
-            
+
             if (index === 0) ethereumTierIds.push(...tierIds);
             else if (index === 1) optimismTierIds.push(...tierIds);
             else if (index === 2) baseTierIds.push(...tierIds);
             else if (index === 3) arbitrumTierIds.push(...tierIds);
         });
-        
+
         tierIds = { ethereumTierIds, optimismTierIds, baseTierIds, arbitrumTierIds };
     }
-    
+
     // Process transfer data for each chain
     const chains = [
         { id: 1, name: 'Ethereum' },
@@ -408,32 +408,32 @@ function generateContractVersion(items, tierIds = null) {
         { id: 8453, name: 'Base' },
         { id: 42161, name: 'Arbitrum' }
     ];
-    
+
     let transferDataFunctions = '';
-    
+
     chains.forEach(chain => {
         const chainItems = items.filter(item => item.chainId === chain.id);
         if (chainItems.length === 0) return;
-        
+
         // Build transfer data for this chain
         const transferData = buildTransferDataForChain(chainItems);
-        
+
         transferDataFunctions += `
     function _get${chain.name}TransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](${transferData.length});
         `;
-        
+
         transferData.forEach((data, index) => {
             transferDataFunctions += `
         transferOwners[${index}] = ${data.owner};`;
         });
-        
+
         transferDataFunctions += `
         return transferOwners;
     }
     `;
     });
-    
+
     // Generate a contract-based version that deploys a migration contract
     // and makes a single call to it
     return `// SPDX-License-Identifier: MIT
@@ -463,7 +463,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
     }
 
-    function run() public {
+    function run() public sphinx {
         uint256 chainId = block.chainid;
         
         if (chainId == 1) {
@@ -729,13 +729,13 @@ ${generatePriceMap(items)}
 
 function generateChainSpecificContracts(inputFile) {
     console.log(`\n=== Generating chain-specific migration contracts from ${inputFile} ===`);
-    
+
     // Load the raw data
     const rawDataPath = path.join(__dirname, inputFile);
     const rawData = JSON.parse(fs.readFileSync(rawDataPath, 'utf8'));
-    
+
     const items = rawData.data.nfts.items;
-    
+
     const chains = [
         { id: 1, name: 'Ethereum', fileName: 'MigrationContractEthereum.sol' },
         { id: 10, name: 'Optimism', fileName: 'MigrationContractOptimism.sol' },
@@ -750,7 +750,7 @@ function generateChainSpecificContracts(inputFile) {
     chains.forEach(chain => {
         const chainItems = items.filter(item => item.chainId === chain.id);
         console.log(`Processing chain ${chain.id} (${chain.name}): ${chainItems.length} items`);
-        
+
         if (chainItems.length === 0) {
             console.log(`Skipping ${chain.name} - no items found`);
             return;
@@ -758,11 +758,11 @@ function generateChainSpecificContracts(inputFile) {
 
         // Generate contract for this specific chain
         const contract = generateSingleChainContract(chain, chainItems);
-        
+
         // Write the contract to file
         const outputPath = path.join(__dirname, '..', chain.fileName);
         fs.writeFileSync(outputPath, contract);
-        
+
         console.log(`Generated ${chain.fileName} with ${chainItems.length} items`);
     });
 }
@@ -774,7 +774,7 @@ function generateSingleChainContract(chain, chainItems) {
     const backgrounds = [];
     const tierIdQuantities = new Map(); // Map UPC to quantity needed
     const transferData = []; // Array of {tokenIndex, owner} for transfers
-    
+
     chainItems.forEach(item => {
         const tokenId = item.metadata.tokenId;
         const upc = item.metadata.upc;
@@ -782,10 +782,10 @@ function generateSingleChainContract(chain, chainItems) {
         const categoryName = item.metadata.categoryName;
         const owner = toChecksumAddress(item.owner || (item.wallet ? item.wallet.address : '0x0000000000000000000000000000000000000000'));
         const productName = item.metadata.productName;
-        
+
         // Count how many of each UPC we need
         tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
-        
+
         if (category === 0) {
             // Banny body
             bannys.push({
@@ -820,7 +820,7 @@ function generateSingleChainContract(chain, chainItems) {
     // Collect all outfitIds and backgroundIds that are being used
     const usedOutfitIds = new Set();
     const usedBackgroundIds = new Set();
-    
+
     bannys.forEach(banny => {
         if (banny.backgroundId && banny.backgroundId !== 0) {
             usedBackgroundIds.add(banny.backgroundId);
@@ -833,23 +833,23 @@ function generateSingleChainContract(chain, chainItems) {
     // Build transfer data array
     const allItems = [...bannys, ...outfits, ...backgrounds];
     let transferIndex = 0;
-    
+
     allItems.forEach((item, index) => {
         // Skip if owner is zero address
         if (item.owner === '0x0000000000000000000000000000000000000000') {
             return;
         }
-        
+
         // Skip if this is an outfit being worn
         if (item.tokenId && usedOutfitIds.has(item.tokenId)) {
             return;
         }
-        
+
         // Skip if this is a background being used
         if (item.tokenId && usedBackgroundIds.has(item.tokenId)) {
             return;
         }
-        
+
         transferData.push({
             tokenIndex: transferIndex,
             owner: item.owner
@@ -896,27 +896,27 @@ contract MigrationContract${chain.name} {
 
     // Generate struct definition for minted token IDs
     const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
-    
+
     // Generate struct definition at contract level
     let structDefinition = `
     // Define struct to hold all UPC minted tokenIds
     struct MintedIds {
 `;
-    
+
     uniqueUpcs.forEach(upc => {
         const quantity = tierIdQuantities.get(upc);
         structDefinition += `        uint256[${quantity}] upc${upc};\n`;
     });
-    
+
     structDefinition += `    }
     
     `;
-    
+
     // Insert struct definition into contract
     const contractStart = `contract MigrationContract${chain.name} {`;
     const replacement = `${contractStart}${structDefinition}address[] private transferOwners;`;
     contract = contract.replace(`${contractStart}\n    address[] private transferOwners;`, replacement);
-    
+
     contract += `
         
         // Assets are already minted to this contract by the deployer
@@ -924,13 +924,13 @@ contract MigrationContract${chain.name} {
 
     // Create a mapping from UPC to minted tokenIds for dressing
     const upcToMintedIds = new Map();
-    
+
     contract += `
         // Create and populate the struct
         // Token IDs are generated as: UPC * 1000000000 + unitNumber (where unitNumber starts at 1)
         MintedIds memory sortedMintedIds;
         `;
-    
+
     uniqueUpcs.forEach(upc => {
         const quantity = tierIdQuantities.get(upc);
         contract += `
@@ -942,11 +942,11 @@ contract MigrationContract${chain.name} {
     });
 
     // Check if there are any outfits or backgrounds that need approval
-    const hasOutfitsOrBackgrounds = bannys.some(banny => 
-        (banny.outfitIds && banny.outfitIds.length > 0) || 
+    const hasOutfitsOrBackgrounds = bannys.some(banny =>
+        (banny.outfitIds && banny.outfitIds.length > 0) ||
         (banny.backgroundId && banny.backgroundId !== 0)
     );
-    
+
     // Generate approval code using setApprovalForAll
     if (hasOutfitsOrBackgrounds) {
         contract += `
@@ -968,7 +968,7 @@ contract MigrationContract${chain.name} {
         {
             uint256[] memory outfitIds = new uint256[](${banny.outfitIds.length});
             `;
-            
+
             banny.outfitIds.forEach((v4OutfitId, outfitIndex) => {
                 // Find which UPC this V4 outfitId corresponds to
                 const matchingItem = chainItems.find(item => item.metadata.tokenId === v4OutfitId);
@@ -978,14 +978,14 @@ contract MigrationContract${chain.name} {
                     // Find the index of this specific outfitId within its UPC
                     const upcItems = chainItems.filter(item => item.metadata.upc === upc);
                     const itemIndex = upcItems.findIndex(item => item.metadata.tokenId === v4OutfitId);
-                    
+
                     contract += `            outfitIds[${outfitIndex}] = ${upcArrayName}[${itemIndex}]; // V4: ${v4OutfitId} -> V5: ${upcArrayName}[${itemIndex}]\n`;
                 } else {
                     // Fallback to V4 outfitId if we can't find the mapping
                     contract += `            outfitIds[${outfitIndex}] = ${v4OutfitId}; // Fallback: using V4 outfitId\n`;
                 }
             });
-            
+
             // Map backgroundId to V5 minted tokenId
             let v5BackgroundId = banny.backgroundId;
             if (banny.backgroundId && banny.backgroundId !== 0) {
@@ -998,7 +998,7 @@ contract MigrationContract${chain.name} {
                     v5BackgroundId = `${upcArrayName}[${itemIndex}]`;
                 }
             }
-            
+
             contract += `
             resolver.decorateBannyWith(
                 address(hook),
@@ -1012,12 +1012,12 @@ contract MigrationContract${chain.name} {
             require(v4BackgroundId == ${banny.backgroundId}, "V4/V5 background mismatch for Banny ${banny.tokenId}");
             require(v4OutfitIds.length == ${banny.outfitIds.length}, "V4/V5 outfit count mismatch for Banny ${banny.tokenId}");
             `;
-            
+
             banny.outfitIds.forEach((v4OutfitId, outfitIndex) => {
                 contract += `
             require(v4OutfitIds[${outfitIndex}] == ${v4OutfitId}, "V4/V5 outfit ${outfitIndex} mismatch for Banny ${banny.tokenId}");`;
             });
-            
+
             contract += `
         }
         `;
@@ -1049,7 +1049,7 @@ contract MigrationContract${chain.name} {
     // Fix indentation issues
     contract = contract.replace(/^                        outfitIds\[0\] =/gm, '            outfitIds[0] =');
     contract = contract.replace(/^                    }$/gm, '        }'); // Fix struct closing bracket indentation
-    
+
     return contract;
 }
 
