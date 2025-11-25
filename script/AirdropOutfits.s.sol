@@ -608,8 +608,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
         } else {
             revert("Unsupported chain for contract deployment");
         }
-
-        vm.stopBroadcast();
     }
 
     function _mintViaPay(
@@ -1496,4 +1494,3 @@ contract AirdropOutfitsScript is Script, Sphinx {
         return transferOwners;
     }
 }
-
