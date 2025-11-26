@@ -97,15 +97,10 @@ contract MigrationContractOptimism {
         // Dress Banny 3000000001 (Orange)
         {
             uint256[] memory outfitIds = new uint256[](4);
-            uint256[] memory expectedV4Outfits = new uint256[](4);
             outfitIds[0] = sortedMintedIds.upc11[0]; // V4: 11000000001 -> V5: sortedMintedIds.upc11[0]
-            expectedV4Outfits[0] = 11000000001;
             outfitIds[1] = sortedMintedIds.upc19[0]; // V4: 19000000001 -> V5: sortedMintedIds.upc19[0]
-            expectedV4Outfits[1] = 19000000001;
             outfitIds[2] = sortedMintedIds.upc25[0]; // V4: 25000000001 -> V5: sortedMintedIds.upc25[0]
-            expectedV4Outfits[2] = 25000000001;
             outfitIds[3] = sortedMintedIds.upc44[0]; // V4: 44000000001 -> V5: sortedMintedIds.upc44[0]
-            expectedV4Outfits[3] = 44000000001;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -114,24 +109,37 @@ contract MigrationContractOptimism {
                 outfitIds
             );
             
-            _expectV4AssetIds(
-                resolver,
-                fallbackV4Resolver,
-                v4HookAddress,
-                3000000001,
-                0,
-                expectedV4Outfits,
-                "V4/V5 asset mismatch for Banny 3000000001"
-            );
+            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000001);
+            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000001);
+            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
+            if (matches) {
+                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
+                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
+                        matches = false;
+                        break;
+        }
+                }
+            }
+            if (!matches) {
+                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000001);
+                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
+                if (matches) {
+                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
+                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
+                            matches = false;
+                            break;
+                        }
+        }
+                }
+                require(matches, "V4/V5 asset mismatch for Banny 3000000001");
+            }
             
         }
         
         // Dress Banny 4000000001 (Original)
         {
             uint256[] memory outfitIds = new uint256[](1);
-            uint256[] memory expectedV4Outfits = new uint256[](1);
             outfitIds[0] = sortedMintedIds.upc47[0]; // V4: 47000000001 -> V5: sortedMintedIds.upc47[0]
-            expectedV4Outfits[0] = 47000000001;
 
             resolver.decorateBannyWith(
                 address(hook),
@@ -140,15 +148,30 @@ contract MigrationContractOptimism {
                 outfitIds
             );
             
-            _expectV4AssetIds(
-                resolver,
-                fallbackV4Resolver,
-                v4HookAddress,
-                4000000001,
-                0,
-                expectedV4Outfits,
-                "V4/V5 asset mismatch for Banny 4000000001"
-            );
+            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000001);
+            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000001);
+            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
+            if (matches) {
+                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
+                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
+                        matches = false;
+                        break;
+        }
+                }
+            }
+            if (!matches) {
+                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000001);
+                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
+                if (matches) {
+                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
+                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
+                            matches = false;
+                            break;
+                        }
+        }
+                }
+                require(matches, "V4/V5 asset mismatch for Banny 4000000001");
+            }
             
         }
         
@@ -168,7 +191,7 @@ contract MigrationContractOptimism {
             uint256 tokenId = generatedTokenIds[i];
             // Verify V4 ownership before transferring V5
             address v4Owner = v4Hook.ownerOf(tokenId);
-            require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
+            require(v4Owner == transferOwners[i] || v4Owner == address(fallbackV4ResolverAddress), "V4/V5 ownership mismatch for token");
             
             IERC721(address(hook)).transferFrom(
                 address(this), 
@@ -176,40 +199,5 @@ contract MigrationContractOptimism {
                 tokenId
             );
         }
-    }
-
-    function _matchesV4AssetIds(
-        uint256 backgroundId,
-        uint256[] memory outfitIds,
-        uint256 expectedBackgroundId,
-        uint256[] memory expectedOutfitIds
-    ) internal pure returns (bool) {
-        if (backgroundId != expectedBackgroundId) return false;
-        if (outfitIds.length != expectedOutfitIds.length) return false;
-        for (uint256 i = 0; i < outfitIds.length; i++) {
-            if (outfitIds[i] != expectedOutfitIds[i]) return false;
-        }
-        return true;
-    }
-
-    function _expectV4AssetIds(
-        Banny721TokenUriResolver primaryResolver,
-        Banny721TokenUriResolver fallbackResolver,
-        address v4HookAddress,
-        uint256 tokenId,
-        uint256 expectedBackgroundId,
-        uint256[] memory expectedOutfitIds,
-        string memory errorMessage
-    ) internal view {
-        (uint256 backgroundId, uint256[] memory outfitIds) = primaryResolver.assetIdsOf(v4HookAddress, tokenId);
-        if (_matchesV4AssetIds(backgroundId, outfitIds, expectedBackgroundId, expectedOutfitIds)) {
-            return;
-        }
-
-        (backgroundId, outfitIds) = fallbackResolver.assetIdsOf(v4HookAddress, tokenId);
-        require(
-            _matchesV4AssetIds(backgroundId, outfitIds, expectedBackgroundId, expectedOutfitIds),
-            errorMessage
-        );
     }
 }

@@ -691,8 +691,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
         } else {
             revert("Unsupported chain for contract deployment");
         }
-        
-        vm.stopBroadcast();
     }
     
     function _mintViaPay(
