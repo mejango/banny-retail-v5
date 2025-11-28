@@ -4,6 +4,7 @@ pragma solidity 0.8.23;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Banny721TokenUriResolver} from "../src/Banny721TokenUriResolver.sol";
+import {MigrationHelper} from "./helpers/MigrationHelper.sol";
 
 contract MigrationContractEthereum {
     // Define struct to hold all UPC minted tokenIds
@@ -264,30 +265,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 1000000001);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 1000000001);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 1000000001);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 1000000001");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                1000000001
+            );
             
         }
         
@@ -307,30 +291,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 2000000002);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 2000000002);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 2000000002);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 2000000002");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                2000000002
+            );
             
         }
         
@@ -346,30 +313,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 2000000004);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 2000000004);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 2000000004);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 2000000004");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                2000000004
+            );
             
         }
         
@@ -385,30 +335,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 2000000005);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 2000000005);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 2000000005);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 2000000005");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                2000000005
+            );
             
         }
         
@@ -425,30 +358,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 2000000006);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 2000000006);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 2000000006);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 2000000006");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                2000000006
+            );
             
         }
         
@@ -466,30 +382,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000001);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000001);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000001);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000001");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000001
+            );
             
         }
         
@@ -506,30 +405,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000003);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000003);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000003);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000003");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000003
+            );
             
         }
         
@@ -546,30 +428,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000006);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000006);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000006);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000006");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000006
+            );
             
         }
         
@@ -586,30 +451,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000007);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000007);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000007);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000007");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000007
+            );
             
         }
         
@@ -626,30 +474,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000009);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000009);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000009);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000009");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000009
+            );
             
         }
         
@@ -667,30 +498,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000010);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000010);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000010);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000010");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000010
+            );
             
         }
         
@@ -708,30 +522,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000011);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000011);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000011);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000011");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000011
+            );
             
         }
         
@@ -750,30 +547,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000013);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000013);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000013);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000013");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000013
+            );
             
         }
         
@@ -790,30 +570,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000017);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000017);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000017);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000017");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000017
+            );
             
         }
         
@@ -831,30 +594,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000022);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000022);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000022);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000022");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000022
+            );
             
         }
         
@@ -873,30 +619,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000023);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000023);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000023);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000023");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000023
+            );
             
         }
         
@@ -914,30 +643,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 3000000026);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 3000000026);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 3000000026);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 3000000026");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                3000000026
+            );
             
         }
         
@@ -953,30 +665,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000004);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000004);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000004);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000004");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000004
+            );
             
         }
         
@@ -995,30 +690,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000009);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000009);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000009);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000009");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000009
+            );
             
         }
         
@@ -1037,30 +715,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000010);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000010);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000010);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000010");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000010
+            );
             
         }
         
@@ -1076,30 +737,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000013);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000013);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000013);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000013");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000013
+            );
             
         }
         
@@ -1118,30 +762,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000014);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000014);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000014);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000014");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000014
+            );
             
         }
         
@@ -1158,30 +785,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000015);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000015);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000015);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000015");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000015
+            );
             
         }
         
@@ -1197,30 +807,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000016);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000016);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000016);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000016");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000016
+            );
             
         }
         
@@ -1238,30 +831,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000019);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000019);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000019);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000019");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000019
+            );
             
         }
         
@@ -1277,30 +853,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000023);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000023);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000023);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000023");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000023
+            );
             
         }
         
@@ -1317,30 +876,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000033);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000033);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000033);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000033");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000033
+            );
             
         }
         
@@ -1359,30 +901,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000039);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000039);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000039);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000039");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000039
+            );
             
         }
         
@@ -1398,30 +923,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000040);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000040);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000040);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000040");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000040
+            );
             
         }
         
@@ -1441,30 +949,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000041);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000041);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000041);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000041");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000041
+            );
             
         }
         
@@ -1481,30 +972,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000043);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000043);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000043);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000043");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000043
+            );
             
         }
         
@@ -1521,30 +995,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000044);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000044);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000044);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000044");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000044
+            );
             
         }
         
@@ -1561,30 +1018,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000045);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000045);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000045);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000045");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000045
+            );
             
         }
         
@@ -1601,30 +1041,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000046);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000046);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000046);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000046");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000046
+            );
             
         }
         
@@ -1641,30 +1064,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000047);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000047);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000047);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000047");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000047
+            );
             
         }
         
@@ -1683,30 +1089,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000048);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000048);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000048);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000048");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000048
+            );
             
         }
         
@@ -1724,30 +1113,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000052);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000052);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000052);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000052");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000052
+            );
             
         }
         
@@ -1765,30 +1137,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000054);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000054);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000054);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000054");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000054
+            );
             
         }
         
@@ -1806,30 +1161,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000055);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000055);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000055);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000055");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000055
+            );
             
         }
         
@@ -1848,30 +1186,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000056);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000056);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000056);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000056");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000056
+            );
             
         }
         
@@ -1889,30 +1210,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000057);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000057);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000057);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000057");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000057
+            );
             
         }
         
@@ -1929,30 +1233,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000060);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000060);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000060);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000060");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000060
+            );
             
         }
         
@@ -1970,30 +1257,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000076);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000076);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000076);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000076");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000076
+            );
             
         }
         
@@ -2010,30 +1280,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000078);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000078);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000078);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000078");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000078
+            );
             
         }
         
@@ -2051,30 +1304,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000079);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000079);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000079);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000079");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000079
+            );
             
         }
         
@@ -2092,30 +1328,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000080);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000080);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000080);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000080");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000080
+            );
             
         }
         
@@ -2131,30 +1350,13 @@ contract MigrationContractEthereum {
                 outfitIds
             );
             
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, 4000000085);
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, 4000000085);
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-        }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, 4000000085);
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-        }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny 4000000085");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                4000000085
+            );
             
         }
         

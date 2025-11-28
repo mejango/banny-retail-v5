@@ -933,6 +933,7 @@ pragma solidity 0.8.23;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Banny721TokenUriResolver} from "../src/Banny721TokenUriResolver.sol";
+import {MigrationHelper} from "./helpers/MigrationHelper.sol";
 
 contract MigrationContract${chain.name} {
     address[] private transferOwners;
@@ -1082,30 +1083,13 @@ contract MigrationContract${chain.name} {
             `;
 
             contract += `
-            (uint256 mintedBackgroundId, uint256[] memory mintedOutfitIds) = resolver.assetIdsOf(v4HookAddress, ${banny.tokenId});
-            (uint256 expectedBackgroundId, uint256[] memory expectedOutfitIds) = v4Resolver.assetIdsOf(v4HookAddress, ${banny.tokenId});
-            bool matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-            if (matches) {
-                for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                    if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                        matches = false;
-                        break;
-                    }
-                }
-            }
-            if (!matches) {
-                (expectedBackgroundId, expectedOutfitIds) = fallbackV4Resolver.assetIdsOf(v4HookAddress, ${banny.tokenId});
-                matches = mintedBackgroundId == expectedBackgroundId && mintedOutfitIds.length == expectedOutfitIds.length;
-                if (matches) {
-                    for (uint256 i = 0; i < mintedOutfitIds.length; i++) {
-                        if (mintedOutfitIds[i] != expectedOutfitIds[i]) {
-                            matches = false;
-                            break;
-                        }
-                    }
-                }
-                require(matches, "V4/V5 asset mismatch for Banny ${banny.tokenId}");
-            }
+            MigrationHelper.verifyV4AssetMatch(
+                resolver,
+                v4Resolver,
+                fallbackV4Resolver,
+                v4HookAddress,
+                ${banny.tokenId}
+            );
             `;
 
             contract += `
