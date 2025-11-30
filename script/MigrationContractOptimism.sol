@@ -39,7 +39,7 @@ contract MigrationContractOptimism {
         require(v4HookAddress != address(0), "V4 Hook address not set");
         require(v4ResolverAddress != address(0), "V4 Resolver address not set");
         require(fallbackV4ResolverAddress != address(0), "V4 fallback resolver address not set");
-        
+
         JB721TiersHook hook = JB721TiersHook(hookAddress);
         Banny721TokenUriResolver resolver = Banny721TokenUriResolver(resolverAddress);
         IERC721 v4Hook = IERC721(v4HookAddress);
@@ -147,12 +147,12 @@ contract MigrationContractOptimism {
         // Token ID format: UPC * 1000000000 + unitNumber
         uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
         
-        generatedTokenIds[0] = 3000000001; // UPC 3, unit 1 (V4: 3000000001)
-        generatedTokenIds[1] = 3000000002; // UPC 3, unit 2 (V4: 3000000002)
-        generatedTokenIds[2] = 4000000001; // UPC 4, unit 1 (V4: 4000000001)
-        generatedTokenIds[3] = 4000000002; // UPC 4, unit 2 (V4: 4000000002)
-        generatedTokenIds[4] = 4000000003; // UPC 4, unit 3 (V4: 4000000003)
-        generatedTokenIds[5] = 17000000001; // UPC 17, unit 1 (V4: 17000000001)
+        generatedTokenIds[0] = 3000000001; // Token ID (V4: 3000000001)
+        generatedTokenIds[1] = 3000000002; // Token ID (V4: 3000000002)
+        generatedTokenIds[2] = 4000000001; // Token ID (V4: 4000000001)
+        generatedTokenIds[3] = 4000000002; // Token ID (V4: 4000000002)
+        generatedTokenIds[4] = 4000000003; // Token ID (V4: 4000000003)
+        generatedTokenIds[5] = 17000000001; // Token ID (V4: 17000000001)
         
         for (uint256 i = 0; i < transferOwners.length; i++) {
             uint256 tokenId = generatedTokenIds[i];
