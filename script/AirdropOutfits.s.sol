@@ -613,22 +613,28 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             // Copy owners and tier IDs from chunk 1
             address[] memory owners1 = _getEthereumTransferOwners1();
-            for (uint256 i = 0; i < tierIds1.length; i++) {
+            for (uint256 i = 0; i < owners1.length; i++) {
                 allEthereumOwners[i] = owners1[i];
+            }
+            for (uint256 i = 0; i < tierIds1.length; i++) {
                 allEthereumTierIds[i] = tierIds1[i];
             }
             
             // Copy owners and tier IDs from chunk 2
             address[] memory owners2 = _getEthereumTransferOwners2();
+            for (uint256 i = 0; i < owners2.length; i++) {
+                allEthereumOwners[owners1.length + i] = owners2[i];
+            }
             for (uint256 i = 0; i < tierIds2.length; i++) {
-                allEthereumOwners[tierIds1.length + i] = owners2[i];
                 allEthereumTierIds[tierIds1.length + i] = tierIds2[i];
             }
             
             // Copy owners and tier IDs from chunk 3
             address[] memory owners3 = _getEthereumTransferOwners3();
+            for (uint256 i = 0; i < owners3.length; i++) {
+                allEthereumOwners[owners1.length + owners2.length + i] = owners3[i];
+            }
             for (uint256 i = 0; i < tierIds3.length; i++) {
-                allEthereumOwners[tierIds1.length + tierIds2.length + i] = owners3[i];
                 allEthereumTierIds[tierIds1.length + tierIds2.length + i] = tierIds3[i];
             }
             
@@ -907,15 +913,19 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             // Copy owners and tier IDs from chunk 1
             address[] memory baseOwners1 = _getBaseTransferOwners1();
-            for (uint256 i = 0; i < tierIds1.length; i++) {
+            for (uint256 i = 0; i < baseOwners1.length; i++) {
                 allBaseOwners[i] = baseOwners1[i];
+            }
+            for (uint256 i = 0; i < tierIds1.length; i++) {
                 allBaseTierIds[i] = tierIds1[i];
             }
             
             // Copy owners and tier IDs from chunk 2
             address[] memory baseOwners2 = _getBaseTransferOwners2();
+            for (uint256 i = 0; i < baseOwners2.length; i++) {
+                allBaseOwners[baseOwners1.length + i] = baseOwners2[i];
+            }
             for (uint256 i = 0; i < tierIds2.length; i++) {
-                allBaseOwners[tierIds1.length + i] = baseOwners2[i];
                 allBaseTierIds[tierIds1.length + i] = tierIds2[i];
             }
             
