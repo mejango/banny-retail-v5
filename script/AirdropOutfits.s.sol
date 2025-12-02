@@ -12,10 +12,12 @@ import {MigrationContractBase2} from "./MigrationContractBase2.sol";
 import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
+import {IJB721TiersHookStore} from "@bananapus/721-hook-v5/src/interfaces/IJB721TiersHookStore.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
 import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
 import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
 import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract AirdropOutfitsScript is Script, Sphinx {
     // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
@@ -599,6 +601,40 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
+            // Sanity checks after all Ethereum migrations
+            address[] memory ethereumMigrationContracts = new address[](3);
+            ethereumMigrationContracts[0] = address(migrationContract1);
+            ethereumMigrationContracts[1] = address(migrationContract2);
+            ethereumMigrationContracts[2] = address(migrationContract3);
+            
+            // Combine all owners and tier IDs for verification
+            address[] memory allEthereumOwners = new address[](tierIds1.length + tierIds2.length + tierIds3.length);
+            uint16[] memory allEthereumTierIds = new uint16[](tierIds1.length + tierIds2.length + tierIds3.length);
+            
+            // Copy owners and tier IDs from chunk 1
+            address[] memory owners1 = _getEthereumTransferOwners1();
+            for (uint256 i = 0; i < tierIds1.length; i++) {
+                allEthereumOwners[i] = owners1[i];
+                allEthereumTierIds[i] = tierIds1[i];
+            }
+            
+            // Copy owners and tier IDs from chunk 2
+            address[] memory owners2 = _getEthereumTransferOwners2();
+            for (uint256 i = 0; i < tierIds2.length; i++) {
+                allEthereumOwners[tierIds1.length + i] = owners2[i];
+                allEthereumTierIds[tierIds1.length + i] = tierIds2[i];
+            }
+            
+            // Copy owners and tier IDs from chunk 3
+            address[] memory owners3 = _getEthereumTransferOwners3();
+            for (uint256 i = 0; i < tierIds3.length; i++) {
+                allEthereumOwners[tierIds1.length + tierIds2.length + i] = owners3[i];
+                allEthereumTierIds[tierIds1.length + tierIds2.length + i] = tierIds3[i];
+            }
+            
+            _verifyTierBalancesMatch(hookAddress, v4HookAddress, allEthereumOwners, allEthereumTierIds);
+            _verifyMigrationContractsEmpty(hookAddress, ethereumMigrationContracts);
+            
         } else if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](11);
@@ -650,6 +686,15 @@ contract AirdropOutfitsScript is Script, Sphinx {
             console.log("Minted", allTierIds.length, "tokens to contract");
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+            // Sanity checks after Optimism migration
+            address[] memory optimismMigrationContracts = new address[](1);
+            optimismMigrationContracts[0] = address(migrationContract);
+            
+            address[] memory optimismOwners = _getOptimismTransferOwners();
+            _verifyTierBalancesMatch(hookAddress, v4HookAddress, optimismOwners, allTierIds);
+            _verifyMigrationContractsEmpty(hookAddress, optimismMigrationContracts);
+            
         } else if (chainId == 8453) {
             // Base - 2 chunks
             
@@ -851,6 +896,32 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract2.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
+            // Sanity checks after all Base migrations
+            address[] memory baseMigrationContracts = new address[](2);
+            baseMigrationContracts[0] = address(migrationContract1);
+            baseMigrationContracts[1] = address(migrationContract2);
+            
+            // Combine all owners and tier IDs for verification
+            address[] memory allBaseOwners = new address[](tierIds1.length + tierIds2.length);
+            uint16[] memory allBaseTierIds = new uint16[](tierIds1.length + tierIds2.length);
+            
+            // Copy owners and tier IDs from chunk 1
+            address[] memory baseOwners1 = _getBaseTransferOwners1();
+            for (uint256 i = 0; i < tierIds1.length; i++) {
+                allBaseOwners[i] = baseOwners1[i];
+                allBaseTierIds[i] = tierIds1[i];
+            }
+            
+            // Copy owners and tier IDs from chunk 2
+            address[] memory baseOwners2 = _getBaseTransferOwners2();
+            for (uint256 i = 0; i < tierIds2.length; i++) {
+                allBaseOwners[tierIds1.length + i] = baseOwners2[i];
+                allBaseTierIds[tierIds1.length + i] = tierIds2[i];
+            }
+            
+            _verifyTierBalancesMatch(hookAddress, v4HookAddress, allBaseOwners, allBaseTierIds);
+            _verifyMigrationContractsEmpty(hookAddress, baseMigrationContracts);
+            
         } else if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](205);
@@ -938,6 +1009,15 @@ contract AirdropOutfitsScript is Script, Sphinx {
             console.log("Minted", allTierIds.length, "tokens to contract");
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+            // Sanity checks after Arbitrum migration
+            address[] memory arbitrumMigrationContracts = new address[](1);
+            arbitrumMigrationContracts[0] = address(migrationContract);
+            
+            address[] memory arbitrumOwners = _getArbitrumTransferOwners();
+            _verifyTierBalancesMatch(hookAddress, v4HookAddress, arbitrumOwners, allTierIds);
+            _verifyMigrationContractsEmpty(hookAddress, arbitrumMigrationContracts);
+            
         } else {
             revert("Unsupported chain for contract deployment");
         }
@@ -1504,6 +1584,115 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[185] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[186] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         return transferOwners;
+    }
+    
+    /// @notice Verify that tierBalanceOf in v5 STORE matches v4 STORE for all migrated owners and tier IDs
+    /// @param hookAddress The v5 hook address
+    /// @param v4HookAddress The v4 hook address
+    /// @param owners Array of owner addresses to check
+    /// @param tierIds Array of tier IDs to check (should match owners length)
+    function _verifyTierBalancesMatch(
+        address hookAddress,
+        address v4HookAddress,
+        address[] memory owners,
+        uint16[] memory tierIds
+    ) internal view {
+        require(owners.length == tierIds.length, "Owners and tierIds arrays must have same length");
+        
+        JB721TiersHook hook = JB721TiersHook(hookAddress);
+        JB721TiersHook v4Hook = JB721TiersHook(v4HookAddress);
+        
+        IJB721TiersHookStore v5Store = hook.STORE();
+        IJB721TiersHookStore v4Store = v4Hook.STORE();
+        
+        console.log("Verifying tierBalanceOf matches between v4 and v5 stores...");
+        
+        for (uint256 i = 0; i < owners.length; i++) {
+            address owner = owners[i];
+            uint256 tierId = tierIds[i];
+            
+            uint256 v5Balance = v5Store.tierBalanceOf(hookAddress, owner, tierId);
+            uint256 v4Balance = v4Store.tierBalanceOf(v4HookAddress, owner, tierId);
+            
+            require(
+                v5Balance == v4Balance,
+                string.concat(
+                    "tierBalanceOf mismatch: owner=",
+                    _addressToString(owner),
+                    " tierId=",
+                    _uint256ToString(tierId),
+                    " v5=",
+                    _uint256ToString(v5Balance),
+                    " v4=",
+                    _uint256ToString(v4Balance)
+                )
+            );
+        }
+        
+        console.log("All tierBalanceOf checks passed!");
+    }
+    
+    /// @notice Verify that migration contracts don't own any NFTs
+    /// @param hookAddress The v5 hook address
+    /// @param migrationContracts Array of migration contract addresses to check
+    function _verifyMigrationContractsEmpty(
+        address hookAddress,
+        address[] memory migrationContracts
+    ) internal view {
+        IERC721 hook = IERC721(hookAddress);
+        
+        console.log("Verifying migration contracts don't own any NFTs...");
+        
+        for (uint256 i = 0; i < migrationContracts.length; i++) {
+            address migrationContract = migrationContracts[i];
+            uint256 balance = hook.balanceOf(migrationContract);
+            
+            require(
+                balance == 0,
+                string.concat(
+                    "Migration contract still owns NFTs: contract=",
+                    _addressToString(migrationContract),
+                    " balance=",
+                    _uint256ToString(balance)
+                )
+            );
+        }
+        
+        console.log("All migration contracts verified empty!");
+    }
+    
+    /// @notice Helper function to convert address to string
+    function _addressToString(address addr) internal pure returns (string memory) {
+        bytes32 value = bytes32(uint256(uint160(addr)));
+        bytes memory alphabet = "0123456789abcdef";
+        bytes memory str = new bytes(42);
+        str[0] = '0';
+        str[1] = 'x';
+        for (uint256 i = 0; i < 20; i++) {
+            str[2+i*2] = alphabet[uint8(value[i + 12] >> 4)];
+            str[3+i*2] = alphabet[uint8(value[i + 12] & 0x0f)];
+        }
+        return string(str);
+    }
+    
+    /// @notice Helper function to convert uint256 to string
+    function _uint256ToString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
     }
     
 }
