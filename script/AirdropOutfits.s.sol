@@ -6,18 +6,18 @@ import {console} from "forge-std/console.sol";
 import {MigrationContractEthereum1} from "./MigrationContractEthereum1.sol";
 import {MigrationContractEthereum2} from "./MigrationContractEthereum2.sol";
 import {MigrationContractEthereum3} from "./MigrationContractEthereum3.sol";
+import {MigrationContractEthereum4} from "./MigrationContractEthereum4.sol";
 import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";
 import {MigrationContractBase1} from "./MigrationContractBase1.sol";
 import {MigrationContractBase2} from "./MigrationContractBase2.sol";
+import {MigrationContractBase3} from "./MigrationContractBase3.sol";
 import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
-import {IJB721TiersHookStore} from "@bananapus/721-hook-v5/src/interfaces/IJB721TiersHookStore.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
 import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
 import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
 import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
-import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract AirdropOutfitsScript is Script, Sphinx {
     // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
@@ -222,7 +222,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
-            // Ethereum - 3 chunks
+            // Ethereum - 3 chunks (plus optional unused assets chunk)
             
             // Deploy and execute contract 1
             uint16[] memory tierIds1 = new uint16[](96);
@@ -601,45 +601,140 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
-            // Sanity checks after all Ethereum migrations
-            address[] memory ethereumMigrationContracts = new address[](3);
-            ethereumMigrationContracts[0] = address(migrationContract1);
-            ethereumMigrationContracts[1] = address(migrationContract2);
-            ethereumMigrationContracts[2] = address(migrationContract3);
+            // Deploy and execute contract 4 (unused outfits/backgrounds)
+            uint16[] memory tierIds4 = new uint16[](281);
             
-            // Combine all owners and tier IDs for verification
-            address[] memory allEthereumOwners = new address[](tierIds1.length + tierIds2.length + tierIds3.length);
-            uint16[] memory allEthereumTierIds = new uint16[](tierIds1.length + tierIds2.length + tierIds3.length);
+            // Add 8 instances of tier ID 10
+            for (uint256 i = 0; i < 8; i++) {
+                tierIds4[0 + i] = 10;
+            }
+            // Add 1 instances of tier ID 11
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[8 + i] = 11;
+            }
+            // Add 2 instances of tier ID 13
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[9 + i] = 13;
+            }
+            // Add 3 instances of tier ID 14
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds4[11 + i] = 14;
+            }
+            // Add 3 instances of tier ID 17
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds4[14 + i] = 17;
+            }
+            // Add 7 instances of tier ID 19
+            for (uint256 i = 0; i < 7; i++) {
+                tierIds4[17 + i] = 19;
+            }
+            // Add 6 instances of tier ID 20
+            for (uint256 i = 0; i < 6; i++) {
+                tierIds4[24 + i] = 20;
+            }
+            // Add 1 instances of tier ID 21
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[30 + i] = 21;
+            }
+            // Add 2 instances of tier ID 23
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[31 + i] = 23;
+            }
+            // Add 3 instances of tier ID 25
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds4[33 + i] = 25;
+            }
+            // Add 2 instances of tier ID 26
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[36 + i] = 26;
+            }
+            // Add 7 instances of tier ID 28
+            for (uint256 i = 0; i < 7; i++) {
+                tierIds4[38 + i] = 28;
+            }
+            // Add 1 instances of tier ID 29
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[45 + i] = 29;
+            }
+            // Add 5 instances of tier ID 31
+            for (uint256 i = 0; i < 5; i++) {
+                tierIds4[46 + i] = 31;
+            }
+            // Add 2 instances of tier ID 32
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[51 + i] = 32;
+            }
+            // Add 1 instances of tier ID 33
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[53 + i] = 33;
+            }
+            // Add 3 instances of tier ID 35
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds4[54 + i] = 35;
+            }
+            // Add 2 instances of tier ID 37
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[57 + i] = 37;
+            }
+            // Add 1 instances of tier ID 39
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[59 + i] = 39;
+            }
+            // Add 2 instances of tier ID 40
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[60 + i] = 40;
+            }
+            // Add 1 instances of tier ID 41
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[62 + i] = 41;
+            }
+            // Add 16 instances of tier ID 42
+            for (uint256 i = 0; i < 16; i++) {
+                tierIds4[63 + i] = 42;
+            }
+            // Add 11 instances of tier ID 43
+            for (uint256 i = 0; i < 11; i++) {
+                tierIds4[79 + i] = 43;
+            }
+            // Add 29 instances of tier ID 44
+            for (uint256 i = 0; i < 29; i++) {
+                tierIds4[90 + i] = 44;
+            }
+            // Add 12 instances of tier ID 47
+            for (uint256 i = 0; i < 12; i++) {
+                tierIds4[119 + i] = 47;
+            }
+            // Add 1 instances of tier ID 48
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[131 + i] = 48;
+            }
+            // Add 142 instances of tier ID 49
+            for (uint256 i = 0; i < 142; i++) {
+                tierIds4[132 + i] = 49;
+            }
+            // Add 2 instances of tier ID 5
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[274 + i] = 5;
+            }
+            // Add 5 instances of tier ID 6
+            for (uint256 i = 0; i < 5; i++) {
+                tierIds4[276 + i] = 6;
+            }
+            address[] memory transferOwners4 = _getEthereumTransferOwners4();
+            MigrationContractEthereum4 migrationContract4 = new MigrationContractEthereum4(transferOwners4);
+            console.log("Ethereum migration contract 4 deployed at:", address(migrationContract4));
             
-            // Copy owners and tier IDs from chunk 1
-            address[] memory owners1 = _getEthereumTransferOwners1();
-            for (uint256 i = 0; i < owners1.length; i++) {
-                allEthereumOwners[i] = owners1[i];
-            }
-            for (uint256 i = 0; i < tierIds1.length; i++) {
-                allEthereumTierIds[i] = tierIds1[i];
-            }
+            // Mint chunk 4 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds4,
+                address(migrationContract4)
+            );
+            console.log("Minted", tierIds4.length, "tokens to contract 4");
             
-            // Copy owners and tier IDs from chunk 2
-            address[] memory owners2 = _getEthereumTransferOwners2();
-            for (uint256 i = 0; i < owners2.length; i++) {
-                allEthereumOwners[owners1.length + i] = owners2[i];
-            }
-            for (uint256 i = 0; i < tierIds2.length; i++) {
-                allEthereumTierIds[tierIds1.length + i] = tierIds2[i];
-            }
-            
-            // Copy owners and tier IDs from chunk 3
-            address[] memory owners3 = _getEthereumTransferOwners3();
-            for (uint256 i = 0; i < owners3.length; i++) {
-                allEthereumOwners[owners1.length + owners2.length + i] = owners3[i];
-            }
-            for (uint256 i = 0; i < tierIds3.length; i++) {
-                allEthereumTierIds[tierIds1.length + tierIds2.length + i] = tierIds3[i];
-            }
-            
-            _verifyTierBalancesMatch(hookAddress, v4HookAddress, allEthereumOwners, allEthereumTierIds);
-            _verifyMigrationContractsEmpty(hookAddress, ethereumMigrationContracts);
+            migrationContract4.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else if (chainId == 10) {
             // Optimism tier IDs
@@ -692,17 +787,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
             console.log("Minted", allTierIds.length, "tokens to contract");
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
-            
-            // Sanity checks after Optimism migration
-            address[] memory optimismMigrationContracts = new address[](1);
-            optimismMigrationContracts[0] = address(migrationContract);
-            
-            address[] memory optimismOwners = _getOptimismTransferOwners();
-            _verifyTierBalancesMatch(hookAddress, v4HookAddress, optimismOwners, allTierIds);
-            _verifyMigrationContractsEmpty(hookAddress, optimismMigrationContracts);
-            
         } else if (chainId == 8453) {
-            // Base - 2 chunks
+            // Base - 2 chunks (plus optional unused assets chunk)
             
             // Deploy and execute contract 1
             uint16[] memory tierIds1 = new uint16[](89);
@@ -902,35 +988,124 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract2.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
-            // Sanity checks after all Base migrations
-            address[] memory baseMigrationContracts = new address[](2);
-            baseMigrationContracts[0] = address(migrationContract1);
-            baseMigrationContracts[1] = address(migrationContract2);
+            // Deploy and execute contract 3 (unused outfits/backgrounds)
+            uint16[] memory tierIds3 = new uint16[](53);
             
-            // Combine all owners and tier IDs for verification
-            address[] memory allBaseOwners = new address[](tierIds1.length + tierIds2.length);
-            uint16[] memory allBaseTierIds = new uint16[](tierIds1.length + tierIds2.length);
+            // Add 1 instances of tier ID 7
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[0 + i] = 7;
+            }
+            // Add 6 instances of tier ID 10
+            for (uint256 i = 0; i < 6; i++) {
+                tierIds3[1 + i] = 10;
+            }
+            // Add 2 instances of tier ID 11
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[7 + i] = 11;
+            }
+            // Add 1 instances of tier ID 13
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[9 + i] = 13;
+            }
+            // Add 1 instances of tier ID 14
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[10 + i] = 14;
+            }
+            // Add 1 instances of tier ID 17
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[11 + i] = 17;
+            }
+            // Add 5 instances of tier ID 19
+            for (uint256 i = 0; i < 5; i++) {
+                tierIds3[12 + i] = 19;
+            }
+            // Add 1 instances of tier ID 24
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[17 + i] = 24;
+            }
+            // Add 1 instances of tier ID 25
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[18 + i] = 25;
+            }
+            // Add 4 instances of tier ID 28
+            for (uint256 i = 0; i < 4; i++) {
+                tierIds3[19 + i] = 28;
+            }
+            // Add 4 instances of tier ID 31
+            for (uint256 i = 0; i < 4; i++) {
+                tierIds3[23 + i] = 31;
+            }
+            // Add 1 instances of tier ID 32
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[27 + i] = 32;
+            }
+            // Add 1 instances of tier ID 34
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[28 + i] = 34;
+            }
+            // Add 3 instances of tier ID 35
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds3[29 + i] = 35;
+            }
+            // Add 1 instances of tier ID 38
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[32 + i] = 38;
+            }
+            // Add 1 instances of tier ID 39
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[33 + i] = 39;
+            }
+            // Add 2 instances of tier ID 40
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[34 + i] = 40;
+            }
+            // Add 1 instances of tier ID 41
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[36 + i] = 41;
+            }
+            // Add 2 instances of tier ID 42
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[37 + i] = 42;
+            }
+            // Add 2 instances of tier ID 43
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[39 + i] = 43;
+            }
+            // Add 2 instances of tier ID 44
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[41 + i] = 44;
+            }
+            // Add 5 instances of tier ID 47
+            for (uint256 i = 0; i < 5; i++) {
+                tierIds3[43 + i] = 47;
+            }
+            // Add 2 instances of tier ID 49
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[48 + i] = 49;
+            }
+            // Add 2 instances of tier ID 5
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds3[50 + i] = 5;
+            }
+            // Add 1 instances of tier ID 6
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[52 + i] = 6;
+            }
+            address[] memory transferOwners3 = _getBaseTransferOwners3();
+            MigrationContractBase3 migrationContract3 = new MigrationContractBase3(transferOwners3);
+            console.log("Base migration contract 3 deployed at:", address(migrationContract3));
             
-            // Copy owners and tier IDs from chunk 1
-            address[] memory baseOwners1 = _getBaseTransferOwners1();
-            for (uint256 i = 0; i < baseOwners1.length; i++) {
-                allBaseOwners[i] = baseOwners1[i];
-            }
-            for (uint256 i = 0; i < tierIds1.length; i++) {
-                allBaseTierIds[i] = tierIds1[i];
-            }
+            // Mint chunk 3 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds3,
+                address(migrationContract3)
+            );
+            console.log("Minted", tierIds3.length, "tokens to contract 3");
             
-            // Copy owners and tier IDs from chunk 2
-            address[] memory baseOwners2 = _getBaseTransferOwners2();
-            for (uint256 i = 0; i < baseOwners2.length; i++) {
-                allBaseOwners[baseOwners1.length + i] = baseOwners2[i];
-            }
-            for (uint256 i = 0; i < tierIds2.length; i++) {
-                allBaseTierIds[tierIds1.length + i] = tierIds2[i];
-            }
-            
-            _verifyTierBalancesMatch(hookAddress, v4HookAddress, allBaseOwners, allBaseTierIds);
-            _verifyMigrationContractsEmpty(hookAddress, baseMigrationContracts);
+            migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else if (chainId == 42161) {
             // Arbitrum tier IDs
@@ -1019,15 +1194,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
             console.log("Minted", allTierIds.length, "tokens to contract");
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
-            
-            // Sanity checks after Arbitrum migration
-            address[] memory arbitrumMigrationContracts = new address[](1);
-            arbitrumMigrationContracts[0] = address(migrationContract);
-            
-            address[] memory arbitrumOwners = _getArbitrumTransferOwners();
-            _verifyTierBalancesMatch(hookAddress, v4HookAddress, arbitrumOwners, allTierIds);
-            _verifyMigrationContractsEmpty(hookAddress, arbitrumMigrationContracts);
-            
         } else {
             revert("Unsupported chain for contract deployment");
         }
@@ -1272,6 +1438,293 @@ contract AirdropOutfitsScript is Script, Sphinx {
         return transferOwners;
     }
     
+    function _getEthereumTransferOwners4() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](281);
+        
+        transferOwners[0] = 0xa5F8911d4CFd60a6697479f078409434424fe666;
+        transferOwners[1] = 0x4A290F18c35bBFE97B2557cf765De9387726dE39;
+        transferOwners[2] = 0xf0FE43a75Ff248FD2E75D33fa1ebde71c6d1abAd;
+        transferOwners[3] = 0x7044d88283c8FFF0679b711C0cd81f1a6754C843;
+        transferOwners[4] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        transferOwners[5] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[6] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
+        transferOwners[7] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[8] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[9] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[10] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[11] = 0x87084347AeBADc626e8569E0D386928dade2ba09;
+        transferOwners[12] = 0x15b61e9b0637f45dc0858f083cd240267924125d;
+        transferOwners[13] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[14] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[15] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[16] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[17] = 0x0447AD1BdC0fFA06f7029c8E63F4De21E65255d2;
+        transferOwners[18] = 0x516cAfD745Ec780D20f61c0d71fe258eA765222D;
+        transferOwners[19] = 0xa9d20b435A85fAAa002f32d66F7D21564130E9cf;
+        transferOwners[20] = 0x87084347AeBADc626e8569E0D386928dade2ba09;
+        transferOwners[21] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        transferOwners[22] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
+        transferOwners[23] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[24] = 0x289715fFBB2f4b482e2917D2f183FeAb564ec84F;
+        transferOwners[25] = 0x79d1E7F1A6E0Bbb3278a9d2B782e3A8983444cb6;
+        transferOwners[26] = 0x15b61e9b0637f45dc0858f083cd240267924125d;
+        transferOwners[27] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[28] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        transferOwners[29] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[30] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[31] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[32] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[33] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
+        transferOwners[34] = 0xa9d20b435A85fAAa002f32d66F7D21564130E9cf;
+        transferOwners[35] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[36] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[37] = 0x1c6d61F3d8976A8aCDd311ecdFa533B8ECd0AC61;
+        transferOwners[38] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
+        transferOwners[39] = 0x0447AD1BdC0fFA06f7029c8E63F4De21E65255d2;
+        transferOwners[40] = 0x87084347AeBADc626e8569E0D386928dade2ba09;
+        transferOwners[41] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[42] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        transferOwners[43] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
+        transferOwners[44] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[45] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[46] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
+        transferOwners[47] = 0xf0FE43a75Ff248FD2E75D33fa1ebde71c6d1abAd;
+        transferOwners[48] = 0x08cEb8Bba685ee708C9c4c65576837cbE19B9dea;
+        transferOwners[49] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        transferOwners[50] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[51] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
+        transferOwners[52] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[53] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[54] = 0xa9d20b435A85fAAa002f32d66F7D21564130E9cf;
+        transferOwners[55] = 0x15b61e9b0637f45dc0858f083cd240267924125d;
+        transferOwners[56] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[57] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[58] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[59] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[60] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[61] = 0x1c6d61F3d8976A8aCDd311ecdFa533B8ECd0AC61;
+        transferOwners[62] = 0x1c6d61F3d8976A8aCDd311ecdFa533B8ECd0AC61;
+        transferOwners[63] = 0x961d4191965C49537c88F764D88318872CE405bE;
+        transferOwners[64] = 0xf0FE43a75Ff248FD2E75D33fa1ebde71c6d1abAd;
+        transferOwners[65] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[66] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[67] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[68] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[69] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[70] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[71] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[72] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[73] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[74] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[75] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[76] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[77] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[78] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[79] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
+        transferOwners[80] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
+        transferOwners[81] = 0x1786D033D5CbCC235B673e872c7613c2F83DA583;
+        transferOwners[82] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[83] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
+        transferOwners[84] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[85] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[86] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[87] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[88] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[89] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[90] = 0x4A290F18c35bBFE97B2557cf765De9387726dE39;
+        transferOwners[91] = 0x38EED3CCeED88f380E436eb21811250797c453C5;
+        transferOwners[92] = 0xa9d20b435A85fAAa002f32d66F7D21564130E9cf;
+        transferOwners[93] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
+        transferOwners[94] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[95] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[96] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[97] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[98] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[99] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[100] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[101] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[102] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[103] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[104] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[105] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[106] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[107] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[108] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[109] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[110] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[111] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[112] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[113] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[114] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[115] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[116] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[117] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[118] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[119] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
+        transferOwners[120] = 0x0447AD1BdC0fFA06f7029c8E63F4De21E65255d2;
+        transferOwners[121] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        transferOwners[122] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[123] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        transferOwners[124] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
+        transferOwners[125] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[126] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[127] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[128] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[129] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[130] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[131] = 0x15b61e9b0637f45dc0858f083cd240267924125d;
+        transferOwners[132] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        transferOwners[133] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[134] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[135] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[136] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[137] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[138] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[139] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[140] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[141] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[142] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[143] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[144] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[145] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[146] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[147] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[148] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[149] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[150] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[151] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[152] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[153] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[154] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[155] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[156] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[157] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[158] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[159] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[160] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[161] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[162] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[163] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[164] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[165] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[166] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[167] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[168] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[169] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[170] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[171] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[172] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[173] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[174] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[175] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[176] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[177] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[178] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[179] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[180] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[181] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[182] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[183] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[184] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[185] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[186] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[187] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[188] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[189] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[190] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[191] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[192] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[193] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[194] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[195] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[196] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[197] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[198] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[199] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[200] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[201] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[202] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[203] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[204] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[205] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[206] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[207] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[208] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[209] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[210] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[211] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[212] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[213] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[214] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[215] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[216] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[217] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[218] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[219] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[220] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[221] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[222] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[223] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[224] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[225] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[226] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[227] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[228] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[229] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[230] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[231] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[232] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[233] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[234] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[235] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[236] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[237] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[238] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[239] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[240] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[241] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[242] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[243] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[244] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[245] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[246] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[247] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[248] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[249] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[250] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[251] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[252] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[253] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[254] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[255] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[256] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[257] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[258] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[259] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[260] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[261] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[262] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[263] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[264] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[265] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[266] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[267] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[268] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[269] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[270] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[271] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[272] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[273] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[274] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[275] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[276] = 0xa9d20b435A85fAAa002f32d66F7D21564130E9cf;
+        transferOwners[277] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[278] = 0x15b61e9b0637f45dc0858f083cd240267924125d;
+        transferOwners[279] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[280] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        return transferOwners;
+    }
+    
     function _getOptimismTransferOwners() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](6);
         
@@ -1400,6 +1853,65 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[50] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
         transferOwners[51] = 0xF6cC71878e23c05406B35946CD9d378E0f2f4f2F;
         transferOwners[52] = 0xd2e44E40B5FB960A8A74dD7B9D6b7f14B805b50d;
+        return transferOwners;
+    }
+    
+    function _getBaseTransferOwners3() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](53);
+        
+        transferOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[1] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[2] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[3] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[4] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[5] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[6] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[7] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[8] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[9] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[10] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[11] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[12] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
+        transferOwners[13] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
+        transferOwners[14] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[15] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[16] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[17] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[18] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[19] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
+        transferOwners[20] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[21] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[22] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[23] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
+        transferOwners[24] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[25] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[26] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[27] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[28] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[29] = 0x565B93a15d38aCD79c120b15432D21E21eD274d6;
+        transferOwners[30] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[31] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[32] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[33] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[34] = 0x8DFBdEEC8c5d4970BB5F481C6ec7f73fa1C65be5;
+        transferOwners[35] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[36] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[37] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        transferOwners[38] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[39] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[40] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[41] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[42] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
+        transferOwners[43] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[44] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
+        transferOwners[45] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[46] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[47] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[48] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[49] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[50] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[51] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[52] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
         return transferOwners;
     }
     
@@ -1594,115 +2106,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[185] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[186] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         return transferOwners;
-    }
-    
-    /// @notice Verify that tierBalanceOf in v5 STORE matches v4 STORE for all migrated owners and tier IDs
-    /// @param hookAddress The v5 hook address
-    /// @param v4HookAddress The v4 hook address
-    /// @param owners Array of owner addresses to check
-    /// @param tierIds Array of tier IDs to check (should match owners length)
-    function _verifyTierBalancesMatch(
-        address hookAddress,
-        address v4HookAddress,
-        address[] memory owners,
-        uint16[] memory tierIds
-    ) internal view {
-        require(owners.length == tierIds.length, "Owners and tierIds arrays must have same length");
-        
-        JB721TiersHook hook = JB721TiersHook(hookAddress);
-        JB721TiersHook v4Hook = JB721TiersHook(v4HookAddress);
-        
-        IJB721TiersHookStore v5Store = hook.STORE();
-        IJB721TiersHookStore v4Store = v4Hook.STORE();
-        
-        console.log("Verifying tierBalanceOf matches between v4 and v5 stores...");
-        
-        for (uint256 i = 0; i < owners.length; i++) {
-            address owner = owners[i];
-            uint256 tierId = tierIds[i];
-            
-            uint256 v5Balance = v5Store.tierBalanceOf(hookAddress, owner, tierId);
-            uint256 v4Balance = v4Store.tierBalanceOf(v4HookAddress, owner, tierId);
-            
-            require(
-                v5Balance == v4Balance,
-                string.concat(
-                    "tierBalanceOf mismatch: owner=",
-                    _addressToString(owner),
-                    " tierId=",
-                    _uint256ToString(tierId),
-                    " v5=",
-                    _uint256ToString(v5Balance),
-                    " v4=",
-                    _uint256ToString(v4Balance)
-                )
-            );
-        }
-        
-        console.log("All tierBalanceOf checks passed!");
-    }
-    
-    /// @notice Verify that migration contracts don't own any NFTs
-    /// @param hookAddress The v5 hook address
-    /// @param migrationContracts Array of migration contract addresses to check
-    function _verifyMigrationContractsEmpty(
-        address hookAddress,
-        address[] memory migrationContracts
-    ) internal view {
-        IERC721 hook = IERC721(hookAddress);
-        
-        console.log("Verifying migration contracts don't own any NFTs...");
-        
-        for (uint256 i = 0; i < migrationContracts.length; i++) {
-            address migrationContract = migrationContracts[i];
-            uint256 balance = hook.balanceOf(migrationContract);
-            
-            require(
-                balance == 0,
-                string.concat(
-                    "Migration contract still owns NFTs: contract=",
-                    _addressToString(migrationContract),
-                    " balance=",
-                    _uint256ToString(balance)
-                )
-            );
-        }
-        
-        console.log("All migration contracts verified empty!");
-    }
-    
-    /// @notice Helper function to convert address to string
-    function _addressToString(address addr) internal pure returns (string memory) {
-        bytes32 value = bytes32(uint256(uint160(addr)));
-        bytes memory alphabet = "0123456789abcdef";
-        bytes memory str = new bytes(42);
-        str[0] = '0';
-        str[1] = 'x';
-        for (uint256 i = 0; i < 20; i++) {
-            str[2+i*2] = alphabet[uint8(value[i + 12] >> 4)];
-            str[3+i*2] = alphabet[uint8(value[i + 12] & 0x0f)];
-        }
-        return string(str);
-    }
-    
-    /// @notice Helper function to convert uint256 to string
-    function _uint256ToString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) {
-            return "0";
-        }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
     }
     
 }

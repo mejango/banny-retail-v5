@@ -72,6 +72,24 @@ function generateScriptForFile(inputFile, outputFile) {
         ethereumChunkTierIds.push(tierIds);
         if (index === 0) ethereumTierIds.push(...tierIds);
     });
+    
+    // Calculate UPC counts across all Ethereum chunks for unused assets
+    const ethereumUpcCounts = new Map();
+    ethereumChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            ethereumUpcCounts.set(upc, (ethereumUpcCounts.get(upc) || 0) + 1);
+        });
+    });
+    // Calculate unused assets tier IDs for Ethereum
+    const ethereumUnusedData = generateUnusedAssetsContract({ id: 1, name: 'Ethereum', numChunks: 3 }, ethereumItems, ethereumUpcCounts);
+    let ethereumUnusedTierIds = [];
+    if (ethereumUnusedData && ethereumUnusedData.unusedItems.length > 0) {
+        ethereumUnusedData.unusedItems.forEach(item => {
+            ethereumUnusedTierIds.push(item.upc);
+        });
+        ethereumChunkTierIds.push(ethereumUnusedTierIds);
+    }
 
     const baseTierIds = [];
     const baseChunkTierIds = [];
@@ -92,6 +110,24 @@ function generateScriptForFile(inputFile, outputFile) {
         baseChunkTierIds.push(tierIds);
         if (index === 0) baseTierIds.push(...tierIds);
     });
+    
+    // Calculate UPC counts across all Base chunks for unused assets
+    const baseUpcCounts = new Map();
+    baseChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            baseUpcCounts.set(upc, (baseUpcCounts.get(upc) || 0) + 1);
+        });
+    });
+    // Calculate unused assets tier IDs for Base
+    const baseUnusedData = generateUnusedAssetsContract({ id: 8453, name: 'Base', numChunks: 2 }, baseItems, baseUpcCounts);
+    let baseUnusedTierIds = [];
+    if (baseUnusedData && baseUnusedData.unusedItems.length > 0) {
+        baseUnusedData.unusedItems.forEach(item => {
+            baseUnusedTierIds.push(item.upc);
+        });
+        baseChunkTierIds.push(baseUnusedTierIds);
+    }
 
     // Build tier ID arrays for single-contract chains
     const optimismTierIds = [];
@@ -485,6 +521,37 @@ function generateContractVersion(items, tierIds = null) {
     }
     `;
             });
+            
+            // Generate transfer data function for unused assets (Ethereum and Base only)
+            if (chain.id === 1 || chain.id === 8453) {
+                // Calculate UPC counts across all chunks
+                const upcCounts = new Map();
+                chunks.forEach(chunk => {
+                    chunk.allItems.forEach(item => {
+                        const upc = item.metadata.upc;
+                        upcCounts.set(upc, (upcCounts.get(upc) || 0) + 1);
+                    });
+                });
+                
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcCounts);
+                if (unusedContractData && unusedContractData.unusedItems.length > 0) {
+                    const chunkIndex = chain.numChunks;
+                    transferDataFunctions += `
+    function _get${chain.name}TransferOwners${chunkIndex + 1}() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](${unusedContractData.unusedItems.length});
+        `;
+
+                    unusedContractData.unusedItems.forEach((item, index) => {
+                        transferDataFunctions += `
+        transferOwners[${index}] = ${toChecksumAddress(item.owner)};`;
+                    });
+
+                    transferDataFunctions += `
+        return transferOwners;
+    }
+    `;
+                }
+            }
         } else {
             // Single contract (no splitting)
         const transferData = buildTransferDataForChain(chainItems);
@@ -516,9 +583,11 @@ import {console} from "forge-std/console.sol";
 import {MigrationContractEthereum1} from "./MigrationContractEthereum1.sol";
 import {MigrationContractEthereum2} from "./MigrationContractEthereum2.sol";
 import {MigrationContractEthereum3} from "./MigrationContractEthereum3.sol";
+import {MigrationContractEthereum4} from "./MigrationContractEthereum4.sol";
 import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";
 import {MigrationContractBase1} from "./MigrationContractBase1.sol";
 import {MigrationContractBase2} from "./MigrationContractBase2.sol";
+import {MigrationContractBase3} from "./MigrationContractBase3.sol";
 import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
@@ -730,10 +799,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
-            // Ethereum - 3 chunks
-            ${tierIds.ethereumChunkTierIds.map((chunkTierIds, chunkIndex) => {
-                const varName = `tierIds${chunkIndex + 1}`;
-                return `
+            // Ethereum - 3 chunks (plus optional unused assets chunk)
+            ${(() => {
+                const regularChunks = tierIds.ethereumChunkTierIds.slice(0, 3);
+                const unusedChunk = tierIds.ethereumChunkTierIds.length > 3 ? tierIds.ethereumChunkTierIds[3] : null;
+                let code = '';
+                
+                // Generate code for regular chunks (1-3)
+                regularChunks.forEach((chunkTierIds, chunkIndex) => {
+                    const varName = `tierIds${chunkIndex + 1}`;
+                    code += `
             // Deploy and execute contract ${chunkIndex + 1}
             uint16[] memory ${varName} = new uint16[](${chunkTierIds.length});
             ${generateTierIdLoops(chunkTierIds, varName)}
@@ -753,7 +828,34 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract${chunkIndex + 1}.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             `;
-            }).join('')}
+                });
+                
+                // Generate code for unused assets chunk (4) if it exists
+                if (unusedChunk && unusedChunk.length > 0) {
+                    code += `
+            // Deploy and execute contract 4 (unused outfits/backgrounds)
+            uint16[] memory tierIds4 = new uint16[](${unusedChunk.length});
+            ${generateTierIdLoops(unusedChunk, 'tierIds4')}
+            address[] memory transferOwners4 = _getEthereumTransferOwners4();
+            MigrationContractEthereum4 migrationContract4 = new MigrationContractEthereum4(transferOwners4);
+            console.log("Ethereum migration contract 4 deployed at:", address(migrationContract4));
+            
+            // Mint chunk 4 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds4,
+                address(migrationContract4)
+            );
+            console.log("Minted", tierIds4.length, "tokens to contract 4");
+            
+            migrationContract4.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            `;
+                }
+                
+                return code;
+            })()}
         } else if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.optimismTierIds.length});
@@ -774,10 +876,16 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 8453) {
-            // Base - 2 chunks
-            ${tierIds.baseChunkTierIds.map((chunkTierIds, chunkIndex) => {
-                const varName = `tierIds${chunkIndex + 1}`;
-                return `
+            // Base - 2 chunks (plus optional unused assets chunk)
+            ${(() => {
+                const regularChunks = tierIds.baseChunkTierIds.slice(0, 2);
+                const unusedChunk = tierIds.baseChunkTierIds.length > 2 ? tierIds.baseChunkTierIds[2] : null;
+                let code = '';
+                
+                // Generate code for regular chunks (1-2)
+                regularChunks.forEach((chunkTierIds, chunkIndex) => {
+                    const varName = `tierIds${chunkIndex + 1}`;
+                    code += `
             // Deploy and execute contract ${chunkIndex + 1}
             uint16[] memory ${varName} = new uint16[](${chunkTierIds.length});
             ${generateTierIdLoops(chunkTierIds, varName)}
@@ -797,7 +905,34 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract${chunkIndex + 1}.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             `;
-            }).join('')}
+                });
+                
+                // Generate code for unused assets chunk (3) if it exists
+                if (unusedChunk && unusedChunk.length > 0) {
+                    code += `
+            // Deploy and execute contract 3 (unused outfits/backgrounds)
+            uint16[] memory tierIds3 = new uint16[](${unusedChunk.length});
+            ${generateTierIdLoops(unusedChunk, 'tierIds3')}
+            address[] memory transferOwners3 = _getBaseTransferOwners3();
+            MigrationContractBase3 migrationContract3 = new MigrationContractBase3(transferOwners3);
+            console.log("Base migration contract 3 deployed at:", address(migrationContract3));
+            
+            // Mint chunk 3 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds3,
+                address(migrationContract3)
+            );
+            console.log("Minted", tierIds3.length, "tokens to contract 3");
+            
+            migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            `;
+                }
+                
+                return code;
+            })()}
         } else if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.arbitrumTierIds.length});
@@ -1051,6 +1186,21 @@ function generateChainSpecificContracts(inputFile) {
                 
                 console.log(`Generated ${fileName} with ${chunk.bannies.length} Bannys to dress, ${chunk.allItems.length} items to transfer`);
             });
+            
+            // Generate unused assets contract for Ethereum and Base
+            if ((chain.id === 1 || chain.id === 8453) && chain.numChunks > 1) {
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcCounts);
+                
+                if (unusedContractData && unusedContractData.unusedItems.length > 0) {
+                    const fileName = chain.fileName.replace('.sol', `${chain.numChunks + 1}.sol`);
+                    const outputPath = path.join(__dirname, '..', fileName);
+                    fs.writeFileSync(outputPath, unusedContractData.contract);
+                    
+                    console.log(`Generated ${fileName} with ${unusedContractData.unusedItems.length} unused outfits/backgrounds to transfer`);
+                } else {
+                    console.log(`No unused assets found for ${chain.name}, skipping unused assets contract`);
+                }
+            }
         } else {
             // Single contract (no splitting)
         const contract = generateSingleChainContract(chain, chainItems);
@@ -1633,6 +1783,187 @@ contract MigrationContract${chain.name} {
     contract = contract.replace(/^                    }$/gm, '        }'); // Fix struct closing bracket indentation
 
     return contract;
+}
+
+function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers = new Map()) {
+    // Process data for this chain
+    const bannys = [];
+    const outfits = [];
+    const backgrounds = [];
+    
+    chainItems.forEach(item => {
+        const tokenId = item.metadata.tokenId;
+        const upc = item.metadata.upc;
+        const category = item.metadata.category;
+        const owner = toChecksumAddress(item.owner || (item.wallet ? item.wallet.address : '0x0000000000000000000000000000000000000000'));
+        
+        if (category === 0) {
+            // Banny body
+            bannys.push({
+                tokenId,
+                upc,
+                backgroundId: item.metadata.backgroundId || 0,
+                outfitIds: item.metadata.outfitIds || [],
+                owner
+            });
+        } else if (category === 1) {
+            // Background
+            backgrounds.push({
+                tokenId,
+                upc,
+                owner
+            });
+        } else {
+            // Outfit
+            outfits.push({
+                tokenId,
+                upc,
+                category,
+                owner
+            });
+        }
+    });
+    
+    // Collect all outfitIds and backgroundIds that are being used
+    const usedOutfitIds = new Set();
+    const usedBackgroundIds = new Set();
+    
+    bannys.forEach(banny => {
+        if (banny.backgroundId && banny.backgroundId !== 0) {
+            usedBackgroundIds.add(banny.backgroundId);
+        }
+        banny.outfitIds.forEach(outfitId => {
+            usedOutfitIds.add(outfitId);
+        });
+    });
+    
+    // Find unused outfits and backgrounds
+    const unusedOutfits = outfits.filter(outfit => !usedOutfitIds.has(outfit.tokenId));
+    const unusedBackgrounds = backgrounds.filter(bg => !usedBackgroundIds.has(bg.tokenId));
+    const unusedItems = [...unusedOutfits, ...unusedBackgrounds];
+    
+    // Filter out items with zero address owners
+    const unusedItemsWithOwners = unusedItems.filter(item => 
+        item.owner !== '0x0000000000000000000000000000000000000000'
+    );
+    
+    if (unusedItemsWithOwners.length === 0) {
+        return null; // No unused assets to migrate
+    }
+    
+    // Calculate tier ID quantities for unused items
+    const tierIdQuantities = new Map();
+    unusedItemsWithOwners.forEach(item => {
+        const upc = item.upc;
+        tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
+    });
+    
+    // Build transfer data array (in order of unused items)
+    const transferData = unusedItemsWithOwners.map((item, index) => ({
+        tokenIndex: index,
+        owner: item.owner,
+        tokenId: item.tokenId,
+        upc: item.upc
+    }));
+    
+    let contract = `// SPDX-License-Identifier: MIT
+pragma solidity 0.8.23;
+
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
+import {Banny721TokenUriResolver} from "../src/Banny721TokenUriResolver.sol";
+
+/// @notice Migration contract for ${chain.name} to handle standalone outfits and backgrounds
+/// that are not worn/used by any banny. These assets are minted to this contract
+/// and then transferred directly to their owners.
+contract MigrationContract${chain.name}${chain.numChunks + 1} {
+    address[] private transferOwners;
+    
+    constructor(address[] memory _transferOwners) {
+        transferOwners = _transferOwners;
+    }
+    
+    function executeMigration(
+        address hookAddress,
+        address resolverAddress,
+        address v4HookAddress,
+        address v4ResolverAddress,
+        address fallbackV4ResolverAddress
+    ) external {
+        
+        // Validate addresses
+        require(hookAddress != address(0), "Hook address not set");
+        require(resolverAddress != address(0), "Resolver address not set");
+        require(v4HookAddress != address(0), "V4 Hook address not set");
+        require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(fallbackV4ResolverAddress != address(0), "V4 fallback resolver address not set");
+        
+        JB721TiersHook hook = JB721TiersHook(hookAddress);
+        IERC721 v4Hook = IERC721(v4HookAddress);
+        
+        // ${chain.name} migration - Standalone outfits and backgrounds (${unusedItemsWithOwners.length} items)
+        // These are assets that are NOT being worn/used by any banny
+        
+        // Assets are already minted to this contract by the deployer
+        // Token IDs follow formula: upc * 1000000000 + unitNumber (unitNumber starts at 1 per UPC)
+        
+        // Generate token IDs in the same order as items appear (matching mint order)
+        uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
+        ${generateTokenIdArrayForUnused(unusedItemsWithOwners, tierIdQuantities, upcStartingUnitNumbers)}
+        
+        for (uint256 i = 0; i < transferOwners.length; i++) {
+            uint256 tokenId = generatedTokenIds[i];
+            // Verify V4 ownership before transferring V5
+            address v4Owner = v4Hook.ownerOf(tokenId);
+            require(v4Owner == transferOwners[i] || v4Owner == address(fallbackV4ResolverAddress), "V4/V5 ownership mismatch for token");
+            
+            // Skip transfer if V4 owner is the resolver (resolver holds these tokens, we shouldn't transfer to resolver)
+            if (v4Owner == address(v4ResolverAddress) || v4Owner == address(fallbackV4ResolverAddress)) {
+                // Token is held by resolver, skip transfer
+                continue;
+            }
+            
+            IERC721(address(hook)).safeTransferFrom(
+                address(this), 
+                transferOwners[i], 
+                tokenId
+            );
+        }
+    }
+}`;
+    
+    return {
+        contract,
+        transferData,
+        tierIdQuantities,
+        unusedItems: unusedItemsWithOwners
+    };
+}
+
+function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartingUnitNumbers) {
+    // Track current unitNumber for each UPC
+    const upcCounters = new Map();
+    
+    // Initialize counters from starting unit numbers
+    tierIdQuantities.forEach((quantity, upc) => {
+        const startingUnitNumber = upcStartingUnitNumbers.get(upc) || 1;
+        upcCounters.set(upc, startingUnitNumber);
+    });
+    
+    let code = '';
+    
+    unusedItems.forEach((item, index) => {
+        const upc = item.upc;
+        const currentCounter = upcCounters.get(upc) || 1;
+        const tokenId = upc * 1000000000 + currentCounter;
+        
+        code += `        generatedTokenIds[${index}] = ${tokenId}; // Token ID (V4: ${item.tokenId})\n`;
+        
+        // Increment counter for this UPC
+        upcCounters.set(upc, currentCounter + 1);
+    });
+    
+    return code;
 }
 
 // Run the script generation
