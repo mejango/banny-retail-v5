@@ -1928,17 +1928,24 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         // These are assets that are NOT being worn/used by any banny
         
         // Assets are already minted to this contract by the deployer
-        // Token IDs follow formula: upc * 1000000000 + unitNumber (unitNumber starts at 1 per UPC)
+        // Token IDs are the same for V4 and V5 (using original token IDs from V4)
         
-        // Generate token IDs in the same order as items appear (matching mint order)
-        uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
+        // Generate token IDs (V4 and V5 use the same token IDs)
+        uint256[] memory tokenIds = new uint256[](transferOwners.length);
         ${generateTokenIdArrayForUnused(unusedItemsWithOwners, tierIdQuantities, upcStartingUnitNumbers)}
         
         for (uint256 i = 0; i < transferOwners.length; i++) {
-            uint256 tokenId = generatedTokenIds[i];
-            // Verify V4 ownership before transferring V5
+            uint256 tokenId = tokenIds[i];
+            
+            // Verify V4 ownership before transferring V5 (V4 and V5 token IDs are the same)
             address v4Owner = v4Hook.ownerOf(tokenId);
-            require(v4Owner == transferOwners[i] || v4Owner == address(fallbackV4ResolverAddress), "V4/V5 ownership mismatch for token");
+            // Allow ownership by the expected owner or either resolver (resolver holds worn/used tokens)
+            require(
+                v4Owner == transferOwners[i] || 
+                v4Owner == address(v4ResolverAddress) || 
+                v4Owner == address(fallbackV4ResolverAddress), 
+                "V4/V5 ownership mismatch for token"
+            );
             
             // Skip transfer if V4 owner is the resolver (resolver holds these tokens, we shouldn't transfer to resolver)
             if (v4Owner == address(v4ResolverAddress) || v4Owner == address(fallbackV4ResolverAddress)) {
@@ -1946,6 +1953,7 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
                 continue;
             }
             
+            // Transfer using the same token ID
             IERC721(address(hook)).safeTransferFrom(
                 address(this), 
                 transferOwners[i], 
@@ -1964,26 +1972,12 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
 }
 
 function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartingUnitNumbers) {
-    // Track current unitNumber for each UPC
-    const upcCounters = new Map();
-    
-    // Initialize counters from starting unit numbers
-    tierIdQuantities.forEach((quantity, upc) => {
-        const startingUnitNumber = upcStartingUnitNumbers.get(upc) || 1;
-        upcCounters.set(upc, startingUnitNumber);
-    });
-    
     let code = '';
     
     unusedItems.forEach((item, index) => {
-        const upc = item.upc;
-        const currentCounter = upcCounters.get(upc) || 1;
-        const tokenId = upc * 1000000000 + currentCounter;
+        const tokenId = item.tokenId; // Use original token ID for both V4 and V5
         
-        code += `        generatedTokenIds[${index}] = ${tokenId}; // Token ID (V4: ${item.tokenId})\n`;
-        
-        // Increment counter for this UPC
-        upcCounters.set(upc, currentCounter + 1);
+        code += `        tokenIds[${index}] = ${tokenId}; // Token ID (same for V4 and V5)\n`;
     });
     
     return code;
