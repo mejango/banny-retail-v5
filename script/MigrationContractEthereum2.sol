@@ -206,6 +206,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000009
             );
@@ -231,6 +232,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000010
             );
@@ -253,6 +255,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000013
             );
@@ -278,6 +281,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000014
             );
@@ -301,6 +305,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000015
             );
@@ -323,6 +328,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000016
             );
@@ -347,6 +353,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000019
             );
@@ -369,6 +376,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000023
             );
@@ -392,6 +400,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000033
             );
@@ -417,6 +426,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000039
             );
@@ -439,6 +449,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000040
             );
@@ -465,6 +476,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000041
             );
@@ -488,6 +500,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000043
             );
@@ -511,6 +524,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000044
             );
@@ -534,6 +548,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000045
             );
@@ -557,6 +572,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000046
             );
@@ -580,6 +596,7 @@ contract MigrationContractEthereum2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000047
             );
@@ -589,6 +606,9 @@ contract MigrationContractEthereum2 {
         // Step 3: Transfer all assets to rightful owners using constructor data
         // Generate token IDs in the same order as items appear (matching mint order)
         // Token ID format: UPC * 1000000000 + unitNumber
+        // Note: Only banny body token IDs are guaranteed to match between V4 and V5.
+        // Outfits/backgrounds being worn by bannys may have different IDs, but that's OK
+        // since they're not transferred (only used in decorateBannyWith calls).
         uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
         
         generatedTokenIds[0] = 4000000008; // Token ID (V4: 4000000008)

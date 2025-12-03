@@ -197,6 +197,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000045
             );
@@ -219,6 +220,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000046
             );
@@ -243,6 +245,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000048
             );
@@ -265,6 +268,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000049
             );
@@ -290,6 +294,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000050
             );
@@ -312,6 +317,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000054
             );
@@ -337,6 +343,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000073
             );
@@ -361,6 +368,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000079
             );
@@ -385,6 +393,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000080
             );
@@ -410,6 +419,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000081
             );
@@ -432,6 +442,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000082
             );
@@ -455,6 +466,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000084
             );
@@ -477,6 +489,7 @@ contract MigrationContractBase2 {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000085
             );
@@ -486,6 +499,9 @@ contract MigrationContractBase2 {
         // Step 3: Transfer all assets to rightful owners using constructor data
         // Generate token IDs in the same order as items appear (matching mint order)
         // Token ID format: UPC * 1000000000 + unitNumber
+        // Note: Only banny body token IDs are guaranteed to match between V4 and V5.
+        // Outfits/backgrounds being worn by bannys may have different IDs, but that's OK
+        // since they're not transferred (only used in decorateBannyWith calls).
         uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
         
         generatedTokenIds[0] = 4000000042; // Token ID (V4: 4000000042)

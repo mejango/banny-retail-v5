@@ -449,6 +449,8 @@ function generateTokenIdArray(chainItems, transferData, tierIdQuantities, upcSta
     });
 
     // Generate token IDs for each item in transfer order using the formula
+    // Note: Only banny body token IDs are guaranteed to match between V4 and V5.
+    // Outfits/backgrounds being worn may have different IDs, but they're not transferred.
     let code = '';
 
     itemsForTransfer.forEach((item, index) => {
@@ -1492,6 +1494,7 @@ contract MigrationContract${chain.name}${chunkIndex} {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 ${banny.tokenId}
             );
@@ -1507,6 +1510,9 @@ contract MigrationContract${chain.name}${chunkIndex} {
         // Step 3: Transfer all assets to rightful owners using constructor data
         // Generate token IDs in the same order as items appear (matching mint order)
         // Token ID format: UPC * 1000000000 + unitNumber
+        // Note: Only banny body token IDs are guaranteed to match between V4 and V5.
+        // Outfits/backgrounds being worn by bannys may have different IDs, but that's OK
+        // since they're not transferred (only used in decorateBannyWith calls).
         uint256[] memory generatedTokenIds = new uint256[](transferOwners.length);
         ${generateTokenIdArray(chunkItems, transferData, tierIdQuantities, upcStartingUnitNumbers)}
         
@@ -1788,6 +1794,7 @@ contract MigrationContract${chain.name} {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 ${banny.tokenId}
             );
@@ -1974,17 +1981,20 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         // These are assets that are NOT being worn/used by any banny
         
         // Assets are already minted to this contract by the deployer
-        // Token IDs are the same for V4 and V5 (using original token IDs from V4)
+        // V5 token IDs are calculated based on mint order (continuing from previous chunks)
+        // V4 token IDs are the original token IDs from V4
         
-        // Generate token IDs (V4 and V5 use the same token IDs)
-        uint256[] memory tokenIds = new uint256[](transferOwners.length);
+        // Generate token IDs - store both V5 minted token IDs and original V4 token IDs
+        uint256[] memory v5TokenIds = new uint256[](transferOwners.length);
+        uint256[] memory v4TokenIds = new uint256[](transferOwners.length);
         ${generateTokenIdArrayForUnused(unusedItemsWithOwners, tierIdQuantities, upcStartingUnitNumbers)}
         
         for (uint256 i = 0; i < transferOwners.length; i++) {
-            uint256 tokenId = tokenIds[i];
+            uint256 v5TokenId = v5TokenIds[i];
+            uint256 v4TokenId = v4TokenIds[i];
             
-            // Verify V4 ownership before transferring V5 (V4 and V5 token IDs are the same)
-            address v4Owner = v4Hook.ownerOf(tokenId);
+            // Verify V4 ownership using the original V4 token ID
+            address v4Owner = v4Hook.ownerOf(v4TokenId);
             // Allow ownership by the expected owner or either resolver (resolver holds worn/used tokens)
             require(
                 v4Owner == transferOwners[i] || 
@@ -1999,14 +2009,14 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
                 continue;
             }
             
-            // Verify this contract owns the token before transferring
-            require(hook.ownerOf(tokenId) == address(this), "Contract does not own token");
+            // Verify this contract owns the V5 token before transferring
+            require(hook.ownerOf(v5TokenId) == address(this), "Contract does not own token");
             
-            // Transfer using the same token ID (V4 and V5 are the same)
+            // Transfer using the minted V5 token ID
             IERC721(address(hook)).safeTransferFrom(
                 address(this), 
                 transferOwners[i], 
-                tokenId
+                v5TokenId
             );
         }
     }
@@ -2053,18 +2063,20 @@ function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartin
     });
     
     // Generate code in the order of unusedItems (transfer order)
-    // The minted token IDs should match the original V4 token IDs
+    // Store both V5 minted token IDs and original V4 token IDs
     let code = '';
     unusedItems.forEach((item, index) => {
         const mintedTokenId = itemToMintedTokenId.get(item);
         const v4TokenId = item.tokenId;
         
         if (mintedTokenId) {
-            // Use the calculated minted token ID (which should match V4 token ID)
-            code += `        tokenIds[${index}] = ${mintedTokenId}; // Token ID (V4: ${v4TokenId}, should match)\n`;
+            // Store both V5 minted token ID and original V4 token ID
+            code += `        v5TokenIds[${index}] = ${mintedTokenId}; // Minted V5 Token ID\n`;
+            code += `        v4TokenIds[${index}] = ${v4TokenId}; // Original V4 Token ID\n`;
         } else {
-            // Fallback: use V4 token ID (shouldn't happen)
-            code += `        tokenIds[${index}] = ${v4TokenId}; // Fallback: V4 token ID\n`;
+            // Fallback: use V4 token ID for both (shouldn't happen)
+            code += `        v5TokenIds[${index}] = ${v4TokenId}; // Fallback: V4 token ID\n`;
+            code += `        v4TokenIds[${index}] = ${v4TokenId}; // Fallback: V4 token ID\n`;
         }
     });
     

@@ -159,6 +159,7 @@ contract MigrationContractArbitrum {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 3000000001
             );
@@ -183,6 +184,7 @@ contract MigrationContractArbitrum {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000003
             );
@@ -206,6 +208,7 @@ contract MigrationContractArbitrum {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000004
             );
@@ -229,6 +232,7 @@ contract MigrationContractArbitrum {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000005
             );
@@ -253,6 +257,7 @@ contract MigrationContractArbitrum {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000007
             );
@@ -275,6 +280,7 @@ contract MigrationContractArbitrum {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000009
             );

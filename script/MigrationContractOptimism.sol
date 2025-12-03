@@ -114,6 +114,7 @@ contract MigrationContractOptimism {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 3000000001
             );
@@ -136,6 +137,7 @@ contract MigrationContractOptimism {
                 resolver,
                 v4Resolver,
                 fallbackV4Resolver,
+                address(hook),
                 v4HookAddress,
                 4000000001
             );
