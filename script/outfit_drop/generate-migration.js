@@ -73,16 +73,25 @@ function generateScriptForFile(inputFile, outputFile) {
         if (index === 0) ethereumTierIds.push(...tierIds);
     });
     
-    // Calculate UPC counts across all Ethereum chunks for unused assets
-    const ethereumUpcCounts = new Map();
+    // Collect all token IDs already processed in Ethereum chunks 1-3
+    // These should NOT be included in MigrationContractEthereum4
+    const ethereumProcessedTokenIds = new Set();
     ethereumChunks.forEach(chunk => {
         chunk.allItems.forEach(item => {
-            const upc = item.metadata.upc;
-            ethereumUpcCounts.set(upc, (ethereumUpcCounts.get(upc) || 0) + 1);
+            const tokenId = item.metadata.tokenId;
+            ethereumProcessedTokenIds.add(Number(tokenId));
         });
     });
+    
+    // Calculate UPC counts from ALL Ethereum items (not just chunks) for unused assets
+    // This ensures we have accurate counts including unused outfits/backgrounds
+    const ethereumUpcCounts = new Map();
+    ethereumItems.forEach(item => {
+        const upc = item.metadata.upc;
+        ethereumUpcCounts.set(upc, (ethereumUpcCounts.get(upc) || 0) + 1);
+    });
     // Calculate unused assets tier IDs for Ethereum
-    const ethereumUnusedData = generateUnusedAssetsContract({ id: 1, name: 'Ethereum', numChunks: 3 }, ethereumItems, ethereumUpcCounts);
+    const ethereumUnusedData = generateUnusedAssetsContract({ id: 1, name: 'Ethereum', numChunks: 3 }, ethereumItems, ethereumUpcCounts, ethereumProcessedTokenIds);
     let ethereumUnusedTierIds = [];
     if (ethereumUnusedData && ethereumUnusedData.unusedItems.length > 0) {
         ethereumUnusedData.unusedItems.forEach(item => {
@@ -111,16 +120,25 @@ function generateScriptForFile(inputFile, outputFile) {
         if (index === 0) baseTierIds.push(...tierIds);
     });
     
-    // Calculate UPC counts across all Base chunks for unused assets
-    const baseUpcCounts = new Map();
+    // Collect all token IDs already processed in Base chunks 1-2
+    // These should NOT be included in MigrationContractBase3
+    const baseProcessedTokenIds = new Set();
     baseChunks.forEach(chunk => {
         chunk.allItems.forEach(item => {
-            const upc = item.metadata.upc;
-            baseUpcCounts.set(upc, (baseUpcCounts.get(upc) || 0) + 1);
+            const tokenId = item.metadata.tokenId;
+            baseProcessedTokenIds.add(Number(tokenId));
         });
     });
+    
+    // Calculate UPC counts from ALL Base items (not just chunks) for unused assets
+    // This ensures we have accurate counts including unused outfits/backgrounds
+    const baseUpcCounts = new Map();
+    baseItems.forEach(item => {
+        const upc = item.metadata.upc;
+        baseUpcCounts.set(upc, (baseUpcCounts.get(upc) || 0) + 1);
+    });
     // Calculate unused assets tier IDs for Base
-    const baseUnusedData = generateUnusedAssetsContract({ id: 8453, name: 'Base', numChunks: 2 }, baseItems, baseUpcCounts);
+    const baseUnusedData = generateUnusedAssetsContract({ id: 8453, name: 'Base', numChunks: 2 }, baseItems, baseUpcCounts, baseProcessedTokenIds);
     let baseUnusedTierIds = [];
     if (baseUnusedData && baseUnusedData.unusedItems.length > 0) {
         baseUnusedData.unusedItems.forEach(item => {
@@ -524,16 +542,24 @@ function generateContractVersion(items, tierIds = null) {
             
             // Generate transfer data function for unused assets (Ethereum and Base only)
             if (chain.id === 1 || chain.id === 8453) {
-                // Calculate UPC counts across all chunks
-                const upcCounts = new Map();
+                // Collect all token IDs already processed in chunks 1-3 (or 1-2 for Base)
+                const processedTokenIds = new Set();
                 chunks.forEach(chunk => {
                     chunk.allItems.forEach(item => {
-                        const upc = item.metadata.upc;
-                        upcCounts.set(upc, (upcCounts.get(upc) || 0) + 1);
+                        const tokenId = item.metadata.tokenId;
+                        processedTokenIds.add(Number(tokenId));
                     });
                 });
                 
-                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcCounts);
+                // Calculate UPC counts from ALL chain items (not just chunks) for unused assets
+                // This ensures we have accurate counts including unused outfits/backgrounds
+                const upcCounts = new Map();
+                chainItems.forEach(item => {
+                    const upc = item.metadata.upc;
+                    upcCounts.set(upc, (upcCounts.get(upc) || 0) + 1);
+                });
+                
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcCounts, processedTokenIds);
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
                     const chunkIndex = chain.numChunks;
                     transferDataFunctions += `
@@ -1189,7 +1215,24 @@ function generateChainSpecificContracts(inputFile) {
             
             // Generate unused assets contract for Ethereum and Base
             if ((chain.id === 1 || chain.id === 8453) && chain.numChunks > 1) {
-                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcCounts);
+                // Collect all token IDs already processed in chunks 1-3 (or 1-2 for Base)
+                const processedTokenIds = new Set();
+                chunks.forEach(chunk => {
+                    chunk.allItems.forEach(item => {
+                        const tokenId = item.metadata.tokenId;
+                        processedTokenIds.add(Number(tokenId));
+                    });
+                });
+                
+                // Calculate UPC counts from ALL chain items (not just chunks) for unused assets
+                // This ensures we have accurate counts including unused outfits/backgrounds
+                const allItemsUpcCounts = new Map();
+                chainItems.forEach(item => {
+                    const upc = item.metadata.upc;
+                    allItemsUpcCounts.set(upc, (allItemsUpcCounts.get(upc) || 0) + 1);
+                });
+                
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, allItemsUpcCounts, processedTokenIds);
                 
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
                     const fileName = chain.fileName.replace('.sol', `${chain.numChunks + 1}.sol`);
@@ -1785,7 +1828,7 @@ contract MigrationContract${chain.name} {
     return contract;
 }
 
-function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers = new Map()) {
+function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers = new Map(), processedTokenIds = new Set()) {
     // Process data for this chain
     const bannys = [];
     const outfits = [];
@@ -1845,10 +1888,12 @@ function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers 
     
     // Find unused outfits and backgrounds
     // Also filter out items owned by resolver (these are being worn/used)
+    // AND filter out items already processed in chunks 1-3 (or 1-2 for Base)
     const unusedOutfits = outfits.filter(outfit => {
         const tokenId = Number(outfit.tokenId);
         const owner = outfit.owner.toLowerCase();
         return !usedOutfitIds.has(tokenId) &&
+               !processedTokenIds.has(tokenId) && // Exclude items already processed in chunks 1-3
                owner !== '0x0000000000000000000000000000000000000000' &&
                owner !== v4ResolverAddress.toLowerCase() &&
                owner !== v4ResolverFallback.toLowerCase();
@@ -1858,6 +1903,7 @@ function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers 
         const tokenId = Number(bg.tokenId);
         const owner = bg.owner.toLowerCase();
         return !usedBackgroundIds.has(tokenId) &&
+               !processedTokenIds.has(tokenId) && // Exclude items already processed in chunks 1-3
                owner !== '0x0000000000000000000000000000000000000000' &&
                owner !== v4ResolverAddress.toLowerCase() &&
                owner !== v4ResolverFallback.toLowerCase();
