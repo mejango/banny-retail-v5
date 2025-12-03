@@ -1187,9 +1187,15 @@ function generateChainSpecificContracts(inputFile) {
         { id: 421614, name: 'ArbitrumSepolia', fileName: 'MigrationContractArbitrumSepolia.sol', numChunks: 1 }
     ];
 
+    // Track total items processed per chain for verification
+    const chainTotals = new Map();
+    
     chains.forEach(chain => {
         const chainItems = items.filter(item => item.chainId === chain.id);
         console.log(`Processing chain ${chain.id} (${chain.name}): ${chainItems.length} items`);
+        
+        // Store total items for this chain
+        chainTotals.set(chain.id, { total: chainItems.length, processed: 0 });
 
         if (chainItems.length === 0) {
             console.log(`Skipping ${chain.name} - no items found`);
@@ -1235,6 +1241,10 @@ function generateChainSpecificContracts(inputFile) {
                 fs.writeFileSync(outputPath, contract);
                 
                 console.log(`Generated ${fileName} with ${chunk.bannies.length} Bannys to dress, ${chunk.allItems.length} items to transfer`);
+                
+                // Track items processed in this chunk
+                const chainTotal = chainTotals.get(chain.id);
+                chainTotal.processed += chunk.allItems.length;
             });
             
             // Generate unused assets contract for Ethereum and Base
@@ -1264,7 +1274,13 @@ function generateChainSpecificContracts(inputFile) {
                     upcStartingUnitNumbersMap.set(upc, count + 1);
                 });
                 
-                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbersMap, processedTokenIds);
+                // Calculate total items processed in chunks for filtered count
+                let totalProcessedInChunks = 0;
+                chunks.forEach(chunk => {
+                    totalProcessedInChunks += chunk.allItems.length;
+                });
+                
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbersMap, processedTokenIds, totalProcessedInChunks);
                 
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
                     const fileName = chain.fileName.replace('.sol', `${chain.numChunks + 1}.sol`);
@@ -1272,6 +1288,15 @@ function generateChainSpecificContracts(inputFile) {
                     fs.writeFileSync(outputPath, unusedContractData.contract);
                     
                     console.log(`Generated ${fileName} with ${unusedContractData.unusedItems.length} unused outfits/backgrounds to transfer`);
+                    
+                    // Track unused items processed
+                    const chainTotal = chainTotals.get(chain.id);
+                    chainTotal.processed += unusedContractData.unusedItems.length;
+                    
+                    // Report filtered items for debugging
+                    if (unusedContractData.filteredCount > 0) {
+                        console.log(`  (${unusedContractData.filteredCount} items filtered out: resolver-owned, zero-address, or already processed)`);
+                    }
                 } else {
                     console.log(`No unused assets found for ${chain.name}, skipping unused assets contract`);
                 }
@@ -1285,8 +1310,33 @@ function generateChainSpecificContracts(inputFile) {
         fs.writeFileSync(outputPath, contract);
 
         console.log(`Generated ${chain.fileName} with ${chainItems.length} items`);
+        
+        // Track items processed
+        const chainTotal = chainTotals.get(chain.id);
+        chainTotal.processed += chainItems.length;
         }
     });
+    
+    // Verify all items from raw.json were processed
+    console.log(`\n=== Verification Summary ===`);
+    let allChainsValid = true;
+    chainTotals.forEach((totals, chainId) => {
+        const chain = chains.find(c => c.id === chainId);
+        const chainName = chain ? chain.name : `Chain ${chainId}`;
+        if (totals.total !== totals.processed) {
+            console.error(`❌ ${chainName}: Expected ${totals.total} items, but processed ${totals.processed} items`);
+            allChainsValid = false;
+        } else {
+            console.log(`✅ ${chainName}: All ${totals.total} items accounted for`);
+        }
+    });
+    
+    if (!allChainsValid) {
+        console.error(`\n⚠️  WARNING: Some items from raw.json were not processed!`);
+        process.exit(1);
+    } else {
+        console.log(`\n✅ All items from raw.json are accounted for across all migration contracts`);
+    }
 }
 
 function generateChunkContract(chain, chainItems, chunk, chunkIndex, totalChunks, upcStartingUnitNumbers = new Map()) {
@@ -1901,7 +1951,7 @@ contract MigrationContract${chain.name} {
     return contract;
 }
 
-function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers = new Map(), processedTokenIds = new Set()) {
+function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers = new Map(), processedTokenIds = new Set(), totalProcessedInChunks = 0) {
     // Process data for this chain
     const bannys = [];
     const outfits = [];
@@ -1988,6 +2038,13 @@ function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers 
     const unusedItemsWithOwners = unusedItems.filter(item => 
         item.owner !== '0x0000000000000000000000000000000000000000'
     );
+    
+    // Calculate how many items were filtered out
+    // Total items in raw.json for this chain = chainItems.length
+    // Processed in chunks = totalProcessedInChunks (passed as parameter)
+    // Unused items = unusedItemsWithOwners.length
+    // Filtered = total - processed in chunks - unused items
+    const filteredCount = chainItems.length - totalProcessedInChunks - unusedItemsWithOwners.length;
     
     // Validate that all items have valid token IDs
     // If a token ID is in raw.json but doesn't exist in V4, this indicates a data issue
@@ -2082,7 +2139,6 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         ${generateTokenIdArrayForUnused(sortedUnusedItems, tierIdQuantities, upcStartingUnitNumbers)}
         
         uint256 successfulTransfers = 0;
-        uint256 skippedResolverOwned = 0;
         
         for (uint256 i = 0; i < transferOwners.length; i++) {
             uint256 v5TokenId = v5TokenIds[i];
@@ -2091,20 +2147,17 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
             // Verify V4 ownership using the original V4 token ID
             // This will revert if the token doesn't exist, which indicates a data issue
             address v4Owner = v4Hook.ownerOf(v4TokenId);
-            // Allow ownership by the expected owner or either resolver (resolver holds worn/used tokens)
+            
+            // If V4 owner is the resolver, this token is being worn/used and shouldn't be in unused assets contract
+            // This indicates a data inconsistency - revert to catch the issue
             require(
-                v4Owner == transferOwners[i] || 
-                v4Owner == address(v4ResolverAddress) || 
-                v4Owner == address(fallbackV4ResolverAddress), 
-                "V4/V5 ownership mismatch for token"
+                v4Owner != address(v4ResolverAddress) && 
+                v4Owner != address(fallbackV4ResolverAddress),
+                "Token owned by resolver in V4 - should not be in unused assets contract"
             );
             
-            // Skip transfer if V4 owner is the resolver (resolver holds these tokens, we shouldn't transfer to resolver)
-            if (v4Owner == address(v4ResolverAddress) || v4Owner == address(fallbackV4ResolverAddress)) {
-                // Token is held by resolver, skip transfer
-                skippedResolverOwned++;
-                continue;
-            }
+            // Verify V4 owner matches expected owner
+            require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
             
             // Verify this contract owns the V5 token before transferring
             require(hook.ownerOf(v5TokenId) == address(this), "Contract does not own token");
@@ -2118,10 +2171,10 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
             successfulTransfers++;
         }
         
-        // Verify all expected items were processed (transferred or skipped as expected)
+        // Verify all expected items were transferred
         require(
-            successfulTransfers + skippedResolverOwned == transferOwners.length,
-            "Not all items were processed"
+            successfulTransfers == transferOwners.length,
+            "Not all items were transferred"
         );
         
         // Final verification: Ensure this contract no longer owns any tokens
@@ -2134,7 +2187,8 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         contract,
         transferData,
         tierIdQuantities,
-        unusedItems: sortedUnusedItems
+        unusedItems: sortedUnusedItems,
+        filteredCount: filteredCount
     };
 }
 

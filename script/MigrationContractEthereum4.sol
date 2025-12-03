@@ -606,7 +606,6 @@ contract MigrationContractEthereum4 {
 
         
         uint256 successfulTransfers = 0;
-        uint256 skippedResolverOwned = 0;
         
         for (uint256 i = 0; i < transferOwners.length; i++) {
             uint256 v5TokenId = v5TokenIds[i];
@@ -615,20 +614,17 @@ contract MigrationContractEthereum4 {
             // Verify V4 ownership using the original V4 token ID
             // This will revert if the token doesn't exist, which indicates a data issue
             address v4Owner = v4Hook.ownerOf(v4TokenId);
-            // Allow ownership by the expected owner or either resolver (resolver holds worn/used tokens)
+            
+            // If V4 owner is the resolver, this token is being worn/used and shouldn't be in unused assets contract
+            // This indicates a data inconsistency - revert to catch the issue
             require(
-                v4Owner == transferOwners[i] || 
-                v4Owner == address(v4ResolverAddress) || 
-                v4Owner == address(fallbackV4ResolverAddress), 
-                "V4/V5 ownership mismatch for token"
+                v4Owner != address(v4ResolverAddress) && 
+                v4Owner != address(fallbackV4ResolverAddress),
+                "Token owned by resolver in V4 - should not be in unused assets contract"
             );
             
-            // Skip transfer if V4 owner is the resolver (resolver holds these tokens, we shouldn't transfer to resolver)
-            if (v4Owner == address(v4ResolverAddress) || v4Owner == address(fallbackV4ResolverAddress)) {
-                // Token is held by resolver, skip transfer
-                skippedResolverOwned++;
-                continue;
-            }
+            // Verify V4 owner matches expected owner
+            require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
             
             // Verify this contract owns the V5 token before transferring
             require(hook.ownerOf(v5TokenId) == address(this), "Contract does not own token");
@@ -642,10 +638,10 @@ contract MigrationContractEthereum4 {
             successfulTransfers++;
         }
         
-        // Verify all expected items were processed (transferred or skipped as expected)
+        // Verify all expected items were transferred
         require(
-            successfulTransfers + skippedResolverOwned == transferOwners.length,
-            "Not all items were processed"
+            successfulTransfers == transferOwners.length,
+            "Not all items were transferred"
         );
         
         // Final verification: Ensure this contract no longer owns any tokens
