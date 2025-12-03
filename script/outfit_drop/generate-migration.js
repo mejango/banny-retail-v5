@@ -1999,7 +1999,10 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
                 continue;
             }
             
-            // Transfer using the same token ID
+            // Verify this contract owns the token before transferring
+            require(hook.ownerOf(tokenId) == address(this), "Contract does not own token");
+            
+            // Transfer using the same token ID (V4 and V5 are the same)
             IERC721(address(hook)).safeTransferFrom(
                 address(this), 
                 transferOwners[i], 
@@ -2018,12 +2021,51 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
 }
 
 function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartingUnitNumbers) {
-    let code = '';
+    // Build mapping from unused items to their minted token IDs
+    // Tokens are minted in UPC-sorted order, and token IDs continue from previous chunks
+    // Formula: upc * 1000000000 + unitNumber (where unitNumber continues from previous chunks)
+    const upcCounters = new Map();
+    const itemToMintedTokenId = new Map();
     
-    unusedItems.forEach((item, index) => {
-        const tokenId = item.tokenId; // Use original token ID for both V4 and V5
+    // Sort unused items by UPC to match mint order
+    const sortedByUpc = [...unusedItems].sort((a, b) => {
+        if (a.upc !== b.upc) {
+            return a.upc - b.upc;
+        }
+        // Within same UPC, maintain original order
+        return unusedItems.indexOf(a) - unusedItems.indexOf(b);
+    });
+    
+    // Calculate minted token IDs based on mint order
+    sortedByUpc.forEach(item => {
+        const upc = item.upc;
+        const counter = (upcCounters.get(upc) || 0) + 1;
+        upcCounters.set(upc, counter);
         
-        code += `        tokenIds[${index}] = ${tokenId}; // Token ID (same for V4 and V5)\n`;
+        // Calculate the actual minted token ID
+        // unitNumber = startingUnitNumber (from previous chunks) + counter - 1
+        const startingUnitNumber = upcStartingUnitNumbers.get(upc) || 1;
+        const unitNumber = startingUnitNumber + counter - 1;
+        const mintedTokenId = upc * 1000000000 + unitNumber;
+        
+        // Map the original item to its minted token ID
+        itemToMintedTokenId.set(item, mintedTokenId);
+    });
+    
+    // Generate code in the order of unusedItems (transfer order)
+    // The minted token IDs should match the original V4 token IDs
+    let code = '';
+    unusedItems.forEach((item, index) => {
+        const mintedTokenId = itemToMintedTokenId.get(item);
+        const v4TokenId = item.tokenId;
+        
+        if (mintedTokenId) {
+            // Use the calculated minted token ID (which should match V4 token ID)
+            code += `        tokenIds[${index}] = ${mintedTokenId}; // Token ID (V4: ${v4TokenId}, should match)\n`;
+        } else {
+            // Fallback: use V4 token ID (shouldn't happen)
+            code += `        tokenIds[${index}] = ${v4TokenId}; // Fallback: V4 token ID\n`;
+        }
     });
     
     return code;
