@@ -1830,19 +1830,42 @@ function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers 
     
     bannys.forEach(banny => {
         if (banny.backgroundId && banny.backgroundId !== 0) {
-            usedBackgroundIds.add(banny.backgroundId);
+            // Ensure consistent type (number) for Set comparison
+            usedBackgroundIds.add(Number(banny.backgroundId));
         }
         banny.outfitIds.forEach(outfitId => {
-            usedOutfitIds.add(outfitId);
+            // Ensure consistent type (number) for Set comparison
+            usedOutfitIds.add(Number(outfitId));
         });
     });
     
+    // V4 resolver addresses - items owned by these are being worn/used, so exclude them
+    const v4ResolverAddress = '0xa5F8911d4CFd60a6697479f078409434424fe666';
+    const v4ResolverFallback = '0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3';
+    
     // Find unused outfits and backgrounds
-    const unusedOutfits = outfits.filter(outfit => !usedOutfitIds.has(outfit.tokenId));
-    const unusedBackgrounds = backgrounds.filter(bg => !usedBackgroundIds.has(bg.tokenId));
+    // Also filter out items owned by resolver (these are being worn/used)
+    const unusedOutfits = outfits.filter(outfit => {
+        const tokenId = Number(outfit.tokenId);
+        const owner = outfit.owner.toLowerCase();
+        return !usedOutfitIds.has(tokenId) &&
+               owner !== '0x0000000000000000000000000000000000000000' &&
+               owner !== v4ResolverAddress.toLowerCase() &&
+               owner !== v4ResolverFallback.toLowerCase();
+    });
+    
+    const unusedBackgrounds = backgrounds.filter(bg => {
+        const tokenId = Number(bg.tokenId);
+        const owner = bg.owner.toLowerCase();
+        return !usedBackgroundIds.has(tokenId) &&
+               owner !== '0x0000000000000000000000000000000000000000' &&
+               owner !== v4ResolverAddress.toLowerCase() &&
+               owner !== v4ResolverFallback.toLowerCase();
+    });
+    
     const unusedItems = [...unusedOutfits, ...unusedBackgrounds];
     
-    // Filter out items with zero address owners
+    // Filter out items with zero address owners (already filtered above, but keeping for clarity)
     const unusedItemsWithOwners = unusedItems.filter(item => 
         item.owner !== '0x0000000000000000000000000000000000000000'
     );
