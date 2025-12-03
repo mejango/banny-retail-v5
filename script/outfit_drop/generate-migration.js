@@ -83,15 +83,22 @@ function generateScriptForFile(inputFile, outputFile) {
         });
     });
     
-    // Calculate UPC counts from ALL Ethereum items (not just chunks) for unused assets
-    // This ensures we have accurate counts including unused outfits/backgrounds
-    const ethereumUpcCounts = new Map();
-    ethereumItems.forEach(item => {
-        const upc = item.metadata.upc;
-        ethereumUpcCounts.set(upc, (ethereumUpcCounts.get(upc) || 0) + 1);
+    // Calculate UPC counts from CHUNKS ONLY (not all items) to determine starting unit numbers
+    // This tells us how many tokens of each UPC were already minted in previous chunks
+    const ethereumUpcCountsFromChunks = new Map();
+    ethereumChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            ethereumUpcCountsFromChunks.set(upc, (ethereumUpcCountsFromChunks.get(upc) || 0) + 1);
+        });
+    });
+    // Convert counts to starting unit numbers (1-indexed, so add 1)
+    const ethereumUpcStartingUnitNumbers = new Map();
+    ethereumUpcCountsFromChunks.forEach((count, upc) => {
+        ethereumUpcStartingUnitNumbers.set(upc, count + 1);
     });
     // Calculate unused assets tier IDs for Ethereum
-    const ethereumUnusedData = generateUnusedAssetsContract({ id: 1, name: 'Ethereum', numChunks: 3 }, ethereumItems, ethereumUpcCounts, ethereumProcessedTokenIds);
+    const ethereumUnusedData = generateUnusedAssetsContract({ id: 1, name: 'Ethereum', numChunks: 3 }, ethereumItems, ethereumUpcStartingUnitNumbers, ethereumProcessedTokenIds);
     let ethereumUnusedTierIds = [];
     if (ethereumUnusedData && ethereumUnusedData.unusedItems.length > 0) {
         ethereumUnusedData.unusedItems.forEach(item => {
@@ -130,15 +137,22 @@ function generateScriptForFile(inputFile, outputFile) {
         });
     });
     
-    // Calculate UPC counts from ALL Base items (not just chunks) for unused assets
-    // This ensures we have accurate counts including unused outfits/backgrounds
-    const baseUpcCounts = new Map();
-    baseItems.forEach(item => {
-        const upc = item.metadata.upc;
-        baseUpcCounts.set(upc, (baseUpcCounts.get(upc) || 0) + 1);
+    // Calculate UPC counts from CHUNKS ONLY (not all items) to determine starting unit numbers
+    // This tells us how many tokens of each UPC were already minted in previous chunks
+    const baseUpcCountsFromChunks = new Map();
+    baseChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            baseUpcCountsFromChunks.set(upc, (baseUpcCountsFromChunks.get(upc) || 0) + 1);
+        });
+    });
+    // Convert counts to starting unit numbers (1-indexed, so add 1)
+    const baseUpcStartingUnitNumbers = new Map();
+    baseUpcCountsFromChunks.forEach((count, upc) => {
+        baseUpcStartingUnitNumbers.set(upc, count + 1);
     });
     // Calculate unused assets tier IDs for Base
-    const baseUnusedData = generateUnusedAssetsContract({ id: 8453, name: 'Base', numChunks: 2 }, baseItems, baseUpcCounts, baseProcessedTokenIds);
+    const baseUnusedData = generateUnusedAssetsContract({ id: 8453, name: 'Base', numChunks: 2 }, baseItems, baseUpcStartingUnitNumbers, baseProcessedTokenIds);
     let baseUnusedTierIds = [];
     if (baseUnusedData && baseUnusedData.unusedItems.length > 0) {
         baseUnusedData.unusedItems.forEach(item => {
@@ -553,15 +567,23 @@ function generateContractVersion(items, tierIds = null) {
                     });
                 });
                 
-                // Calculate UPC counts from ALL chain items (not just chunks) for unused assets
-                // This ensures we have accurate counts including unused outfits/backgrounds
-                const upcCounts = new Map();
-                chainItems.forEach(item => {
-                    const upc = item.metadata.upc;
-                    upcCounts.set(upc, (upcCounts.get(upc) || 0) + 1);
+                // Calculate UPC counts from CHUNKS ONLY (not all items) to determine starting unit numbers
+                // This tells us how many tokens of each UPC were already minted in previous chunks
+                const upcCountsFromChunks = new Map();
+                chunks.forEach(chunk => {
+                    chunk.allItems.forEach(item => {
+                        const upc = item.metadata.upc;
+                        upcCountsFromChunks.set(upc, (upcCountsFromChunks.get(upc) || 0) + 1);
+                    });
+                });
+                // Convert counts to starting unit numbers (1-indexed, so add 1)
+                // If 6 tokens were minted, the next one should be unit number 7
+                const upcStartingUnitNumbers = new Map();
+                upcCountsFromChunks.forEach((count, upc) => {
+                    upcStartingUnitNumbers.set(upc, count + 1);
                 });
                 
-                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcCounts, processedTokenIds);
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers, processedTokenIds);
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
                     const chunkIndex = chain.numChunks;
                     transferDataFunctions += `
@@ -1226,15 +1248,23 @@ function generateChainSpecificContracts(inputFile) {
                     });
                 });
                 
-                // Calculate UPC counts from ALL chain items (not just chunks) for unused assets
-                // This ensures we have accurate counts including unused outfits/backgrounds
-                const allItemsUpcCounts = new Map();
-                chainItems.forEach(item => {
-                    const upc = item.metadata.upc;
-                    allItemsUpcCounts.set(upc, (allItemsUpcCounts.get(upc) || 0) + 1);
+                // Calculate UPC counts from CHUNKS ONLY (not all items) to determine starting unit numbers
+                // This tells us how many tokens of each UPC were already minted in previous chunks
+                const upcCountsFromChunks = new Map();
+                chunks.forEach(chunk => {
+                    chunk.allItems.forEach(item => {
+                        const upc = item.metadata.upc;
+                        upcCountsFromChunks.set(upc, (upcCountsFromChunks.get(upc) || 0) + 1);
+                    });
+                });
+                // Convert counts to starting unit numbers (1-indexed, so add 1)
+                // If 6 tokens were minted, the next one should be unit number 7
+                const upcStartingUnitNumbersMap = new Map();
+                upcCountsFromChunks.forEach((count, upc) => {
+                    upcStartingUnitNumbersMap.set(upc, count + 1);
                 });
                 
-                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, allItemsUpcCounts, processedTokenIds);
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbersMap, processedTokenIds);
                 
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
                     const fileName = chain.fileName.replace('.sol', `${chain.numChunks + 1}.sol`);
@@ -1923,19 +1953,45 @@ function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers 
         item.owner !== '0x0000000000000000000000000000000000000000'
     );
     
+    // Validate that all items have valid token IDs
+    // If a token ID is in raw.json but doesn't exist in V4, this indicates a data issue
+    const invalidItems = unusedItemsWithOwners.filter(item => {
+        // Token IDs should be positive numbers
+        const tokenId = Number(item.tokenId);
+        return !tokenId || tokenId <= 0 || isNaN(tokenId);
+    });
+    
+    if (invalidItems.length > 0) {
+        console.error(`ERROR: Found ${invalidItems.length} items with invalid token IDs in unused assets:`);
+        invalidItems.forEach(item => {
+            console.error(`  - Token ID: ${item.tokenId}, UPC: ${item.upc}, Owner: ${item.owner}`);
+        });
+        throw new Error(`Invalid token IDs found in unused assets. This indicates a data issue in raw.json.`);
+    }
+    
     if (unusedItemsWithOwners.length === 0) {
         return null; // No unused assets to migrate
     }
     
+    // Sort unused items by UPC to match mint order (same as in generateTokenIdArrayForUnused)
+    // This ensures transferOwners and token IDs are in the same order
+    const sortedUnusedItems = [...unusedItemsWithOwners].sort((a, b) => {
+        if (a.upc !== b.upc) {
+            return a.upc - b.upc;
+        }
+        // Within same UPC, maintain original order
+        return unusedItemsWithOwners.indexOf(a) - unusedItemsWithOwners.indexOf(b);
+    });
+    
     // Calculate tier ID quantities for unused items
     const tierIdQuantities = new Map();
-    unusedItemsWithOwners.forEach(item => {
+    sortedUnusedItems.forEach(item => {
         const upc = item.upc;
         tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
     });
     
-    // Build transfer data array (in order of unused items)
-    const transferData = unusedItemsWithOwners.map((item, index) => ({
+    // Build transfer data array (in sorted order to match token ID order)
+    const transferData = sortedUnusedItems.map((item, index) => ({
         tokenIndex: index,
         owner: item.owner,
         tokenId: item.tokenId,
@@ -1987,13 +2043,14 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         // Generate token IDs - store both V5 minted token IDs and original V4 token IDs
         uint256[] memory v5TokenIds = new uint256[](transferOwners.length);
         uint256[] memory v4TokenIds = new uint256[](transferOwners.length);
-        ${generateTokenIdArrayForUnused(unusedItemsWithOwners, tierIdQuantities, upcStartingUnitNumbers)}
+        ${generateTokenIdArrayForUnused(sortedUnusedItems, tierIdQuantities, upcStartingUnitNumbers)}
         
         for (uint256 i = 0; i < transferOwners.length; i++) {
             uint256 v5TokenId = v5TokenIds[i];
             uint256 v4TokenId = v4TokenIds[i];
             
             // Verify V4 ownership using the original V4 token ID
+            // This will revert if the token doesn't exist, which indicates a data issue
             address v4Owner = v4Hook.ownerOf(v4TokenId);
             // Allow ownership by the expected owner or either resolver (resolver holds worn/used tokens)
             require(
@@ -2026,7 +2083,7 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         contract,
         transferData,
         tierIdQuantities,
-        unusedItems: unusedItemsWithOwners
+        unusedItems: sortedUnusedItems
     };
 }
 
@@ -2038,11 +2095,12 @@ function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartin
     const itemToMintedTokenId = new Map();
     
     // Sort unused items by UPC to match mint order
+    // Note: unusedItems should already be sorted when passed in, but we sort again to be safe
     const sortedByUpc = [...unusedItems].sort((a, b) => {
         if (a.upc !== b.upc) {
             return a.upc - b.upc;
         }
-        // Within same UPC, maintain original order
+        // Within same UPC, maintain original order from the passed array
         return unusedItems.indexOf(a) - unusedItems.indexOf(b);
     });
     
@@ -2062,10 +2120,10 @@ function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartin
         itemToMintedTokenId.set(item, mintedTokenId);
     });
     
-    // Generate code in the order of unusedItems (transfer order)
+    // Generate code in the order of sortedByUpc (mint order) to match token ID calculation
     // Store both V5 minted token IDs and original V4 token IDs
     let code = '';
-    unusedItems.forEach((item, index) => {
+    sortedByUpc.forEach((item, index) => {
         const mintedTokenId = itemToMintedTokenId.get(item);
         const v4TokenId = item.tokenId;
         
