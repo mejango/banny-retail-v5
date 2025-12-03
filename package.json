@@ -31,6 +31,6 @@
         "keccak": "^3.0.4"
     },
     "devDependencies": {
-        "@sphinx-labs/plugins": "0.33.1"
+        "@sphinx-labs/plugins": "0.33.2"
     }
 }

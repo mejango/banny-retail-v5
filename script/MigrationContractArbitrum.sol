@@ -480,17 +480,38 @@ contract MigrationContractArbitrum {
         generatedTokenIds[185] = 49000000145; // Token ID (V4: 49000000145)
         generatedTokenIds[186] = 5000000003; // Token ID (V4: 5000000003)
         
+        uint256 successfulTransfers = 0;
+        uint256 skippedResolverOwned = 0;
+        
         for (uint256 i = 0; i < transferOwners.length; i++) {
             uint256 tokenId = generatedTokenIds[i];
             // Verify V4 ownership before transferring V5
             address v4Owner = v4Hook.ownerOf(tokenId);
             require(v4Owner == transferOwners[i] || v4Owner == address(fallbackV4ResolverAddress), "V4/V5 ownership mismatch for token");
             
+            // Skip transfer if V4 owner is the resolver (resolver holds these tokens, we shouldn't transfer to resolver)
+            if (v4Owner == address(v4ResolverAddress) || v4Owner == address(fallbackV4ResolverAddress)) {
+                // Token is held by resolver, skip transfer
+                skippedResolverOwned++;
+                continue;
+            }
+            
             IERC721(address(hook)).transferFrom(
                 address(this), 
                 transferOwners[i], 
                 tokenId
             );
+            successfulTransfers++;
         }
+        
+        // Verify all expected items were processed (transferred or skipped as expected)
+        require(
+            successfulTransfers + skippedResolverOwned == transferOwners.length,
+            "Not all items were processed"
+        );
+        
+        // Final verification: Ensure this contract no longer owns any tokens
+        // This ensures all transfers completed successfully and no tokens were left behind
+        require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
     }
 }

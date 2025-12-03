@@ -652,6 +652,9 @@ contract MigrationContractEthereum2 {
         generatedTokenIds[38] = 4000000046; // Token ID (V4: 4000000046)
         generatedTokenIds[39] = 4000000047; // Token ID (V4: 4000000047)
         
+        uint256 successfulTransfers = 0;
+        uint256 skippedResolverOwned = 0;
+        
         for (uint256 i = 0; i < transferOwners.length; i++) {
             uint256 tokenId = generatedTokenIds[i];
             // Verify V4 ownership before transferring V5
@@ -661,6 +664,7 @@ contract MigrationContractEthereum2 {
             // Skip transfer if V4 owner is the resolver (resolver holds these tokens, we shouldn't transfer to resolver)
             if (v4Owner == address(v4ResolverAddress) || v4Owner == address(fallbackV4ResolverAddress)) {
                 // Token is held by resolver, skip transfer
+                skippedResolverOwned++;
                 continue;
             }
             
@@ -669,6 +673,17 @@ contract MigrationContractEthereum2 {
                 transferOwners[i], 
                 tokenId
             );
+            successfulTransfers++;
         }
+        
+        // Verify all expected items were processed (transferred or skipped as expected)
+        require(
+            successfulTransfers + skippedResolverOwned == transferOwners.length,
+            "Not all items were processed"
+        );
+        
+        // Final verification: Ensure this contract no longer owns any tokens
+        // This ensures all transfers completed successfully and no tokens were left behind
+        require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
     }
 }
