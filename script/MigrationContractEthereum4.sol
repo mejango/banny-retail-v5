@@ -614,17 +614,28 @@ contract MigrationContractEthereum4 {
             // Verify V4 ownership using the original V4 token ID
             // This will revert if the token doesn't exist, which indicates a data issue
             address v4Owner = v4Hook.ownerOf(v4TokenId);
+            address expectedOwner = transferOwners[i];
             
-            // If V4 owner is the resolver, this token is being worn/used and shouldn't be in unused assets contract
-            // This indicates a data inconsistency - revert to catch the issue
+            // If V4 owner is the main resolver, this token is being worn/used and shouldn't be in unused assets contract
             require(
-                v4Owner != address(v4ResolverAddress) && 
-                v4Owner != address(fallbackV4ResolverAddress),
-                "Token owned by resolver in V4 - should not be in unused assets contract"
+                v4Owner != address(v4ResolverAddress),
+                "Token owned by main resolver in V4 - should not be in unused assets contract"
             );
             
-            // Verify V4 owner matches expected owner
-            require(v4Owner == transferOwners[i], "V4/V5 ownership mismatch for token");
+            // Special case: If V4 owner is the fallback resolver BUT expected owner is NOT a resolver,
+            // this is valid - the asset is being worn in V4 but we're minting directly to the actual owner in V5
+            // raw.json already accounts for this and has the correct owner
+            if (v4Owner == address(fallbackV4ResolverAddress)) {
+                // Allow if expected owner is not a resolver (we're minting directly to owner in V5)
+                require(
+                    expectedOwner != address(v4ResolverAddress) && expectedOwner != address(fallbackV4ResolverAddress),
+                    "Token owned by fallback resolver in V4 but expected owner is also a resolver - should not be in unused assets contract"
+                );
+                // Skip ownership verification in this case - we trust raw.json
+            } else {
+                // For all other cases, verify V4 owner matches expected owner
+                require(v4Owner == expectedOwner, "V4/V5 ownership mismatch for token");
+            }
             
             // Verify this contract owns the V5 token before transferring
             require(hook.ownerOf(v5TokenId) == address(this), "Contract does not own token");
