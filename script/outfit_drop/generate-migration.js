@@ -30,6 +30,9 @@ function generateMigrationScript() {
     // Generate contract-based migration script and chain-specific contracts from raw.json
     generateScriptForFile('raw.json', 'AirdropOutfits.s.sol');
 
+    // Generate batch scripts for debugging
+    generateBatchScripts('raw.json');
+
     // Generate chain-specific migration contracts
     generateChainSpecificContracts('raw.json');
 }
@@ -201,6 +204,801 @@ function generateScriptForFile(inputFile, outputFile) {
 
     console.log(`Generated migration script with chain-specific filtering`);
     console.log(`Script written to: ${outputPath}`);
+}
+
+function generateBatchScripts(inputFile) {
+    console.log(`\n=== Generating batch scripts from ${inputFile} ===`);
+
+    // Load the raw data
+    const rawDataPath = path.join(__dirname, inputFile);
+    const rawData = JSON.parse(fs.readFileSync(rawDataPath, 'utf8'));
+
+    const items = rawData.data.nfts.items;
+
+    // Calculate tier IDs for each chain and chunks
+    const ethereumItems = items.filter(item => item.chainId === 1);
+    const optimismItems = items.filter(item => item.chainId === 10);
+    const baseItems = items.filter(item => item.chainId === 8453);
+    const arbitrumItems = items.filter(item => item.chainId === 42161);
+
+    // Calculate chunk-specific tier IDs for Ethereum (3 chunks) and Base (2 chunks)
+    const ethereumChunks = splitBanniesIntoChunks(ethereumItems, 3);
+    const baseChunks = splitBanniesIntoChunks(baseItems, 2);
+
+    // Calculate tier IDs for each chunk
+    const ethereumChunkTierIds = [];
+    ethereumChunks.forEach((chunk) => {
+        const tierIdQuantities = new Map();
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
+        });
+        const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
+        const tierIds = [];
+        uniqueUpcs.forEach(upc => {
+            const quantity = tierIdQuantities.get(upc);
+            for (let i = 0; i < quantity; i++) {
+                tierIds.push(upc);
+            }
+        });
+        ethereumChunkTierIds.push(tierIds);
+    });
+
+    // Calculate unused assets for Ethereum (chunk 4)
+    const ethereumProcessedTokenIds = new Set();
+    ethereumChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const tokenId = item.metadata.tokenId;
+            ethereumProcessedTokenIds.add(Number(tokenId));
+        });
+    });
+    
+    const ethereumUpcCountsFromChunks = new Map();
+    ethereumChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            ethereumUpcCountsFromChunks.set(upc, (ethereumUpcCountsFromChunks.get(upc) || 0) + 1);
+        });
+    });
+    const ethereumUpcStartingUnitNumbers = new Map();
+    ethereumUpcCountsFromChunks.forEach((count, upc) => {
+        ethereumUpcStartingUnitNumbers.set(upc, count + 1);
+    });
+    
+    const ethereumUnusedContractData = generateUnusedAssetsContract(
+        { id: 1, name: 'Ethereum', numChunks: 3 },
+        ethereumItems,
+        ethereumUpcStartingUnitNumbers,
+        ethereumProcessedTokenIds
+    );
+    
+    let ethereumChunk4TierIds = [];
+    if (ethereumUnusedContractData && ethereumUnusedContractData.unusedItems.length > 0) {
+        const tierIdQuantities = new Map();
+        ethereumUnusedContractData.unusedItems.forEach(item => {
+            const upc = item.upc;
+            tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
+        });
+        const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
+        uniqueUpcs.forEach(upc => {
+            const quantity = tierIdQuantities.get(upc);
+            for (let i = 0; i < quantity; i++) {
+                ethereumChunk4TierIds.push(upc);
+            }
+        });
+    }
+
+    const baseChunkTierIds = [];
+    baseChunks.forEach((chunk) => {
+        const tierIdQuantities = new Map();
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
+        });
+        const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
+        const tierIds = [];
+        uniqueUpcs.forEach(upc => {
+            const quantity = tierIdQuantities.get(upc);
+            for (let i = 0; i < quantity; i++) {
+                tierIds.push(upc);
+            }
+        });
+        baseChunkTierIds.push(tierIds);
+    });
+
+    // Calculate unused assets for Base (chunk 3)
+    const baseProcessedTokenIds = new Set();
+    baseChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const tokenId = item.metadata.tokenId;
+            baseProcessedTokenIds.add(Number(tokenId));
+        });
+    });
+    
+    const baseUpcCountsFromChunks = new Map();
+    baseChunks.forEach(chunk => {
+        chunk.allItems.forEach(item => {
+            const upc = item.metadata.upc;
+            baseUpcCountsFromChunks.set(upc, (baseUpcCountsFromChunks.get(upc) || 0) + 1);
+        });
+    });
+    const baseUpcStartingUnitNumbers = new Map();
+    baseUpcCountsFromChunks.forEach((count, upc) => {
+        baseUpcStartingUnitNumbers.set(upc, count + 1);
+    });
+    
+    const baseUnusedContractData = generateUnusedAssetsContract(
+        { id: 8453, name: 'Base', numChunks: 2 },
+        baseItems,
+        baseUpcStartingUnitNumbers,
+        baseProcessedTokenIds
+    );
+    
+    let baseChunk3TierIds = null;
+    if (baseUnusedContractData && baseUnusedContractData.unusedItems.length > 0) {
+        const tierIdQuantities = new Map();
+        baseUnusedContractData.unusedItems.forEach(item => {
+            const upc = item.upc;
+            tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
+        });
+        const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
+        baseChunk3TierIds = [];
+        uniqueUpcs.forEach(upc => {
+            const quantity = tierIdQuantities.get(upc);
+            for (let i = 0; i < quantity; i++) {
+                baseChunk3TierIds.push(upc);
+            }
+        });
+    }
+
+    // Calculate Optimism tier IDs
+    const optimismTierIdQuantities = new Map();
+    optimismItems.forEach(item => {
+        const upc = item.metadata.upc;
+        optimismTierIdQuantities.set(upc, (optimismTierIdQuantities.get(upc) || 0) + 1);
+    });
+    const optimismUniqueUpcs = Array.from(optimismTierIdQuantities.keys()).sort((a, b) => a - b);
+    const optimismTierIds = [];
+    optimismUniqueUpcs.forEach(upc => {
+        const quantity = optimismTierIdQuantities.get(upc);
+        for (let i = 0; i < quantity; i++) {
+            optimismTierIds.push(upc);
+        }
+    });
+
+    // Calculate Arbitrum tier IDs
+    const arbitrumTierIdQuantities = new Map();
+    arbitrumItems.forEach(item => {
+        const upc = item.metadata.upc;
+        arbitrumTierIdQuantities.set(upc, (arbitrumTierIdQuantities.get(upc) || 0) + 1);
+    });
+    const arbitrumUniqueUpcs = Array.from(arbitrumTierIdQuantities.keys()).sort((a, b) => a - b);
+    const arbitrumTierIds = [];
+    arbitrumUniqueUpcs.forEach(upc => {
+        const quantity = arbitrumTierIdQuantities.get(upc);
+        for (let i = 0; i < quantity; i++) {
+            arbitrumTierIds.push(upc);
+        }
+    });
+
+    // Build transfer data functions for all batches
+    const tierIds = {
+        ethereumChunkTierIds: [...ethereumChunkTierIds, ethereumChunk4TierIds],
+        baseChunkTierIds,
+        optimismTierIds,
+        arbitrumTierIds
+    };
+
+    // Generate transfer data functions (reuse from generateContractVersion logic)
+    const chains = [
+        { id: 1, name: 'Ethereum', numChunks: 3 },
+        { id: 10, name: 'Optimism', numChunks: 1 },
+        { id: 8453, name: 'Base', numChunks: 2 },
+        { id: 42161, name: 'Arbitrum', numChunks: 1 }
+    ];
+
+    let allTransferDataFunctions = '';
+
+    chains.forEach(chain => {
+        const chainItems = items.filter(item => item.chainId === chain.id);
+        if (chainItems.length === 0) return;
+
+        if (chain.numChunks > 1) {
+            const chunks = splitBanniesIntoChunks(chainItems, chain.numChunks);
+            chunks.forEach((chunk, chunkIndex) => {
+                const transferData = chunk.transferData;
+                allTransferDataFunctions += `
+    function _get${chain.name}TransferOwners${chunkIndex + 1}() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](${transferData.length});
+        `;
+
+                transferData.forEach((data, index) => {
+                    allTransferDataFunctions += `
+        transferOwners[${index}] = ${toChecksumAddress(data.owner)};`;
+                });
+
+                allTransferDataFunctions += `
+        return transferOwners;
+    }
+    `;
+            });
+            
+            // Generate transfer data function for unused assets (Ethereum and Base only)
+            if (chain.id === 1 || chain.id === 8453) {
+                const processedTokenIds = new Set();
+                chunks.forEach(chunk => {
+                    chunk.allItems.forEach(item => {
+                        const tokenId = item.metadata.tokenId;
+                        processedTokenIds.add(Number(tokenId));
+                    });
+                });
+                
+                const upcCountsFromChunks = new Map();
+                chunks.forEach(chunk => {
+                    chunk.allItems.forEach(item => {
+                        const upc = item.metadata.upc;
+                        upcCountsFromChunks.set(upc, (upcCountsFromChunks.get(upc) || 0) + 1);
+                    });
+                });
+                const upcStartingUnitNumbers = new Map();
+                upcCountsFromChunks.forEach((count, upc) => {
+                    upcStartingUnitNumbers.set(upc, count + 1);
+                });
+                
+                const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers, processedTokenIds);
+                if (unusedContractData && unusedContractData.unusedItems.length > 0) {
+                    const chunkIndex = chain.numChunks;
+                    allTransferDataFunctions += `
+    function _get${chain.name}TransferOwners${chunkIndex + 1}() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](${unusedContractData.unusedItems.length});
+        `;
+
+                    unusedContractData.unusedItems.forEach((item, index) => {
+                        allTransferDataFunctions += `
+        transferOwners[${index}] = ${toChecksumAddress(item.owner)};`;
+                    });
+
+                    allTransferDataFunctions += `
+        return transferOwners;
+    }
+    `;
+                }
+            }
+        } else {
+            const transferData = buildTransferDataForChain(chainItems);
+
+            allTransferDataFunctions += `
+    function _get${chain.name}TransferOwners() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](${transferData.length});
+        `;
+
+            transferData.forEach((data, index) => {
+                allTransferDataFunctions += `
+        transferOwners[${index}] = ${toChecksumAddress(data.owner)};`;
+            });
+
+            allTransferDataFunctions += `
+        return transferOwners;
+    }
+    `;
+        }
+    });
+
+    // Generate Batch 1 script (Ethereum 1, Optimism, Base 1, Arbitrum)
+    generateBatchScript(1, {
+        ethereum: ethereumChunkTierIds[0],
+        optimism: optimismTierIds,
+        base: baseChunkTierIds[0],
+        arbitrum: arbitrumTierIds
+    }, allTransferDataFunctions, items);
+
+    // Generate Batch 2 script (Ethereum 2, Base 2)
+    generateBatchScript(2, {
+        ethereum: ethereumChunkTierIds[1],
+        base: baseChunkTierIds[1]
+    }, allTransferDataFunctions, items);
+
+    // Generate Batch 3 script (Ethereum 3, Base 3)
+    generateBatchScript(3, {
+        ethereum: ethereumChunkTierIds[2],
+        base: baseChunk3TierIds
+    }, allTransferDataFunctions, items);
+
+    // Generate Batch 4 script (Ethereum 4 only)
+    if (ethereumChunk4TierIds.length > 0) {
+        generateBatchScript(4, {
+            ethereum: ethereumChunk4TierIds
+        }, allTransferDataFunctions, items);
+    }
+}
+
+function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items) {
+    const scriptDir = path.join(__dirname, '..');
+    const outputPath = path.join(scriptDir, `AirdropOutfitsBatch${batchNumber}.s.sol`);
+
+    // Determine which chains this batch handles
+    const hasEthereum = tierIds.ethereum && tierIds.ethereum.length > 0;
+    const hasOptimism = tierIds.optimism && tierIds.optimism.length > 0;
+    const hasBase = tierIds.base && tierIds.base.length > 0;
+    const hasArbitrum = tierIds.arbitrum && tierIds.arbitrum.length > 0;
+
+    // Determine which imports are needed
+    let imports = '';
+    if (hasEthereum) {
+        const ethereumContractNum = batchNumber === 4 ? 4 : batchNumber;
+        imports += `import {MigrationContractEthereum${ethereumContractNum}} from "./MigrationContractEthereum${ethereumContractNum}.sol";\n`;
+    }
+    if (hasOptimism) {
+        imports += `import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";\n`;
+    }
+    if (hasBase) {
+        // Base chunk 3 is unused assets, so it uses MigrationContractBase3
+        const baseContractNum = (batchNumber === 3 && tierIds.base) ? 3 : batchNumber;
+        imports += `import {MigrationContractBase${baseContractNum}} from "./MigrationContractBase${baseContractNum}.sol";\n`;
+    }
+    if (hasArbitrum) {
+        imports += `import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";\n`;
+    }
+
+    // Generate run() function with only relevant chains
+    let runFunction = `    function run() public sphinx {
+        uint256 chainId = block.chainid;
+        
+        `;
+    if (hasEthereum) {
+        runFunction += `if (chainId == 1) {
+            // Ethereum Mainnet
+            _runEthereum();
+        } else if (chainId == 11155111) {
+            // Ethereum Sepolia
+            _runEthereumSepolia();
+        } else `;
+    }
+    if (hasOptimism) {
+        runFunction += `if (chainId == 10) {
+            // Optimism
+            _runOptimism();
+        } else if (chainId == 11155420) {
+            // Optimism Sepolia
+            _runOptimismSepolia();
+        } else `;
+    }
+    if (hasBase) {
+        runFunction += `if (chainId == 8453) {
+            // Base
+            _runBase();
+        } else if (chainId == 84532) {
+            // Base Sepolia
+            _runBaseSepolia();
+        } else `;
+    }
+    if (hasArbitrum) {
+        runFunction += `if (chainId == 42161) {
+            // Arbitrum
+            _runArbitrum();
+        } else if (chainId == 421614) {
+            // Arbitrum Sepolia
+            _runArbitrumSepolia();
+        } else `;
+    }
+    runFunction += `{
+            revert("Unsupported chain for batch ${batchNumber}");
+        }
+    }`;
+
+    // Generate chain-specific run functions
+    let chainRunFunctions = '';
+    if (hasEthereum) {
+        chainRunFunctions += `
+    function _runEthereum() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            1
+        );
+    }
+    
+    function _runEthereumSepolia() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            11155111
+        );
+    }
+    `;
+    }
+    if (hasOptimism) {
+        chainRunFunctions += `
+    function _runOptimism() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            10
+        );
+    }
+    
+    function _runOptimismSepolia() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            11155420
+        );
+    }
+    `;
+    }
+    if (hasBase) {
+        chainRunFunctions += `
+    function _runBase() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            8453
+        );
+    }
+    
+    function _runBaseSepolia() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            84532
+        );
+    }
+    `;
+    }
+    if (hasArbitrum) {
+        chainRunFunctions += `
+    function _runArbitrum() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            42161
+        );
+    }
+    
+    function _runArbitrumSepolia() internal {
+        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
+        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
+        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
+        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
+        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
+        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            421614
+        );
+    }
+    `;
+    }
+
+    // Generate _processMigration function with only relevant batches
+    let processMigrationFunction = `
+    function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, address v4ResolverFallback, uint256 chainId) internal {
+        // Validate addresses
+        require(hookAddress != address(0), "Hook address not set");
+        require(resolverAddress != address(0), "Resolver address not set");
+        require(v4HookAddress != address(0), "V4 Hook address not set");
+        require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(terminalAddress != address(0), "Terminal address not set");
+        
+        IJBTerminal terminal = IJBTerminal(terminalAddress);
+        JB721TiersHook hook = JB721TiersHook(hookAddress);
+        
+        // Get project ID from hook
+        uint256 projectId = hook.PROJECT_ID();
+        
+        // Deploy the appropriate chain-specific migration contract with transfer data
+        `;
+
+    if (hasEthereum) {
+        const contractNum = batchNumber === 4 ? 4 : batchNumber;
+        processMigrationFunction += `
+        if (chainId == 1 || chainId == 11155111) {
+            // Ethereum - Batch ${batchNumber} only
+            uint16[] memory tierIds${contractNum} = new uint16[](${tierIds.ethereum.length});
+            ${generateTierIdLoops(tierIds.ethereum, `tierIds${contractNum}`)}
+            address[] memory transferOwners${contractNum} = _getEthereumTransferOwners${contractNum}();
+            MigrationContractEthereum${contractNum} migrationContract${contractNum} = new MigrationContractEthereum${contractNum}(transferOwners${contractNum});
+            console.log("Ethereum migration contract ${contractNum} deployed at:", address(migrationContract${contractNum}));
+            
+            // Mint chunk ${contractNum} assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds${contractNum},
+                address(migrationContract${contractNum})
+            );
+            console.log("Minted", tierIds${contractNum}.length, "tokens to contract ${contractNum}");
+            
+            migrationContract${contractNum}.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+        } else `;
+    }
+
+    if (hasOptimism) {
+        processMigrationFunction += `
+        if (chainId == 10 || chainId == 11155420) {
+            // Optimism tier IDs
+            uint16[] memory allTierIds = new uint16[](${tierIds.optimism.length});
+            ${generateTierIdLoops(tierIds.optimism)}
+            address[] memory transferOwners = _getOptimismTransferOwners();
+            MigrationContractOptimism migrationContract = new MigrationContractOptimism(transferOwners);
+            console.log("Optimism migration contract deployed at:", address(migrationContract));
+            
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+        } else `;
+    }
+
+    if (hasBase) {
+        // Base chunk 3 is unused assets, so it uses MigrationContractBase3
+        const baseContractNum = (batchNumber === 3 && tierIds.base) ? 3 : batchNumber;
+        processMigrationFunction += `
+        if (chainId == 8453 || chainId == 84532) {
+            // Base - Batch ${batchNumber} only
+            uint16[] memory tierIds${baseContractNum} = new uint16[](${tierIds.base.length});
+            ${generateTierIdLoops(tierIds.base, `tierIds${baseContractNum}`)}
+            address[] memory transferOwners${baseContractNum} = _getBaseTransferOwners${baseContractNum}();
+            MigrationContractBase${baseContractNum} migrationContract${baseContractNum} = new MigrationContractBase${baseContractNum}(transferOwners${baseContractNum});
+            console.log("Base migration contract ${baseContractNum} deployed at:", address(migrationContract${baseContractNum}));
+            
+            // Mint chunk ${baseContractNum} assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds${baseContractNum},
+                address(migrationContract${baseContractNum})
+            );
+            console.log("Minted", tierIds${baseContractNum}.length, "tokens to contract ${baseContractNum}");
+            
+            migrationContract${baseContractNum}.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+        } else `;
+    }
+
+    if (hasArbitrum) {
+        processMigrationFunction += `
+        if (chainId == 42161 || chainId == 421614) {
+            // Arbitrum tier IDs
+            uint16[] memory allTierIds = new uint16[](${tierIds.arbitrum.length});
+            ${generateTierIdLoops(tierIds.arbitrum)}
+            address[] memory transferOwners = _getArbitrumTransferOwners();
+            MigrationContractArbitrum migrationContract = new MigrationContractArbitrum(transferOwners);
+            console.log("Arbitrum migration contract deployed at:", address(migrationContract));
+            
+            // Mint all assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                allTierIds,
+                address(migrationContract)
+            );
+            console.log("Minted", allTierIds.length, "tokens to contract");
+            
+            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+        } else `;
+    }
+
+    processMigrationFunction += `
+        {
+            revert("Unsupported chain for contract deployment");
+        }
+    }`;
+
+    // Generate helper functions (same for all batches)
+    const helperFunctions = `
+    function _mintViaPay(
+        IJBTerminal terminal,
+        JB721TiersHook hook,
+        uint256 projectId,
+        uint16[] memory tierIds,
+        address beneficiary
+    ) internal {
+        uint256 totalTierIds = tierIds.length;
+        
+        // Process tier IDs in batches
+        for (uint256 i = 0; i < totalTierIds; i += BATCH_SIZE) {
+            uint256 batchSize = i + BATCH_SIZE > totalTierIds ? totalTierIds - i : BATCH_SIZE;
+            uint16[] memory batchTierIds = new uint16[](batchSize);
+            
+            // Copy tier IDs for this batch
+            for (uint256 j = 0; j < batchSize; j++) {
+                batchTierIds[j] = tierIds[i + j];
+            }
+            
+            // Build the metadata using the tiers to mint and the overspending flag
+            bytes[] memory data = new bytes[](1);
+            data[0] = abi.encode(false, batchTierIds);
+            
+            // Get the hook ID
+            bytes4[] memory ids = new bytes4[](1);
+            ids[0] = JBMetadataResolver.getId("pay", hook.METADATA_ID_TARGET());
+            
+            // Generate the metadata
+            bytes memory hookMetadata = JBMetadataResolver.createMetadata(ids, data);
+            
+            // Calculate the amount needed for this batch
+            uint256 batchAmount = _calculateTotalPriceForTiers(batchTierIds);
+            
+            // Pay the terminal to mint the NFTs for this batch
+            terminal.pay{value: batchAmount}({
+                projectId: projectId,
+                amount: batchAmount,
+                token: JBConstants.NATIVE_TOKEN,
+                beneficiary: beneficiary,
+                minReturnedTokens: 0,
+                memo: "Airdrop mint",
+                metadata: hookMetadata
+            });
+        }
+    }
+    
+    function _getPriceForUPC(uint16 upc) internal pure returns (uint256) {
+        // Price map: UPC -> price in wei
+        // This is generated from raw.json prices
+${generatePriceMap(items)}
+    }
+    
+    function _calculateTotalPriceForTiers(uint16[] memory tierIds) internal pure returns (uint256) {
+        uint256 total = 0;
+        for (uint256 i = 0; i < tierIds.length; i++) {
+            total += _getPriceForUPC(tierIds[i]);
+        }
+        return total;
+    }`;
+
+    // Filter transfer data functions to only include what's needed for this batch
+    let batchTransferDataFunctions = '';
+    if (hasEthereum) {
+        const contractNum = batchNumber === 4 ? 4 : batchNumber;
+        const regex = new RegExp(`function _getEthereumTransferOwners${contractNum}\\(\\)[\\s\\S]*?return transferOwners;\\s*\\}`, 'g');
+        const match = transferDataFunctions.match(regex);
+        if (match) {
+            batchTransferDataFunctions += match[0] + '\n    ';
+        }
+    }
+    if (hasOptimism) {
+        const regex = /function _getOptimismTransferOwners\(\)[\s\S]*?return transferOwners;\s*\}/g;
+        const match = transferDataFunctions.match(regex);
+        if (match) {
+            batchTransferDataFunctions += match[0] + '\n    ';
+        }
+    }
+    if (hasBase) {
+        // Base chunk 3 is unused assets, so it uses MigrationContractBase3
+        const baseContractNum = (batchNumber === 3 && tierIds.base) ? 3 : batchNumber;
+        const regex = new RegExp(`function _getBaseTransferOwners${baseContractNum}\\(\\)[\\s\\S]*?return transferOwners;\\s*\\}`, 'g');
+        const match = transferDataFunctions.match(regex);
+        if (match) {
+            batchTransferDataFunctions += match[0] + '\n    ';
+        }
+    }
+    if (hasArbitrum) {
+        const regex = /function _getArbitrumTransferOwners\(\)[\s\S]*?return transferOwners;\s*\}/g;
+        const match = transferDataFunctions.match(regex);
+        if (match) {
+            batchTransferDataFunctions += match[0] + '\n    ';
+        }
+    }
+
+    const script = `// SPDX-License-Identifier: MIT
+pragma solidity 0.8.23;
+
+import {Script} from "forge-std/Script.sol";
+import {console} from "forge-std/console.sol";
+${imports}
+import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
+import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
+import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
+import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
+import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
+
+contract AirdropOutfitsBatch${batchNumber}Script is Script, Sphinx {
+    // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
+    // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
+    // Using 150 as a safe batch size to stay well under the limit
+    uint256 private constant BATCH_SIZE = 150;
+    
+    function configureSphinx() public override {
+        sphinxConfig.projectName = "banny-core";
+        sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
+        sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
+    }
+
+${runFunction}
+${chainRunFunctions}
+${processMigrationFunction}
+${helperFunctions}${batchTransferDataFunctions}
+}`;
+
+    fs.writeFileSync(outputPath, script);
+    console.log(`Generated batch ${batchNumber} script: ${outputPath}`);
 }
 
 

@@ -12,12 +12,21 @@
     "scripts": {
         "test": "forge test",
         "coverage:integration": "forge coverage --match-path \"./src/*.sol\" --report lcov --report summary",
+        "generate:migration": "node ./script/outfit_drop/generate-migration.js",
         "deploy:mainnets": "source ./.env && export START_TIME=$(date +%s) && npx sphinx propose ./script/Deploy.s.sol --networks mainnets",
         "deploy:testnets": "source ./.env && export START_TIME=$(date +%s) && npx sphinx propose ./script/Deploy.s.sol --networks testnets",
         "deploy:testnets:drop:1": "source ./.env && npx sphinx propose ./script/Drop1.s.sol --networks testnets",
         "deploy:mainnets:drop:1": "source ./.env && npx sphinx propose ./script/Drop1.s.sol --networks mainnets",
         "deploy:testnets:airdrop": "source ./.env && npx sphinx propose ./script/AirdropOutfits.s.sol --networks testnets",
         "deploy:mainnets:airdrop": "source ./.env && npx sphinx propose ./script/AirdropOutfits.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch1": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch1.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch1": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch1.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch2": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch2.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch2": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch2.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch3": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch3.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch3": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch3.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch4": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch4.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch4": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch4.s.sol --networks mainnets",
         "artifacts": "source ./.env && npx sphinx artifacts --org-id 'ea165b21-7cdc-4d7b-be59-ecdd4c26bee4' --project-name 'banny-core-v5'"
     },
     "dependencies": {
