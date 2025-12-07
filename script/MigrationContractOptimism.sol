@@ -189,5 +189,37 @@ contract MigrationContractOptimism {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        
+        // Collect unique owners
+        address[] memory uniqueOwners = new address[](5);
+        
+        uniqueOwners[0] = 0x25910143C255828F623786f46fe9A8941B7983bB;
+        uniqueOwners[1] = 0x292ff025168D2B51f0Ef49f164D281c36761BA2b;
+        uniqueOwners[2] = 0xA7a5A2745f10D5C23d75a6fd228A408cEDe1CAE5;
+        uniqueOwners[3] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
+        uniqueOwners[4] = 0xA2Fa6144168751D116336B58C5288feaF8bb12C1;
+        
+        // Collect unique tier IDs
+        uint256[] memory uniqueTierIds = new uint256[](8);
+        
+        uniqueTierIds[0] = 3;
+        uniqueTierIds[1] = 4;
+        uniqueTierIds[2] = 11;
+        uniqueTierIds[3] = 17;
+        uniqueTierIds[4] = 19;
+        uniqueTierIds[5] = 25;
+        uniqueTierIds[6] = 44;
+        uniqueTierIds[7] = 47;
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        MigrationHelper.verifyTierBalances(
+            hookAddress,
+            v4HookAddress,
+            fallbackV4ResolverAddress,
+            uniqueOwners,
+            uniqueTierIds
+        );
     }
 }

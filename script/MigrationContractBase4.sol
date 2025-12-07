@@ -373,5 +373,58 @@ contract MigrationContractBase4 {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        
+        // Collect unique owners
+        address[] memory uniqueOwners = new address[](18);
+        
+        uniqueOwners[0] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        uniqueOwners[1] = 0x46f3cC6a1c00A5cD8864d2B92f128196CAE07D15;
+        uniqueOwners[2] = 0x8e2B25dF2484000B9127b2D2F8E92079dcEE3E48;
+        uniqueOwners[3] = 0x817738DC393d682Ca5fBb268707b99F2aAe96baE;
+        uniqueOwners[4] = 0x224aBa5D489675a7bD3CE07786FAda466b46FA0F;
+        uniqueOwners[5] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
+        uniqueOwners[6] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        uniqueOwners[7] = 0x3c2736f995535b5a755F3CE2BEb754362820671e;
+        uniqueOwners[8] = 0x6877be9E00d0bc5886c28419901E8cC98C1c2739;
+        uniqueOwners[9] = 0x8DFBdEEC8c5d4970BB5F481C6ec7f73fa1C65be5;
+        uniqueOwners[10] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        uniqueOwners[11] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        uniqueOwners[12] = 0x39a7B6fa1597BB6657Fe84e64E3B836c37d6F75d;
+        uniqueOwners[13] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        uniqueOwners[14] = 0xDdB4938755C243a4f60a2f2f8f95dF4F894c58Cc;
+        uniqueOwners[15] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
+        uniqueOwners[16] = 0xF6cC71878e23c05406B35946CD9d378E0f2f4f2F;
+        uniqueOwners[17] = 0xd2e44E40B5FB960A8A74dD7B9D6b7f14B805b50d;
+        
+        // Collect unique tier IDs
+        uint256[] memory uniqueTierIds = new uint256[](16);
+        
+        uniqueTierIds[0] = 4;
+        uniqueTierIds[1] = 5;
+        uniqueTierIds[2] = 10;
+        uniqueTierIds[3] = 13;
+        uniqueTierIds[4] = 19;
+        uniqueTierIds[5] = 20;
+        uniqueTierIds[6] = 25;
+        uniqueTierIds[7] = 27;
+        uniqueTierIds[8] = 28;
+        uniqueTierIds[9] = 35;
+        uniqueTierIds[10] = 38;
+        uniqueTierIds[11] = 39;
+        uniqueTierIds[12] = 41;
+        uniqueTierIds[13] = 43;
+        uniqueTierIds[14] = 44;
+        uniqueTierIds[15] = 48;
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        MigrationHelper.verifyTierBalances(
+            hookAddress,
+            v4HookAddress,
+            fallbackV4ResolverAddress,
+            uniqueOwners,
+            uniqueTierIds
+        );
     }
 }

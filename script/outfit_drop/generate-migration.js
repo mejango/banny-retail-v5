@@ -1141,6 +1141,54 @@ function generateTierIdLoops(tierIds, varName = 'allTierIds') {
     return loops;
 }
 
+function generateTierBalanceVerification(transferData, tierIdQuantities) {
+    // Collect unique owners from transferData
+    const uniqueOwners = new Set();
+    transferData.forEach(data => {
+        uniqueOwners.add(data.owner);
+    });
+    const ownersArray = Array.from(uniqueOwners);
+    
+    // Collect unique tier IDs from tierIdQuantities
+    const uniqueTierIds = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
+    
+    if (ownersArray.length === 0 || uniqueTierIds.length === 0) {
+        return ''; // No verification needed if no owners or tier IDs
+    }
+    
+    let code = `
+        // Collect unique owners
+        address[] memory uniqueOwners = new address[](${ownersArray.length});
+        `;
+    ownersArray.forEach((owner, idx) => {
+        code += `
+        uniqueOwners[${idx}] = ${toChecksumAddress(owner)};`;
+    });
+    
+    code += `
+        
+        // Collect unique tier IDs
+        uint256[] memory uniqueTierIds = new uint256[](${uniqueTierIds.length});
+        `;
+    uniqueTierIds.forEach((tierId, idx) => {
+        code += `
+        uniqueTierIds[${idx}] = ${tierId};`;
+    });
+    
+    code += `
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        MigrationHelper.verifyTierBalances(
+            hookAddress,
+            v4HookAddress,
+            fallbackV4ResolverAddress,
+            uniqueOwners,
+            uniqueTierIds
+        );`;
+    
+    return code;
+}
+
 function generatePriceMap(items) {
     // Create a map of UPC to price from raw.json
     const upcToPrice = new Map();
@@ -2469,6 +2517,9 @@ contract MigrationContract${chain.name}${chunkIndex} {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        ${generateTierBalanceVerification(transferData, tierIdQuantities)}
     }
 }`;
 
@@ -2784,6 +2835,9 @@ contract MigrationContract${chain.name} {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        ${generateTierBalanceVerification(transferData, tierIdQuantities)}
     }
 }`;
 
@@ -3037,6 +3091,9 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        ${generateTierBalanceVerification(transferData, tierIdQuantities)}
     }
 }`;
     

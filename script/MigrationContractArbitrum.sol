@@ -513,5 +513,51 @@ contract MigrationContractArbitrum {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        
+        // Collect unique owners
+        address[] memory uniqueOwners = new address[](10);
+        
+        uniqueOwners[0] = 0x2aa64E6d80390F5C017F0313cB908051BE2FD35e;
+        uniqueOwners[1] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        uniqueOwners[2] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        uniqueOwners[3] = 0xfD282d9f4d06C4BDc6a41af1Ae920A0AD70D18a3;
+        uniqueOwners[4] = 0x08B3e694caA2F1fcF8eF71095CED1326f3454B89;
+        uniqueOwners[5] = 0x9fDf876a50EA8f95017dCFC7709356887025B5BB;
+        uniqueOwners[6] = 0x187089B33E5812310Ed32A57F53B3fAD0383a19D;
+        uniqueOwners[7] = 0xc6404f24DB2f573F07F3A60758765caad198c0c3;
+        uniqueOwners[8] = 0xB2d3900807094D4Fe47405871B0C8AdB58E10D42;
+        uniqueOwners[9] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        
+        // Collect unique tier IDs
+        uint256[] memory uniqueTierIds = new uint256[](17);
+        
+        uniqueTierIds[0] = 3;
+        uniqueTierIds[1] = 4;
+        uniqueTierIds[2] = 5;
+        uniqueTierIds[3] = 6;
+        uniqueTierIds[4] = 10;
+        uniqueTierIds[5] = 11;
+        uniqueTierIds[6] = 19;
+        uniqueTierIds[7] = 20;
+        uniqueTierIds[8] = 25;
+        uniqueTierIds[9] = 28;
+        uniqueTierIds[10] = 31;
+        uniqueTierIds[11] = 32;
+        uniqueTierIds[12] = 38;
+        uniqueTierIds[13] = 39;
+        uniqueTierIds[14] = 43;
+        uniqueTierIds[15] = 47;
+        uniqueTierIds[16] = 49;
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        MigrationHelper.verifyTierBalances(
+            hookAddress,
+            v4HookAddress,
+            fallbackV4ResolverAddress,
+            uniqueOwners,
+            uniqueTierIds
+        );
     }
 }

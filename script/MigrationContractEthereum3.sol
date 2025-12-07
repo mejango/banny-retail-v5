@@ -387,5 +387,54 @@ contract MigrationContractEthereum3 {
         // Final verification: Ensure this contract no longer owns any tokens
         // This ensures all transfers completed successfully and no tokens were left behind
         require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        
+        // Collect unique owners
+        address[] memory uniqueOwners = new address[](14);
+        
+        uniqueOwners[0] = 0x0447AD1BdC0fFA06f7029c8E63F4De21E65255d2;
+        uniqueOwners[1] = 0x5706d5aD7A68bf8692bD341234bE44ca7Bf2f654;
+        uniqueOwners[2] = 0x679d87D8640e66778c3419D164998E720D7495f6;
+        uniqueOwners[3] = 0x817738DC393d682Ca5fBb268707b99F2aAe96baE;
+        uniqueOwners[4] = 0x4A290F18c35bBFE97B2557cf765De9387726dE39;
+        uniqueOwners[5] = 0x25171bD3cD3231c3057c96F38E32E3bA6681497a;
+        uniqueOwners[6] = 0xa7226e53F3100C093A0a5BCb6E3D0976EB3db1D6;
+        uniqueOwners[7] = 0x76A6D08b82034b397E7e09dAe4377C18F132BbB8;
+        uniqueOwners[8] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
+        uniqueOwners[9] = 0x126eeFa566ABF5aC3EfDAeF52d79E962CFFdB448;
+        uniqueOwners[10] = 0x77fb4fa1ABA92576942aD34BC47834059b84e693;
+        uniqueOwners[11] = 0x08cEb8Bba685ee708C9c4c65576837cbE19B9dea;
+        uniqueOwners[12] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
+        uniqueOwners[13] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        
+        // Collect unique tier IDs
+        uint256[] memory uniqueTierIds = new uint256[](16);
+        
+        uniqueTierIds[0] = 4;
+        uniqueTierIds[1] = 5;
+        uniqueTierIds[2] = 6;
+        uniqueTierIds[3] = 10;
+        uniqueTierIds[4] = 15;
+        uniqueTierIds[5] = 18;
+        uniqueTierIds[6] = 19;
+        uniqueTierIds[7] = 20;
+        uniqueTierIds[8] = 25;
+        uniqueTierIds[9] = 26;
+        uniqueTierIds[10] = 31;
+        uniqueTierIds[11] = 35;
+        uniqueTierIds[12] = 42;
+        uniqueTierIds[13] = 43;
+        uniqueTierIds[14] = 44;
+        uniqueTierIds[15] = 49;
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        MigrationHelper.verifyTierBalances(
+            hookAddress,
+            v4HookAddress,
+            fallbackV4ResolverAddress,
+            uniqueOwners,
+            uniqueTierIds
+        );
     }
 }
