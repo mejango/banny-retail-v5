@@ -4,6 +4,7 @@ pragma solidity 0.8.23;
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Banny721TokenUriResolver} from "../src/Banny721TokenUriResolver.sol";
+import {MigrationHelper} from "./helpers/MigrationHelper.sol";
 
 /// @notice Migration contract for Ethereum to handle standalone outfits and backgrounds
 /// that are not worn/used by any banny. These assets are minted to this contract

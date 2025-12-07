@@ -23,7 +23,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
-        sphinxConfig.testnets = [];
+        sphinxConfig.testnets = new string[](0);
     }
 
     function run() public sphinx {
