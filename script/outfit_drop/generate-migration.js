@@ -575,36 +575,24 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         runFunction += `if (chainId == 1) {
             // Ethereum Mainnet
             _runEthereum();
-        } else if (chainId == 11155111) {
-            // Ethereum Sepolia
-            _runEthereumSepolia();
         } else `;
     }
     if (hasOptimism) {
         runFunction += `if (chainId == 10) {
             // Optimism
             _runOptimism();
-        } else if (chainId == 11155420) {
-            // Optimism Sepolia
-            _runOptimismSepolia();
         } else `;
     }
     if (hasBase) {
         runFunction += `if (chainId == 8453) {
             // Base
             _runBase();
-        } else if (chainId == 84532) {
-            // Base Sepolia
-            _runBaseSepolia();
         } else `;
     }
     if (hasArbitrum) {
         runFunction += `if (chainId == 42161) {
             // Arbitrum
             _runArbitrum();
-        } else if (chainId == 421614) {
-            // Arbitrum Sepolia
-            _runArbitrumSepolia();
         } else `;
     }
     runFunction += `{
@@ -634,23 +622,6 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         );
     }
     
-    function _runEthereumSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            11155111
-        );
-    }
     `;
     }
     if (hasOptimism) {
@@ -673,23 +644,6 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         );
     }
     
-    function _runOptimismSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            11155420
-        );
-    }
     `;
     }
     if (hasBase) {
@@ -712,23 +666,6 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         );
     }
     
-    function _runBaseSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            84532
-        );
-    }
     `;
     }
     if (hasArbitrum) {
@@ -751,23 +688,6 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         );
     }
     
-    function _runArbitrumSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            421614
-        );
-    }
     `;
     }
 
@@ -794,7 +714,7 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets) maps to contract 7
         const ethereumContractNum = batchNumber === 7 ? 7 : batchNumber;
         processMigrationFunction += `
-        if (chainId == 1 || chainId == 11155111) {
+        if (chainId == 1) {
             // Ethereum - Batch ${batchNumber} only
             uint16[] memory tierIds${ethereumContractNum} = new uint16[](${tierIds.ethereum.length});
             ${generateTierIdLoops(tierIds.ethereum, `tierIds${ethereumContractNum}`)}
@@ -819,7 +739,7 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
 
     if (hasOptimism) {
         processMigrationFunction += `
-        if (chainId == 10 || chainId == 11155420) {
+        if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.optimism.length});
             ${generateTierIdLoops(tierIds.optimism)}
@@ -845,7 +765,7 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         // Base batches 1-4 map to contracts 1-4, batch 5 (unused assets) maps to contract 5
         const baseContractNum = batchNumber === 5 ? 5 : batchNumber;
         processMigrationFunction += `
-        if (chainId == 8453 || chainId == 84532) {
+        if (chainId == 8453) {
             // Base - Batch ${batchNumber} only
             uint16[] memory tierIds${baseContractNum} = new uint16[](${tierIds.base.length});
             ${generateTierIdLoops(tierIds.base, `tierIds${baseContractNum}`)}
@@ -870,7 +790,7 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
 
     if (hasArbitrum) {
         processMigrationFunction += `
-        if (chainId == 42161 || chainId == 421614) {
+        if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](${tierIds.arbitrum.length});
             ${generateTierIdLoops(tierIds.arbitrum)}
@@ -1016,7 +936,7 @@ contract AirdropOutfitsBatch${batchNumber}Script is Script, Sphinx {
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
-        sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
+        sphinxConfig.testnets = [];
     }
 
 ${runFunction}
@@ -1536,7 +1456,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
-        sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
+        sphinxConfig.testnets = [];
     }
 
     function run() public sphinx {
@@ -1554,18 +1474,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
         } else if (chainId == 42161) {
             // Arbitrum
             _runArbitrum();
-        } else if (chainId == 11155111) {
-            // Ethereum Sepolia
-            _runEthereumSepolia();
-        } else if (chainId == 11155420) {
-            // Optimism Sepolia
-            _runOptimismSepolia();
-        } else if (chainId == 84532) {
-            // Base Sepolia
-            _runBaseSepolia();
-        } else if (chainId == 421614) {
-            // Arbitrum Sepolia
-            _runArbitrumSepolia();
         } else {
             revert("Unsupported chain");
         }
@@ -1640,78 +1548,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
             terminalAddress,
             v4ResolverFallback,
             42161
-        );
-    }
-    
-    function _runEthereumSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            11155111
-        );
-    }
-    
-    function _runOptimismSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            11155420
-        );
-    }
-    
-    function _runBaseSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            84532
-        );
-    }
-    
-    function _runArbitrumSepolia() internal {
-        address hookAddress = ${toChecksumAddress('0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750')};
-        address resolverAddress = ${toChecksumAddress('0x47c011146a4498a70e0bf2e4585acf9cade85954')};
-        address v4HookAddress = ${toChecksumAddress('0x2da41cdc79ae49f2725ab549717b2dbcfc42b958')};
-        address v4ResolverAddress = ${toChecksumAddress('0xa5f8911d4cfd60a6697479f078409434424fe666')};
-        address terminalAddress = ${toChecksumAddress('0x2db6d704058e552defe415753465df8df0361846')};
-        address v4ResolverFallback = ${toChecksumAddress('0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3')};
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            421614
         );
     }
     
@@ -2069,10 +1905,6 @@ function generateChainSpecificContracts(inputFile) {
         { id: 10, name: 'Optimism', fileName: 'MigrationContractOptimism.sol', numChunks: 1 },
         { id: 8453, name: 'Base', fileName: 'MigrationContractBase.sol', numChunks: 4 },
         { id: 42161, name: 'Arbitrum', fileName: 'MigrationContractArbitrum.sol', numChunks: 1 },
-        { id: 11155111, name: 'EthereumSepolia', fileName: 'MigrationContractEthereumSepolia.sol', numChunks: 6 },
-        { id: 11155420, name: 'OptimismSepolia', fileName: 'MigrationContractOptimismSepolia.sol', numChunks: 1 },
-        { id: 84532, name: 'BaseSepolia', fileName: 'MigrationContractBaseSepolia.sol', numChunks: 4 },
-        { id: 421614, name: 'ArbitrumSepolia', fileName: 'MigrationContractArbitrumSepolia.sol', numChunks: 1 }
     ];
 
     // Track total items processed per chain for verification

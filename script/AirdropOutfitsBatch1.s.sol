@@ -23,7 +23,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
-        sphinxConfig.testnets = ["ethereum_sepolia", "optimism_sepolia", "base_sepolia", "arbitrum_sepolia"];
+        sphinxConfig.testnets = [];
     }
 
     function run() public sphinx {
@@ -32,27 +32,15 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         if (chainId == 1) {
             // Ethereum Mainnet
             _runEthereum();
-        } else if (chainId == 11155111) {
-            // Ethereum Sepolia
-            _runEthereumSepolia();
         } else if (chainId == 10) {
             // Optimism
             _runOptimism();
-        } else if (chainId == 11155420) {
-            // Optimism Sepolia
-            _runOptimismSepolia();
         } else if (chainId == 8453) {
             // Base
             _runBase();
-        } else if (chainId == 84532) {
-            // Base Sepolia
-            _runBaseSepolia();
         } else if (chainId == 42161) {
             // Arbitrum
             _runArbitrum();
-        } else if (chainId == 421614) {
-            // Arbitrum Sepolia
-            _runArbitrumSepolia();
         } else {
             revert("Unsupported chain for batch 1");
         }
@@ -76,23 +64,6 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         );
     }
     
-    function _runEthereumSepolia() internal {
-        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
-        address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
-        address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
-        address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            11155111
-        );
-    }
     
     function _runOptimism() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
@@ -112,23 +83,6 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         );
     }
     
-    function _runOptimismSepolia() internal {
-        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
-        address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
-        address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
-        address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            11155420
-        );
-    }
     
     function _runBase() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
@@ -148,23 +102,6 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         );
     }
     
-    function _runBaseSepolia() internal {
-        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
-        address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
-        address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
-        address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            84532
-        );
-    }
     
     function _runArbitrum() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
@@ -184,23 +121,6 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         );
     }
     
-    function _runArbitrumSepolia() internal {
-        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
-        address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
-        address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
-        address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
-        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
-        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
-        _processMigration(
-            hookAddress,
-            resolverAddress,
-            v4HookAddress,
-            v4ResolverAddress,
-            terminalAddress,
-            v4ResolverFallback,
-            421614
-        );
-    }
     
 
     function _processMigration(address hookAddress, address resolverAddress, address v4HookAddress, address v4ResolverAddress, address terminalAddress, address v4ResolverFallback, uint256 chainId) internal {
@@ -219,7 +139,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         
-        if (chainId == 1 || chainId == 11155111) {
+        if (chainId == 1) {
             // Ethereum - Batch 1 only
             uint16[] memory tierIds1 = new uint16[](60);
             
@@ -340,7 +260,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
             migrationContract1.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else 
-        if (chainId == 10 || chainId == 11155420) {
+        if (chainId == 10) {
             // Optimism tier IDs
             uint16[] memory allTierIds = new uint16[](11);
             
@@ -392,7 +312,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else 
-        if (chainId == 8453 || chainId == 84532) {
+        if (chainId == 8453) {
             // Base - Batch 1 only
             uint16[] memory tierIds1 = new uint16[](62);
             
@@ -497,7 +417,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
             migrationContract1.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else 
-        if (chainId == 42161 || chainId == 421614) {
+        if (chainId == 42161) {
             // Arbitrum tier IDs
             uint16[] memory allTierIds = new uint16[](205);
             
