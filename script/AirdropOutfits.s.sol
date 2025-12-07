@@ -7,10 +7,13 @@ import {MigrationContractEthereum1} from "./MigrationContractEthereum1.sol";
 import {MigrationContractEthereum2} from "./MigrationContractEthereum2.sol";
 import {MigrationContractEthereum3} from "./MigrationContractEthereum3.sol";
 import {MigrationContractEthereum4} from "./MigrationContractEthereum4.sol";
+import {MigrationContractEthereum5} from "./MigrationContractEthereum5.sol";
+import {MigrationContractEthereum6} from "./MigrationContractEthereum6.sol";
 import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";
 import {MigrationContractBase1} from "./MigrationContractBase1.sol";
 import {MigrationContractBase2} from "./MigrationContractBase2.sol";
 import {MigrationContractBase3} from "./MigrationContractBase3.sol";
+import {MigrationContractBase4} from "./MigrationContractBase4.sol";
 import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
@@ -22,8 +25,8 @@ import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataRes
 contract AirdropOutfitsScript is Script, Sphinx {
     // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
     // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
-    // Using 150 as a safe batch size to stay well under the limit
-    uint256 private constant BATCH_SIZE = 150;
+    // Using 100 as a safe batch size to stay well under the limit
+    uint256 private constant BATCH_SIZE = 100;
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
         sphinxConfig.mainnets = ["ethereum", "optimism", "base", "arbitrum"];
@@ -222,7 +225,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
-            // Ethereum - 3 chunks (plus optional unused assets chunk)
+            // Ethereum - 5 chunks (plus optional unused assets chunk)
             
             // Deploy and execute contract 1
             uint16[] memory tierIds1 = new uint16[](96);
@@ -601,7 +604,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
-            // Deploy and execute contract 4 (unused outfits/backgrounds)
+            // Deploy and execute contract 4
             uint16[] memory tierIds4 = new uint16[](280);
             
             // Add 2 instances of tier ID 5
@@ -788,7 +791,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
         } else if (chainId == 8453) {
-            // Base - 2 chunks (plus optional unused assets chunk)
+            // Base - 3 chunks (plus optional unused assets chunk)
             
             // Deploy and execute contract 1
             uint16[] memory tierIds1 = new uint16[](89);
@@ -988,7 +991,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract2.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
-            // Deploy and execute contract 3 (unused outfits/backgrounds)
+            // Deploy and execute contract 3
             uint16[] memory tierIds3 = new uint16[](53);
             
             // Add 2 instances of tier ID 5
@@ -1303,7 +1306,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         return total;
     }
     function _getEthereumTransferOwners1() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](40);
+        address[] memory transferOwners = new address[](24);
         
         transferOwners[0] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
         transferOwners[1] = 0xA2Fa6144168751D116336B58C5288feaF8bb12C1;
@@ -1329,116 +1332,128 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[21] = 0x79d1E7F1A6E0Bbb3278a9d2B782e3A8983444cb6;
         transferOwners[22] = 0x546B4A7A30b3193Badf70E1d43D8142928F3db0b;
         transferOwners[23] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
-        transferOwners[24] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
-        transferOwners[25] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
-        transferOwners[26] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        transferOwners[27] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
-        transferOwners[28] = 0x7D0068d0D8fC2Aa15d897448B348Fa9B30f6d4c9;
-        transferOwners[29] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[30] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        transferOwners[31] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        transferOwners[32] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[33] = 0x961d4191965C49537c88F764D88318872CE405bE;
-        transferOwners[34] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
-        transferOwners[35] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
-        transferOwners[36] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
-        transferOwners[37] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
-        transferOwners[38] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
-        transferOwners[39] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
         return transferOwners;
     }
     
     function _getEthereumTransferOwners2() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](40);
+        address[] memory transferOwners = new address[](24);
         
-        transferOwners[0] = 0x0447AD1BdC0fFA06f7029c8E63F4De21E65255d2;
-        transferOwners[1] = 0x5706d5aD7A68bf8692bD341234bE44ca7Bf2f654;
-        transferOwners[2] = 0x679d87D8640e66778c3419D164998E720D7495f6;
-        transferOwners[3] = 0x817738DC393d682Ca5fBb268707b99F2aAe96baE;
-        transferOwners[4] = 0x4A290F18c35bBFE97B2557cf765De9387726dE39;
-        transferOwners[5] = 0x25171bD3cD3231c3057c96F38E32E3bA6681497a;
-        transferOwners[6] = 0xa7226e53F3100C093A0a5BCb6E3D0976EB3db1D6;
-        transferOwners[7] = 0x76A6D08b82034b397E7e09dAe4377C18F132BbB8;
-        transferOwners[8] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
-        transferOwners[9] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
-        transferOwners[10] = 0x126eeFa566ABF5aC3EfDAeF52d79E962CFFdB448;
-        transferOwners[11] = 0x77fb4fa1ABA92576942aD34BC47834059b84e693;
-        transferOwners[12] = 0x08cEb8Bba685ee708C9c4c65576837cbE19B9dea;
-        transferOwners[13] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
-        transferOwners[14] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
-        transferOwners[15] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[16] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[17] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[18] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[19] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[20] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[21] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[22] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[23] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[24] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[25] = 0x5A00e8683f37e8B08C744054a0EF606a18b1aEF7;
-        transferOwners[26] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
-        transferOwners[27] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
-        transferOwners[28] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
-        transferOwners[29] = 0x46f3cC6a1c00A5cD8864d2B92f128196CAE07D15;
-        transferOwners[30] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
-        transferOwners[31] = 0x381CC779761212344f8400373a994d29E17522c6;
-        transferOwners[32] = 0x849151d7D0bF1F34b70d5caD5149D28CC2308bf1;
-        transferOwners[33] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[34] = 0x63A2368F4B509438ca90186cb1C15156713D5834;
-        transferOwners[35] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
-        transferOwners[36] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
-        transferOwners[37] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
-        transferOwners[38] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
-        transferOwners[39] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
+        transferOwners[0] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        transferOwners[1] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        transferOwners[2] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[3] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
+        transferOwners[4] = 0x7D0068d0D8fC2Aa15d897448B348Fa9B30f6d4c9;
+        transferOwners[5] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[6] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
+        transferOwners[7] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
+        transferOwners[8] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[9] = 0x961d4191965C49537c88F764D88318872CE405bE;
+        transferOwners[10] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
+        transferOwners[11] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
+        transferOwners[12] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[13] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[14] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
+        transferOwners[15] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
+        transferOwners[16] = 0x0447AD1BdC0fFA06f7029c8E63F4De21E65255d2;
+        transferOwners[17] = 0x5706d5aD7A68bf8692bD341234bE44ca7Bf2f654;
+        transferOwners[18] = 0x679d87D8640e66778c3419D164998E720D7495f6;
+        transferOwners[19] = 0x817738DC393d682Ca5fBb268707b99F2aAe96baE;
+        transferOwners[20] = 0x4A290F18c35bBFE97B2557cf765De9387726dE39;
+        transferOwners[21] = 0x25171bD3cD3231c3057c96F38E32E3bA6681497a;
+        transferOwners[22] = 0xa7226e53F3100C093A0a5BCb6E3D0976EB3db1D6;
+        transferOwners[23] = 0x76A6D08b82034b397E7e09dAe4377C18F132BbB8;
         return transferOwners;
     }
     
     function _getEthereumTransferOwners3() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](38);
+        address[] memory transferOwners = new address[](24);
         
-        transferOwners[0] = 0xf32dd1Bd55bD14d929218499a2E7D106F72f79c7;
-        transferOwners[1] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        transferOwners[2] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
-        transferOwners[3] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
-        transferOwners[4] = 0x80581C6e88Ce00095F85cdf24bB760f16d6eC0D6;
-        transferOwners[5] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
-        transferOwners[6] = 0x30670D81E487c80b9EDc54370e6EaF943B6EAB39;
-        transferOwners[7] = 0x60535A6605958fFf6cEC5B1e92892601EFb3473b;
-        transferOwners[8] = 0x34724D71cE674FcD4d06e60Dd1BaA88c14D36b75;
-        transferOwners[9] = 0xA99c384f43e72B65BB51fE33b85CE12A32C09526;
-        transferOwners[10] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        transferOwners[11] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        transferOwners[12] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[13] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[14] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[15] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[16] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[17] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[18] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[19] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[20] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[21] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[22] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[23] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[24] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[25] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[26] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[27] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[28] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        transferOwners[29] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        transferOwners[30] = 0xAAeD9fFF9858d48925904E391B77892BA5Fda824;
-        transferOwners[31] = 0x2feb329b9289b60064904Fa61Fc347157a5AEd6a;
-        transferOwners[32] = 0xDfd60a8E1e17FBb78E8CA332906A822D862f3D57;
-        transferOwners[33] = 0xBD07B7Ab42cE411A752DB600604ECA7fE5501947;
-        transferOwners[34] = 0x9f729294b308f79243285348A7Be3f58ae5ED31A;
-        transferOwners[35] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
-        transferOwners[36] = 0x1c6d61F3d8976A8aCDd311ecdFa533B8ECd0AC61;
-        transferOwners[37] = 0x5138a42C3D5065debE950deBDa10C1f38150a908;
+        transferOwners[0] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
+        transferOwners[1] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
+        transferOwners[2] = 0x126eeFa566ABF5aC3EfDAeF52d79E962CFFdB448;
+        transferOwners[3] = 0x77fb4fa1ABA92576942aD34BC47834059b84e693;
+        transferOwners[4] = 0x08cEb8Bba685ee708C9c4c65576837cbE19B9dea;
+        transferOwners[5] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
+        transferOwners[6] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
+        transferOwners[7] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[8] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[9] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[10] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[11] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[12] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[13] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[14] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[15] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[16] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
+        transferOwners[17] = 0x5A00e8683f37e8B08C744054a0EF606a18b1aEF7;
+        transferOwners[18] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
+        transferOwners[19] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
+        transferOwners[20] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
+        transferOwners[21] = 0x46f3cC6a1c00A5cD8864d2B92f128196CAE07D15;
+        transferOwners[22] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        transferOwners[23] = 0x381CC779761212344f8400373a994d29E17522c6;
         return transferOwners;
     }
     
     function _getEthereumTransferOwners4() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](24);
+        
+        transferOwners[0] = 0x849151d7D0bF1F34b70d5caD5149D28CC2308bf1;
+        transferOwners[1] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[2] = 0x63A2368F4B509438ca90186cb1C15156713D5834;
+        transferOwners[3] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
+        transferOwners[4] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
+        transferOwners[5] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
+        transferOwners[6] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
+        transferOwners[7] = 0x95E9A0c113AA9931a4230f91AdE08A491D3f8d54;
+        transferOwners[8] = 0xf32dd1Bd55bD14d929218499a2E7D106F72f79c7;
+        transferOwners[9] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[10] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        transferOwners[11] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        transferOwners[12] = 0x80581C6e88Ce00095F85cdf24bB760f16d6eC0D6;
+        transferOwners[13] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
+        transferOwners[14] = 0x30670D81E487c80b9EDc54370e6EaF943B6EAB39;
+        transferOwners[15] = 0x60535A6605958fFf6cEC5B1e92892601EFb3473b;
+        transferOwners[16] = 0x34724D71cE674FcD4d06e60Dd1BaA88c14D36b75;
+        transferOwners[17] = 0xA99c384f43e72B65BB51fE33b85CE12A32C09526;
+        transferOwners[18] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
+        transferOwners[19] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
+        transferOwners[20] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[21] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[22] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[23] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        return transferOwners;
+    }
+    
+    function _getEthereumTransferOwners5() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](22);
+        
+        transferOwners[0] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[1] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[2] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[3] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[4] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[5] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[6] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[7] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[8] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[9] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[10] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[11] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[12] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[13] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[14] = 0xAAeD9fFF9858d48925904E391B77892BA5Fda824;
+        transferOwners[15] = 0x2feb329b9289b60064904Fa61Fc347157a5AEd6a;
+        transferOwners[16] = 0xDfd60a8E1e17FBb78E8CA332906A822D862f3D57;
+        transferOwners[17] = 0xBD07B7Ab42cE411A752DB600604ECA7fE5501947;
+        transferOwners[18] = 0x9f729294b308f79243285348A7Be3f58ae5ED31A;
+        transferOwners[19] = 0x35a21F7c053Aed0Dcf9E24BfB100acA163aeDdB2;
+        transferOwners[20] = 0x1c6d61F3d8976A8aCDd311ecdFa533B8ECd0AC61;
+        transferOwners[21] = 0x5138a42C3D5065debE950deBDa10C1f38150a908;
+        return transferOwners;
+    }
+    
+    function _getEthereumTransferOwners6() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](280);
         
         transferOwners[0] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
@@ -1737,7 +1752,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
     }
     
     function _getBaseTransferOwners1() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](54);
+        address[] memory transferOwners = new address[](36);
         
         transferOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[1] = 0x565B93a15d38aCD79c120b15432D21E21eD274d6;
@@ -1775,87 +1790,93 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[33] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[34] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[35] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[36] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[37] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[38] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[39] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[40] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[41] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[42] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[43] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[44] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[45] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[46] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[47] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[48] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[49] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[50] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[51] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[52] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[53] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         return transferOwners;
     }
     
     function _getBaseTransferOwners2() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](53);
+        address[] memory transferOwners = new address[](36);
         
         transferOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[1] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[2] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[3] = 0x67BcBE602e870e2286C19E4E0044E583967c9665;
-        transferOwners[4] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
-        transferOwners[5] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
-        transferOwners[6] = 0xAcD59e854adf632d2322404198624F757C868C97;
-        transferOwners[7] = 0xAcD59e854adf632d2322404198624F757C868C97;
-        transferOwners[8] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
-        transferOwners[9] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
-        transferOwners[10] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
-        transferOwners[11] = 0x8Ec174c5d86469D1A74094E10485357eBFe2e08e;
-        transferOwners[12] = 0xC5704f77f94087CC644d361A5A57295851d242aB;
-        transferOwners[13] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
-        transferOwners[14] = 0xb6ECb51e3638Eb7aa0C6289ef058DCa27494Acb2;
-        transferOwners[15] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
-        transferOwners[16] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
-        transferOwners[17] = 0x9342E2aC6dd4A907948E91E80D2734ecAC1D70eC;
-        transferOwners[18] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
-        transferOwners[19] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
-        transferOwners[20] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
-        transferOwners[21] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
-        transferOwners[22] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
-        transferOwners[23] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
-        transferOwners[24] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
-        transferOwners[25] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
-        transferOwners[26] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
-        transferOwners[27] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
-        transferOwners[28] = 0x46f3cC6a1c00A5cD8864d2B92f128196CAE07D15;
-        transferOwners[29] = 0x8e2B25dF2484000B9127b2D2F8E92079dcEE3E48;
-        transferOwners[30] = 0x817738DC393d682Ca5fBb268707b99F2aAe96baE;
-        transferOwners[31] = 0x224aBa5D489675a7bD3CE07786FAda466b46FA0F;
-        transferOwners[32] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
-        transferOwners[33] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
-        transferOwners[34] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
-        transferOwners[35] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
-        transferOwners[36] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
-        transferOwners[37] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
-        transferOwners[38] = 0x3c2736f995535b5a755F3CE2BEb754362820671e;
-        transferOwners[39] = 0x6877be9E00d0bc5886c28419901E8cC98C1c2739;
-        transferOwners[40] = 0x8DFBdEEC8c5d4970BB5F481C6ec7f73fa1C65be5;
-        transferOwners[41] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        transferOwners[42] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
-        transferOwners[43] = 0x39a7B6fa1597BB6657Fe84e64E3B836c37d6F75d;
-        transferOwners[44] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
-        transferOwners[45] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
-        transferOwners[46] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
-        transferOwners[47] = 0xDdB4938755C243a4f60a2f2f8f95dF4F894c58Cc;
-        transferOwners[48] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
-        transferOwners[49] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
-        transferOwners[50] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
-        transferOwners[51] = 0xF6cC71878e23c05406B35946CD9d378E0f2f4f2F;
-        transferOwners[52] = 0xd2e44E40B5FB960A8A74dD7B9D6b7f14B805b50d;
+        transferOwners[3] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[4] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[5] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[6] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[7] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[8] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[9] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[10] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[11] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[12] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[13] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[14] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[15] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[16] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[17] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[18] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[19] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[20] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[21] = 0x67BcBE602e870e2286C19E4E0044E583967c9665;
+        transferOwners[22] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
+        transferOwners[23] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[24] = 0xAcD59e854adf632d2322404198624F757C868C97;
+        transferOwners[25] = 0xAcD59e854adf632d2322404198624F757C868C97;
+        transferOwners[26] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
+        transferOwners[27] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        transferOwners[28] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
+        transferOwners[29] = 0x8Ec174c5d86469D1A74094E10485357eBFe2e08e;
+        transferOwners[30] = 0xC5704f77f94087CC644d361A5A57295851d242aB;
+        transferOwners[31] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
+        transferOwners[32] = 0xb6ECb51e3638Eb7aa0C6289ef058DCa27494Acb2;
+        transferOwners[33] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
+        transferOwners[34] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
+        transferOwners[35] = 0x9342E2aC6dd4A907948E91E80D2734ecAC1D70eC;
         return transferOwners;
     }
     
     function _getBaseTransferOwners3() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](35);
+        
+        transferOwners[0] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
+        transferOwners[1] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
+        transferOwners[2] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
+        transferOwners[3] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
+        transferOwners[4] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
+        transferOwners[5] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        transferOwners[6] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        transferOwners[7] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        transferOwners[8] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        transferOwners[9] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        transferOwners[10] = 0x46f3cC6a1c00A5cD8864d2B92f128196CAE07D15;
+        transferOwners[11] = 0x8e2B25dF2484000B9127b2D2F8E92079dcEE3E48;
+        transferOwners[12] = 0x817738DC393d682Ca5fBb268707b99F2aAe96baE;
+        transferOwners[13] = 0x224aBa5D489675a7bD3CE07786FAda466b46FA0F;
+        transferOwners[14] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
+        transferOwners[15] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
+        transferOwners[16] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
+        transferOwners[17] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
+        transferOwners[18] = 0x29f4aE3c24681940E537f72830b4Fe4076bDF9fe;
+        transferOwners[19] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[20] = 0x3c2736f995535b5a755F3CE2BEb754362820671e;
+        transferOwners[21] = 0x6877be9E00d0bc5886c28419901E8cC98C1c2739;
+        transferOwners[22] = 0x8DFBdEEC8c5d4970BB5F481C6ec7f73fa1C65be5;
+        transferOwners[23] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[24] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[25] = 0x39a7B6fa1597BB6657Fe84e64E3B836c37d6F75d;
+        transferOwners[26] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[27] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[28] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[29] = 0xDdB4938755C243a4f60a2f2f8f95dF4F894c58Cc;
+        transferOwners[30] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
+        transferOwners[31] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
+        transferOwners[32] = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
+        transferOwners[33] = 0xF6cC71878e23c05406B35946CD9d378E0f2f4f2F;
+        transferOwners[34] = 0xd2e44E40B5FB960A8A74dD7B9D6b7f14B805b50d;
+        return transferOwners;
+    }
+    
+    function _getBaseTransferOwners4() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](53);
         
         transferOwners[0] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;

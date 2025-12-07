@@ -3,7 +3,7 @@ pragma solidity 0.8.23;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
-import {MigrationContractEthereum3} from "./MigrationContractEthereum3.sol";
+import {MigrationContractBase4} from "./MigrationContractBase4.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
@@ -11,7 +11,7 @@ import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
 import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
 import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
 
-contract AirdropOutfitsBatch3Script is Script, Sphinx {
+contract AirdropOutfitsBatch7Script is Script, Sphinx {
     // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
     // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
     // Using 100 as a safe batch size to stay well under the limit
@@ -26,18 +26,18 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
     function run() public sphinx {
         uint256 chainId = block.chainid;
         
-        if (chainId == 1) {
-            // Ethereum Mainnet
-            _runEthereum();
-        } else if (chainId == 11155111) {
-            // Ethereum Sepolia
-            _runEthereumSepolia();
+        if (chainId == 8453) {
+            // Base
+            _runBase();
+        } else if (chainId == 84532) {
+            // Base Sepolia
+            _runBaseSepolia();
         } else {
-            revert("Unsupported chain for batch 3");
+            revert("Unsupported chain for batch 7");
         }
     }
 
-    function _runEthereum() internal {
+    function _runBase() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
@@ -51,11 +51,11 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
             v4ResolverAddress,
             terminalAddress,
             v4ResolverFallback,
-            1
+            8453
         );
     }
     
-    function _runEthereumSepolia() internal {
+    function _runBaseSepolia() internal {
         address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
         address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
         address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
@@ -69,7 +69,7 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
             v4ResolverAddress,
             terminalAddress,
             v4ResolverFallback,
-            11155111
+            84532
         );
     }
     
@@ -90,121 +90,125 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         
-        if (chainId == 1 || chainId == 11155111) {
-            // Ethereum - Batch 3 only
-            uint16[] memory tierIds3 = new uint16[](75);
+        if (chainId == 8453 || chainId == 84532) {
+            // Base - Batch 7 only
+            uint16[] memory tierIds4 = new uint16[](53);
             
-            // Add 38 instances of tier ID 4
-            for (uint256 i = 0; i < 38; i++) {
-                tierIds3[0 + i] = 4;
-            }
-            // Add 1 instances of tier ID 5
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[38 + i] = 5;
-            }
-            // Add 2 instances of tier ID 6
+            // Add 2 instances of tier ID 5
             for (uint256 i = 0; i < 2; i++) {
-                tierIds3[39 + i] = 6;
+                tierIds4[0 + i] = 5;
             }
-            // Add 1 instances of tier ID 10
+            // Add 1 instances of tier ID 6
             for (uint256 i = 0; i < 1; i++) {
-                tierIds3[41 + i] = 10;
+                tierIds4[2 + i] = 6;
+            }
+            // Add 1 instances of tier ID 7
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[3 + i] = 7;
+            }
+            // Add 6 instances of tier ID 10
+            for (uint256 i = 0; i < 6; i++) {
+                tierIds4[4 + i] = 10;
+            }
+            // Add 2 instances of tier ID 11
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[10 + i] = 11;
             }
             // Add 1 instances of tier ID 13
             for (uint256 i = 0; i < 1; i++) {
-                tierIds3[42 + i] = 13;
+                tierIds4[12 + i] = 13;
             }
-            // Add 3 instances of tier ID 15
+            // Add 1 instances of tier ID 14
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[13 + i] = 14;
+            }
+            // Add 1 instances of tier ID 17
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[14 + i] = 17;
+            }
+            // Add 5 instances of tier ID 19
+            for (uint256 i = 0; i < 5; i++) {
+                tierIds4[15 + i] = 19;
+            }
+            // Add 1 instances of tier ID 24
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[20 + i] = 24;
+            }
+            // Add 1 instances of tier ID 25
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[21 + i] = 25;
+            }
+            // Add 4 instances of tier ID 28
+            for (uint256 i = 0; i < 4; i++) {
+                tierIds4[22 + i] = 28;
+            }
+            // Add 4 instances of tier ID 31
+            for (uint256 i = 0; i < 4; i++) {
+                tierIds4[26 + i] = 31;
+            }
+            // Add 1 instances of tier ID 32
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[30 + i] = 32;
+            }
+            // Add 1 instances of tier ID 34
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds4[31 + i] = 34;
+            }
+            // Add 3 instances of tier ID 35
             for (uint256 i = 0; i < 3; i++) {
-                tierIds3[43 + i] = 15;
+                tierIds4[32 + i] = 35;
             }
-            // Add 1 instances of tier ID 18
+            // Add 1 instances of tier ID 38
             for (uint256 i = 0; i < 1; i++) {
-                tierIds3[46 + i] = 18;
-            }
-            // Add 6 instances of tier ID 19
-            for (uint256 i = 0; i < 6; i++) {
-                tierIds3[47 + i] = 19;
-            }
-            // Add 1 instances of tier ID 20
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[53 + i] = 20;
-            }
-            // Add 1 instances of tier ID 23
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[54 + i] = 23;
-            }
-            // Add 2 instances of tier ID 25
-            for (uint256 i = 0; i < 2; i++) {
-                tierIds3[55 + i] = 25;
-            }
-            // Add 1 instances of tier ID 26
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[57 + i] = 26;
-            }
-            // Add 1 instances of tier ID 28
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[58 + i] = 28;
-            }
-            // Add 1 instances of tier ID 29
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[59 + i] = 29;
-            }
-            // Add 3 instances of tier ID 31
-            for (uint256 i = 0; i < 3; i++) {
-                tierIds3[60 + i] = 31;
-            }
-            // Add 1 instances of tier ID 35
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[63 + i] = 35;
-            }
-            // Add 2 instances of tier ID 38
-            for (uint256 i = 0; i < 2; i++) {
-                tierIds3[64 + i] = 38;
+                tierIds4[35 + i] = 38;
             }
             // Add 1 instances of tier ID 39
             for (uint256 i = 0; i < 1; i++) {
-                tierIds3[66 + i] = 39;
+                tierIds4[36 + i] = 39;
             }
-            // Add 1 instances of tier ID 40
+            // Add 2 instances of tier ID 40
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[37 + i] = 40;
+            }
+            // Add 1 instances of tier ID 41
             for (uint256 i = 0; i < 1; i++) {
-                tierIds3[67 + i] = 40;
+                tierIds4[39 + i] = 41;
+            }
+            // Add 2 instances of tier ID 42
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[40 + i] = 42;
             }
             // Add 2 instances of tier ID 43
             for (uint256 i = 0; i < 2; i++) {
-                tierIds3[68 + i] = 43;
+                tierIds4[42 + i] = 43;
             }
             // Add 2 instances of tier ID 44
             for (uint256 i = 0; i < 2; i++) {
-                tierIds3[70 + i] = 44;
+                tierIds4[44 + i] = 44;
             }
-            // Add 1 instances of tier ID 47
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[72 + i] = 47;
+            // Add 5 instances of tier ID 47
+            for (uint256 i = 0; i < 5; i++) {
+                tierIds4[46 + i] = 47;
             }
-            // Add 1 instances of tier ID 48
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[73 + i] = 48;
+            // Add 2 instances of tier ID 49
+            for (uint256 i = 0; i < 2; i++) {
+                tierIds4[51 + i] = 49;
             }
-            // Add 1 instances of tier ID 49
-            for (uint256 i = 0; i < 1; i++) {
-                tierIds3[74 + i] = 49;
-            }
-            address[] memory transferOwners3 = _getEthereumTransferOwners3();
-            MigrationContractEthereum3 migrationContract3 = new MigrationContractEthereum3(transferOwners3);
-            console.log("Ethereum migration contract 3 deployed at:", address(migrationContract3));
+            address[] memory transferOwners4 = _getBaseTransferOwners4();
+            MigrationContractBase4 migrationContract4 = new MigrationContractBase4(transferOwners4);
+            console.log("Base migration contract 4 deployed at:", address(migrationContract4));
             
-            // Mint chunk 3 assets to the contract address via pay()
+            // Mint chunk 4 assets to the contract address via pay()
             _mintViaPay(
                 terminal,
                 hook,
                 projectId,
-                tierIds3,
-                address(migrationContract3)
+                tierIds4,
+                address(migrationContract4)
             );
-            console.log("Minted", tierIds3.length, "tokens to contract 3");
+            console.log("Minted", tierIds4.length, "tokens to contract 4");
             
-            migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            migrationContract4.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else 
         {
@@ -314,33 +318,62 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
             total += _getPriceForUPC(tierIds[i]);
         }
         return total;
-    }function _getEthereumTransferOwners3() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](24);
+    }function _getBaseTransferOwners4() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](53);
         
-        transferOwners[0] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
-        transferOwners[1] = 0x809C9f8dd8CA93A41c3adca4972Fa234C28F7714;
-        transferOwners[2] = 0x126eeFa566ABF5aC3EfDAeF52d79E962CFFdB448;
-        transferOwners[3] = 0x77fb4fa1ABA92576942aD34BC47834059b84e693;
-        transferOwners[4] = 0x08cEb8Bba685ee708C9c4c65576837cbE19B9dea;
-        transferOwners[5] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
-        transferOwners[6] = 0x690C01b4b1389D9D9265820F77DCbD2A6Ad04e6c;
-        transferOwners[7] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[8] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[9] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[10] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[11] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[12] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[13] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[14] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[15] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[16] = 0x7bE8c264c9DCebA3A35990c78d5C4220D8724B6e;
-        transferOwners[17] = 0x5A00e8683f37e8B08C744054a0EF606a18b1aEF7;
-        transferOwners[18] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
-        transferOwners[19] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
-        transferOwners[20] = 0x59E98040E53d7dC1900B4daf36D9Fbbd4a8f1dA2;
-        transferOwners[21] = 0x46f3cC6a1c00A5cD8864d2B92f128196CAE07D15;
-        transferOwners[22] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
-        transferOwners[23] = 0x381CC779761212344f8400373a994d29E17522c6;
+        transferOwners[0] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[1] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[2] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[3] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[4] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[5] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[6] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[7] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[8] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[9] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[10] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[11] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[12] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[13] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[14] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[15] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
+        transferOwners[16] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
+        transferOwners[17] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[18] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[19] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[20] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[21] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[22] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
+        transferOwners[23] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[24] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[25] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[26] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
+        transferOwners[27] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[28] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[29] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[30] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[31] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        transferOwners[32] = 0x565B93a15d38aCD79c120b15432D21E21eD274d6;
+        transferOwners[33] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[34] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[35] = 0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F;
+        transferOwners[36] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[37] = 0x8DFBdEEC8c5d4970BB5F481C6ec7f73fa1C65be5;
+        transferOwners[38] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[39] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[40] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        transferOwners[41] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[42] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[43] = 0x328809A567b87b6123462c3062e8438BBB75c1c5;
+        transferOwners[44] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[45] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
+        transferOwners[46] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        transferOwners[47] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
+        transferOwners[48] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[49] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[50] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        transferOwners[51] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        transferOwners[52] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
         return transferOwners;
     }
     

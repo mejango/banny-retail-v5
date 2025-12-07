@@ -17,8 +17,8 @@ import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataRes
 contract AirdropOutfitsBatch1Script is Script, Sphinx {
     // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
     // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
-    // Using 150 as a safe batch size to stay well under the limit
-    uint256 private constant BATCH_SIZE = 150;
+    // Using 100 as a safe batch size to stay well under the limit
+    uint256 private constant BATCH_SIZE = 100;
     
     function configureSphinx() public override {
         sphinxConfig.projectName = "banny-core";
@@ -721,7 +721,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         }
         return total;
     }function _getEthereumTransferOwners1() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](40);
+        address[] memory transferOwners = new address[](24);
         
         transferOwners[0] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
         transferOwners[1] = 0xA2Fa6144168751D116336B58C5288feaF8bb12C1;
@@ -747,22 +747,6 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         transferOwners[21] = 0x79d1E7F1A6E0Bbb3278a9d2B782e3A8983444cb6;
         transferOwners[22] = 0x546B4A7A30b3193Badf70E1d43D8142928F3db0b;
         transferOwners[23] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
-        transferOwners[24] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
-        transferOwners[25] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
-        transferOwners[26] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        transferOwners[27] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
-        transferOwners[28] = 0x7D0068d0D8fC2Aa15d897448B348Fa9B30f6d4c9;
-        transferOwners[29] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[30] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        transferOwners[31] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        transferOwners[32] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[33] = 0x961d4191965C49537c88F764D88318872CE405bE;
-        transferOwners[34] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
-        transferOwners[35] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
-        transferOwners[36] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
-        transferOwners[37] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
-        transferOwners[38] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
-        transferOwners[39] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
         return transferOwners;
     }
     function _getOptimismTransferOwners() internal pure returns (address[] memory) {
@@ -777,7 +761,7 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         return transferOwners;
     }
     function _getBaseTransferOwners1() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](54);
+        address[] memory transferOwners = new address[](36);
         
         transferOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[1] = 0x565B93a15d38aCD79c120b15432D21E21eD274d6;
@@ -815,24 +799,6 @@ contract AirdropOutfitsBatch1Script is Script, Sphinx {
         transferOwners[33] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[34] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[35] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[36] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[37] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[38] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[39] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[40] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[41] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[42] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[43] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[44] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[45] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[46] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[47] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[48] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[49] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[50] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[51] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[52] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        transferOwners[53] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         return transferOwners;
     }
     function _getArbitrumTransferOwners() internal pure returns (address[] memory) {

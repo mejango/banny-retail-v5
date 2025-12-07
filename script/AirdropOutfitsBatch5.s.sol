@@ -10,7 +10,7 @@ import {IJBTerminal} from "@bananapus/core-v5/src/interfaces/IJBTerminal.sol";
 import {JBConstants} from "@bananapus/core-v5/src/libraries/JBConstants.sol";
 import {JBMetadataResolver} from "@bananapus/core-v5/src/libraries/JBMetadataResolver.sol";
 
-contract AirdropOutfitsBatch4Script is Script, Sphinx {
+contract AirdropOutfitsBatch5Script is Script, Sphinx {
     // Maximum tier IDs per batch to avoid metadata size limit (255 words max)
     // Each tier ID takes 1 word, plus overhead for array length, boolean, and metadata structure
     // Using 100 as a safe batch size to stay well under the limit
@@ -26,7 +26,7 @@ contract AirdropOutfitsBatch4Script is Script, Sphinx {
         uint256 chainId = block.chainid;
         
         {
-            revert("Unsupported chain for batch 4");
+            revert("Unsupported chain for batch 5");
         }
     }
 
