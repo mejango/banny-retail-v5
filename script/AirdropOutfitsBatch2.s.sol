@@ -5,6 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {MigrationContractEthereum2} from "./MigrationContractEthereum2.sol";
 import {MigrationContractBase2} from "./MigrationContractBase2.sol";
+import {MigrationContractArbitrum2} from "./MigrationContractArbitrum2.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
@@ -33,6 +34,9 @@ contract AirdropOutfitsBatch2Script is Script, Sphinx {
         } else if (chainId == 8453) {
             // Base
             _runBase();
+        } else if (chainId == 42161) {
+            // Arbitrum
+            _runArbitrum();
         } else {
             revert("Unsupported chain for batch 2");
         }
@@ -72,6 +76,25 @@ contract AirdropOutfitsBatch2Script is Script, Sphinx {
             terminalAddress,
             v4ResolverFallback,
             8453
+        );
+    }
+    
+    
+    function _runArbitrum() internal {
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
+        address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
+        address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            42161
         );
     }
     
@@ -189,6 +212,63 @@ contract AirdropOutfitsBatch2Script is Script, Sphinx {
             address[] memory transferOwners2 = _getBaseTransferOwners2();
             MigrationContractBase2 migrationContract2 = new MigrationContractBase2(transferOwners2);
             console.log("Base migration contract 2 deployed at:", address(migrationContract2));
+            
+            // Mint chunk 2 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds2,
+                address(migrationContract2)
+            );
+            console.log("Minted", tierIds2.length, "tokens to contract 2");
+            
+            migrationContract2.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+        } else 
+        if (chainId == 42161) {
+            // Arbitrum - Batch 2 only
+            uint16[] memory tierIds2 = new uint16[](12);
+            
+            // Add 4 instances of tier ID 4
+            for (uint256 i = 0; i < 4; i++) {
+                tierIds2[0 + i] = 4;
+            }
+            // Add 1 instances of tier ID 6
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[4 + i] = 6;
+            }
+            // Add 1 instances of tier ID 10
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[5 + i] = 10;
+            }
+            // Add 1 instances of tier ID 11
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[6 + i] = 11;
+            }
+            // Add 1 instances of tier ID 19
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[7 + i] = 19;
+            }
+            // Add 1 instances of tier ID 20
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[8 + i] = 20;
+            }
+            // Add 1 instances of tier ID 28
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[9 + i] = 28;
+            }
+            // Add 1 instances of tier ID 31
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[10 + i] = 31;
+            }
+            // Add 1 instances of tier ID 49
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[11 + i] = 49;
+            }
+            address[] memory transferOwners2 = _getArbitrumTransferOwners2();
+            MigrationContractArbitrum2 migrationContract2 = new MigrationContractArbitrum2(transferOwners2);
+            console.log("Arbitrum migration contract 2 deployed at:", address(migrationContract2));
             
             // Mint chunk 2 assets to the contract address via pay()
             _mintViaPay(
@@ -365,6 +445,15 @@ contract AirdropOutfitsBatch2Script is Script, Sphinx {
         transferOwners[24] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[25] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         transferOwners[26] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        return transferOwners;
+    }
+    function _getArbitrumTransferOwners2() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](4);
+        
+        transferOwners[0] = 0x08B3e694caA2F1fcF8eF71095CED1326f3454B89;
+        transferOwners[1] = 0x9fDf876a50EA8f95017dCFC7709356887025B5BB;
+        transferOwners[2] = 0x187089B33E5812310Ed32A57F53B3fAD0383a19D;
+        transferOwners[3] = 0xc6404f24DB2f573F07F3A60758765caad198c0c3;
         return transferOwners;
     }
     

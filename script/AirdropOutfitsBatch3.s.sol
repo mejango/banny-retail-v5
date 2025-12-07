@@ -5,6 +5,7 @@ import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
 import {MigrationContractEthereum3} from "./MigrationContractEthereum3.sol";
 import {MigrationContractBase3} from "./MigrationContractBase3.sol";
+import {MigrationContractArbitrum3} from "./MigrationContractArbitrum3.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
@@ -33,6 +34,9 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
         } else if (chainId == 8453) {
             // Base
             _runBase();
+        } else if (chainId == 42161) {
+            // Arbitrum
+            _runArbitrum();
         } else {
             revert("Unsupported chain for batch 3");
         }
@@ -72,6 +76,25 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
             terminalAddress,
             v4ResolverFallback,
             8453
+        );
+    }
+    
+    
+    function _runArbitrum() internal {
+        address hookAddress = 0xb4Ec363c2E7DB0cECA9AA1759338d7d1b49d1750;
+        address resolverAddress = 0x47c011146A4498a70E0bF2E4585acF9CaDE85954;
+        address v4HookAddress = 0x2da41CdC79Ae49F2725AB549717B2DBcfc42b958;
+        address v4ResolverAddress = 0xa5F8911d4CFd60a6697479f078409434424fe666;
+        address terminalAddress = 0x2dB6d704058E552DeFE415753465df8dF0361846;
+        address v4ResolverFallback = 0xfF80c37a57016EFf3d19fb286e9C740eC4537Dd3;
+        _processMigration(
+            hookAddress,
+            resolverAddress,
+            v4HookAddress,
+            v4ResolverAddress,
+            terminalAddress,
+            v4ResolverFallback,
+            42161
         );
     }
     
@@ -225,6 +248,51 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
             address[] memory transferOwners3 = _getBaseTransferOwners3();
             MigrationContractBase3 migrationContract3 = new MigrationContractBase3(transferOwners3);
             console.log("Base migration contract 3 deployed at:", address(migrationContract3));
+            
+            // Mint chunk 3 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds3,
+                address(migrationContract3)
+            );
+            console.log("Minted", tierIds3.length, "tokens to contract 3");
+            
+            migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+        } else 
+        if (chainId == 42161) {
+            // Arbitrum - Batch 3 only
+            uint16[] memory tierIds3 = new uint16[](8);
+            
+            // Add 3 instances of tier ID 4
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds3[0 + i] = 4;
+            }
+            // Add 1 instances of tier ID 5
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[3 + i] = 5;
+            }
+            // Add 1 instances of tier ID 10
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[4 + i] = 10;
+            }
+            // Add 1 instances of tier ID 20
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[5 + i] = 20;
+            }
+            // Add 1 instances of tier ID 28
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[6 + i] = 28;
+            }
+            // Add 1 instances of tier ID 43
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[7 + i] = 43;
+            }
+            address[] memory transferOwners3 = _getArbitrumTransferOwners3();
+            MigrationContractArbitrum3 migrationContract3 = new MigrationContractArbitrum3(transferOwners3);
+            console.log("Arbitrum migration contract 3 deployed at:", address(migrationContract3));
             
             // Mint chunk 3 assets to the contract address via pay()
             _mintViaPay(
@@ -401,6 +469,14 @@ contract AirdropOutfitsBatch3Script is Script, Sphinx {
         transferOwners[24] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
         transferOwners[25] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
         transferOwners[26] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        return transferOwners;
+    }
+    function _getArbitrumTransferOwners3() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](3);
+        
+        transferOwners[0] = 0xB2d3900807094D4Fe47405871B0C8AdB58E10D42;
+        transferOwners[1] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[2] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
         return transferOwners;
     }
     

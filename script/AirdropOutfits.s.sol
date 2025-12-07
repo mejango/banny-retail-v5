@@ -16,7 +16,10 @@ import {MigrationContractBase2} from "./MigrationContractBase2.sol";
 import {MigrationContractBase3} from "./MigrationContractBase3.sol";
 import {MigrationContractBase4} from "./MigrationContractBase4.sol";
 import {MigrationContractBase5} from "./MigrationContractBase5.sol";
-import {MigrationContractArbitrum} from "./MigrationContractArbitrum.sol";
+import {MigrationContractArbitrum1} from "./MigrationContractArbitrum1.sol";
+import {MigrationContractArbitrum2} from "./MigrationContractArbitrum2.sol";
+import {MigrationContractArbitrum3} from "./MigrationContractArbitrum3.sol";
+import {MigrationContractArbitrum4} from "./MigrationContractArbitrum4.sol";
 
 import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
 import {Sphinx} from "@sphinx-labs/contracts/SphinxPlugin.sol";
@@ -1240,92 +1243,153 @@ contract AirdropOutfitsScript is Script, Sphinx {
             migrationContract5.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else if (chainId == 42161) {
-            // Arbitrum tier IDs
-            uint16[] memory allTierIds = new uint16[](205);
+            // Arbitrum - 3 chunks (plus optional unused assets chunk)
+            
+            // Deploy and execute contract 1
+            uint16[] memory tierIds1 = new uint16[](9);
             
             // Add 2 instances of tier ID 3
             for (uint256 i = 0; i < 2; i++) {
-                allTierIds[0 + i] = 3;
+                tierIds1[0 + i] = 3;
             }
-            // Add 9 instances of tier ID 4
-            for (uint256 i = 0; i < 9; i++) {
-                allTierIds[2 + i] = 4;
-            }
-            // Add 3 instances of tier ID 5
-            for (uint256 i = 0; i < 3; i++) {
-                allTierIds[11 + i] = 5;
-            }
-            // Add 1 instances of tier ID 6
-            for (uint256 i = 0; i < 1; i++) {
-                allTierIds[14 + i] = 6;
-            }
-            // Add 2 instances of tier ID 10
+            // Add 2 instances of tier ID 4
             for (uint256 i = 0; i < 2; i++) {
-                allTierIds[15 + i] = 10;
+                tierIds1[2 + i] = 4;
             }
-            // Add 1 instances of tier ID 11
+            // Add 1 instances of tier ID 5
             for (uint256 i = 0; i < 1; i++) {
-                allTierIds[17 + i] = 11;
+                tierIds1[4 + i] = 5;
             }
-            // Add 4 instances of tier ID 19
-            for (uint256 i = 0; i < 4; i++) {
-                allTierIds[18 + i] = 19;
-            }
-            // Add 2 instances of tier ID 20
-            for (uint256 i = 0; i < 2; i++) {
-                allTierIds[22 + i] = 20;
+            // Add 1 instances of tier ID 19
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds1[5 + i] = 19;
             }
             // Add 1 instances of tier ID 25
             for (uint256 i = 0; i < 1; i++) {
-                allTierIds[24 + i] = 25;
-            }
-            // Add 2 instances of tier ID 28
-            for (uint256 i = 0; i < 2; i++) {
-                allTierIds[25 + i] = 28;
-            }
-            // Add 2 instances of tier ID 31
-            for (uint256 i = 0; i < 2; i++) {
-                allTierIds[27 + i] = 31;
-            }
-            // Add 1 instances of tier ID 32
-            for (uint256 i = 0; i < 1; i++) {
-                allTierIds[29 + i] = 32;
+                tierIds1[6 + i] = 25;
             }
             // Add 1 instances of tier ID 38
             for (uint256 i = 0; i < 1; i++) {
-                allTierIds[30 + i] = 38;
+                tierIds1[7 + i] = 38;
             }
-            // Add 1 instances of tier ID 39
+            // Add 1 instances of tier ID 47
             for (uint256 i = 0; i < 1; i++) {
-                allTierIds[31 + i] = 39;
+                tierIds1[8 + i] = 47;
             }
-            // Add 1 instances of tier ID 43
-            for (uint256 i = 0; i < 1; i++) {
-                allTierIds[32 + i] = 43;
-            }
-            // Add 27 instances of tier ID 47
-            for (uint256 i = 0; i < 27; i++) {
-                allTierIds[33 + i] = 47;
-            }
-            // Add 145 instances of tier ID 49
-            for (uint256 i = 0; i < 145; i++) {
-                allTierIds[60 + i] = 49;
-            }
-            address[] memory transferOwners = _getArbitrumTransferOwners();
-            MigrationContractArbitrum migrationContract = new MigrationContractArbitrum(transferOwners);
-            console.log("Arbitrum migration contract deployed at:", address(migrationContract));
+            address[] memory transferOwners1 = _getArbitrumTransferOwners1();
+            MigrationContractArbitrum1 migrationContract1 = new MigrationContractArbitrum1(transferOwners1);
+            console.log("Arbitrum migration contract 1 deployed at:", address(migrationContract1));
             
-            // Mint all assets to the contract address via pay()
+            // Mint chunk 1 assets to the contract address via pay()
             _mintViaPay(
                 terminal,
                 hook,
                 projectId,
-                allTierIds,
-                address(migrationContract)
+                tierIds1,
+                address(migrationContract1)
             );
-            console.log("Minted", allTierIds.length, "tokens to contract");
+            console.log("Minted", tierIds1.length, "tokens to contract 1");
             
-            migrationContract.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            migrationContract1.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+            // Deploy and execute contract 2
+            uint16[] memory tierIds2 = new uint16[](12);
+            
+            // Add 4 instances of tier ID 4
+            for (uint256 i = 0; i < 4; i++) {
+                tierIds2[0 + i] = 4;
+            }
+            // Add 1 instances of tier ID 6
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[4 + i] = 6;
+            }
+            // Add 1 instances of tier ID 10
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[5 + i] = 10;
+            }
+            // Add 1 instances of tier ID 11
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[6 + i] = 11;
+            }
+            // Add 1 instances of tier ID 19
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[7 + i] = 19;
+            }
+            // Add 1 instances of tier ID 20
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[8 + i] = 20;
+            }
+            // Add 1 instances of tier ID 28
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[9 + i] = 28;
+            }
+            // Add 1 instances of tier ID 31
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[10 + i] = 31;
+            }
+            // Add 1 instances of tier ID 49
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds2[11 + i] = 49;
+            }
+            address[] memory transferOwners2 = _getArbitrumTransferOwners2();
+            MigrationContractArbitrum2 migrationContract2 = new MigrationContractArbitrum2(transferOwners2);
+            console.log("Arbitrum migration contract 2 deployed at:", address(migrationContract2));
+            
+            // Mint chunk 2 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds2,
+                address(migrationContract2)
+            );
+            console.log("Minted", tierIds2.length, "tokens to contract 2");
+            
+            migrationContract2.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+            // Deploy and execute contract 3
+            uint16[] memory tierIds3 = new uint16[](8);
+            
+            // Add 3 instances of tier ID 4
+            for (uint256 i = 0; i < 3; i++) {
+                tierIds3[0 + i] = 4;
+            }
+            // Add 1 instances of tier ID 5
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[3 + i] = 5;
+            }
+            // Add 1 instances of tier ID 10
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[4 + i] = 10;
+            }
+            // Add 1 instances of tier ID 20
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[5 + i] = 20;
+            }
+            // Add 1 instances of tier ID 28
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[6 + i] = 28;
+            }
+            // Add 1 instances of tier ID 43
+            for (uint256 i = 0; i < 1; i++) {
+                tierIds3[7 + i] = 43;
+            }
+            address[] memory transferOwners3 = _getArbitrumTransferOwners3();
+            MigrationContractArbitrum3 migrationContract3 = new MigrationContractArbitrum3(transferOwners3);
+            console.log("Arbitrum migration contract 3 deployed at:", address(migrationContract3));
+            
+            // Mint chunk 3 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds3,
+                address(migrationContract3)
+            );
+            console.log("Minted", tierIds3.length, "tokens to contract 3");
+            
+            migrationContract3.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
         } else {
             revert("Unsupported chain for contract deployment");
         }
@@ -2076,23 +2140,52 @@ contract AirdropOutfitsScript is Script, Sphinx {
         return transferOwners;
     }
     
-    function _getArbitrumTransferOwners() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](187);
+    function _getArbitrumTransferOwners1() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](4);
         
         transferOwners[0] = 0x2aa64E6d80390F5C017F0313cB908051BE2FD35e;
         transferOwners[1] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[2] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
         transferOwners[3] = 0xfD282d9f4d06C4BDc6a41af1Ae920A0AD70D18a3;
-        transferOwners[4] = 0x08B3e694caA2F1fcF8eF71095CED1326f3454B89;
-        transferOwners[5] = 0x9fDf876a50EA8f95017dCFC7709356887025B5BB;
-        transferOwners[6] = 0x187089B33E5812310Ed32A57F53B3fAD0383a19D;
-        transferOwners[7] = 0xc6404f24DB2f573F07F3A60758765caad198c0c3;
-        transferOwners[8] = 0xB2d3900807094D4Fe47405871B0C8AdB58E10D42;
-        transferOwners[9] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
-        transferOwners[10] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
-        transferOwners[11] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
-        transferOwners[12] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
-        transferOwners[13] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        return transferOwners;
+    }
+    
+    function _getArbitrumTransferOwners2() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](4);
+        
+        transferOwners[0] = 0x08B3e694caA2F1fcF8eF71095CED1326f3454B89;
+        transferOwners[1] = 0x9fDf876a50EA8f95017dCFC7709356887025B5BB;
+        transferOwners[2] = 0x187089B33E5812310Ed32A57F53B3fAD0383a19D;
+        transferOwners[3] = 0xc6404f24DB2f573F07F3A60758765caad198c0c3;
+        return transferOwners;
+    }
+    
+    function _getArbitrumTransferOwners3() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](3);
+        
+        transferOwners[0] = 0xB2d3900807094D4Fe47405871B0C8AdB58E10D42;
+        transferOwners[1] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[2] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        return transferOwners;
+    }
+    
+    function _getArbitrumTransferOwners4() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](176);
+        
+        transferOwners[0] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[1] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        transferOwners[2] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[3] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        transferOwners[4] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[5] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[6] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[7] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[8] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[9] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[10] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[11] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[12] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[13] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[14] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[15] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[16] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
@@ -2111,7 +2204,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[29] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[30] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[31] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[32] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[32] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
         transferOwners[33] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[34] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[35] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
@@ -2121,7 +2214,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[39] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[40] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[41] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[42] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        transferOwners[42] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[43] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[44] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[45] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
@@ -2255,17 +2348,6 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[173] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[174] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         transferOwners[175] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[176] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[177] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[178] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[179] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[180] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[181] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[182] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[183] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[184] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[185] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[186] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
         return transferOwners;
     }
     
