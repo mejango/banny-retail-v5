@@ -515,10 +515,14 @@ function generateBatchScripts(inputFile) {
         base: baseChunkTierIds[3]
     }, allTransferDataFunctions, items);
 
-    // Generate Batch 5 script (Ethereum 5)
-    generateBatchScript(5, {
+    // Generate Batch 5 script (Ethereum 5, Base 5 - unused assets)
+    const batch5TierIds = {
         ethereum: ethereumChunkTierIds[4]
-    }, allTransferDataFunctions, items);
+    };
+    if (baseChunk3TierIds && baseChunk3TierIds.length > 0) {
+        batch5TierIds.base = baseChunk3TierIds;
+    }
+    generateBatchScript(5, batch5TierIds, allTransferDataFunctions, items);
 
     // Generate Batch 6 script (Ethereum 6)
     generateBatchScript(6, {
@@ -529,13 +533,6 @@ function generateBatchScripts(inputFile) {
     if (ethereumChunk4TierIds.length > 0) {
         generateBatchScript(7, {
             ethereum: ethereumChunk4TierIds
-        }, allTransferDataFunctions, items);
-    }
-
-    // Generate Batch 8 script (Base 5 - unused assets)
-    if (baseChunk3TierIds && baseChunk3TierIds.length > 0) {
-        generateBatchScript(8, {
-            base: baseChunk3TierIds
         }, allTransferDataFunctions, items);
     }
 }
@@ -561,8 +558,8 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         imports += `import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";\n`;
     }
     if (hasBase) {
-        // Base batches 1-4 map to contracts 1-4, batch 8 (unused assets) maps to contract 5
-        const baseContractNum = batchNumber === 8 ? 5 : batchNumber;
+        // Base batches 1-4 map to contracts 1-4, batch 5 (unused assets) maps to contract 5
+        const baseContractNum = batchNumber === 5 ? 5 : batchNumber;
         imports += `import {MigrationContractBase${baseContractNum}} from "./MigrationContractBase${baseContractNum}.sol";\n`;
     }
     if (hasArbitrum) {
@@ -845,8 +842,8 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
     }
 
     if (hasBase) {
-        // Base batches 1-3 map to contracts 1-3, batch 7 (unused assets) maps to contract 4
-        const baseContractNum = batchNumber === 7 ? 4 : batchNumber;
+        // Base batches 1-4 map to contracts 1-4, batch 5 (unused assets) maps to contract 5
+        const baseContractNum = batchNumber === 5 ? 5 : batchNumber;
         processMigrationFunction += `
         if (chainId == 8453 || chainId == 84532) {
             // Base - Batch ${batchNumber} only
@@ -982,8 +979,8 @@ ${generatePriceMap(items)}
         }
     }
     if (hasBase) {
-        // Base batches 1-3 map to contracts 1-3, batch 7 (unused assets) maps to contract 4
-        const baseContractNum = batchNumber === 7 ? 4 : batchNumber;
+        // Base batches 1-4 map to contracts 1-4, batch 5 (unused assets) maps to contract 5
+        const baseContractNum = batchNumber === 5 ? 5 : batchNumber;
         const regex = new RegExp(`function _getBaseTransferOwners${baseContractNum}\\(\\)[\\s\\S]*?return transferOwners;\\s*\\}`, 'g');
         const match = transferDataFunctions.match(regex);
         if (match) {

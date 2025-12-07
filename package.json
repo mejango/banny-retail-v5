@@ -27,6 +27,12 @@
         "deploy:mainnets:airdrop:batch3": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch3.s.sol --networks mainnets",
         "deploy:testnets:airdrop:batch4": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch4.s.sol --networks testnets",
         "deploy:mainnets:airdrop:batch4": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch4.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch5": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch5.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch5": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch5.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch6": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch6.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch6": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch6.s.sol --networks mainnets",
+        "deploy:testnets:airdrop:batch7": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch7.s.sol --networks testnets",
+        "deploy:mainnets:airdrop:batch7": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch7.s.sol --networks mainnets",
         "artifacts": "source ./.env && npx sphinx artifacts --org-id 'ea165b21-7cdc-4d7b-be59-ecdd4c26bee4' --project-name 'banny-core-v5'"
     },
     "dependencies": {
