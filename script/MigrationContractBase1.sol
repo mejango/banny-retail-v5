@@ -11,7 +11,7 @@ contract MigrationContractBase1 {
     struct MintedIds {
         uint256[3] upc2;
         uint256[10] upc3;
-        uint256[23] upc4;
+        uint256[14] upc4;
         uint256[1] upc5;
         uint256[4] upc6;
         uint256[1] upc10;
@@ -59,7 +59,7 @@ contract MigrationContractBase1 {
         Banny721TokenUriResolver v4Resolver = Banny721TokenUriResolver(v4ResolverAddress);
         Banny721TokenUriResolver fallbackV4Resolver = Banny721TokenUriResolver(fallbackV4ResolverAddress);
         
-        // Base migration chunk 1/3 - 71 items
+        // Base migration chunk 1/4 - 62 items
         
         // Step 1: Assets are already minted to this contract by the deployer
         
@@ -85,7 +85,7 @@ contract MigrationContractBase1 {
             sortedMintedIds.upc3[7] = 3000000008; // Token ID: 3 * 1000000000 + 8
             sortedMintedIds.upc3[8] = 3000000009; // Token ID: 3 * 1000000000 + 9
             sortedMintedIds.upc3[9] = 3000000010; // Token ID: 3 * 1000000000 + 10
-        // Populate UPC 4 minted tokenIds (23 items)
+        // Populate UPC 4 minted tokenIds (14 items)
             sortedMintedIds.upc4[0] = 4000000001; // Token ID: 4 * 1000000000 + 1
             sortedMintedIds.upc4[1] = 4000000002; // Token ID: 4 * 1000000000 + 2
             sortedMintedIds.upc4[2] = 4000000003; // Token ID: 4 * 1000000000 + 3
@@ -100,15 +100,6 @@ contract MigrationContractBase1 {
             sortedMintedIds.upc4[11] = 4000000012; // Token ID: 4 * 1000000000 + 12
             sortedMintedIds.upc4[12] = 4000000013; // Token ID: 4 * 1000000000 + 13
             sortedMintedIds.upc4[13] = 4000000014; // Token ID: 4 * 1000000000 + 14
-            sortedMintedIds.upc4[14] = 4000000015; // Token ID: 4 * 1000000000 + 15
-            sortedMintedIds.upc4[15] = 4000000016; // Token ID: 4 * 1000000000 + 16
-            sortedMintedIds.upc4[16] = 4000000017; // Token ID: 4 * 1000000000 + 17
-            sortedMintedIds.upc4[17] = 4000000018; // Token ID: 4 * 1000000000 + 18
-            sortedMintedIds.upc4[18] = 4000000019; // Token ID: 4 * 1000000000 + 19
-            sortedMintedIds.upc4[19] = 4000000020; // Token ID: 4 * 1000000000 + 20
-            sortedMintedIds.upc4[20] = 4000000021; // Token ID: 4 * 1000000000 + 21
-            sortedMintedIds.upc4[21] = 4000000022; // Token ID: 4 * 1000000000 + 22
-            sortedMintedIds.upc4[22] = 4000000023; // Token ID: 4 * 1000000000 + 23
         // Populate UPC 5 minted tokenIds (1 items)
             sortedMintedIds.upc5[0] = 5000000001; // Token ID: 5 * 1000000000 + 1
         // Populate UPC 6 minted tokenIds (4 items)
@@ -497,15 +488,6 @@ contract MigrationContractBase1 {
         generatedTokenIds[24] = 4000000012; // Token ID (V4: 4000000012)
         generatedTokenIds[25] = 4000000013; // Token ID (V4: 4000000013)
         generatedTokenIds[26] = 4000000014; // Token ID (V4: 4000000014)
-        generatedTokenIds[27] = 4000000015; // Token ID (V4: 4000000015)
-        generatedTokenIds[28] = 4000000016; // Token ID (V4: 4000000016)
-        generatedTokenIds[29] = 4000000017; // Token ID (V4: 4000000017)
-        generatedTokenIds[30] = 4000000018; // Token ID (V4: 4000000018)
-        generatedTokenIds[31] = 4000000019; // Token ID (V4: 4000000019)
-        generatedTokenIds[32] = 4000000020; // Token ID (V4: 4000000020)
-        generatedTokenIds[33] = 4000000021; // Token ID (V4: 4000000021)
-        generatedTokenIds[34] = 4000000022; // Token ID (V4: 4000000022)
-        generatedTokenIds[35] = 4000000023; // Token ID (V4: 4000000023)
         
         uint256 successfulTransfers = 0;
         uint256 skippedResolverOwned = 0;

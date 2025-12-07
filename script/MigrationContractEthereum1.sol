@@ -11,8 +11,8 @@ contract MigrationContractEthereum1 {
     struct MintedIds {
         uint256[1] upc1;
         uint256[6] upc2;
-        uint256[17] upc3;
-        uint256[4] upc5;
+        uint256[13] upc3;
+        uint256[3] upc5;
         uint256[3] upc6;
         uint256[2] upc7;
         uint256[1] upc10;
@@ -22,7 +22,7 @@ contract MigrationContractEthereum1 {
         uint256[3] upc19;
         uint256[1] upc21;
         uint256[1] upc23;
-        uint256[2] upc25;
+        uint256[1] upc25;
         uint256[3] upc26;
         uint256[2] upc31;
         uint256[2] upc32;
@@ -34,7 +34,6 @@ contract MigrationContractEthereum1 {
         uint256[1] upc46;
         uint256[1] upc47;
         uint256[1] upc48;
-        uint256[1] upc49;
     }
     
     address[] private transferOwners;
@@ -64,7 +63,7 @@ contract MigrationContractEthereum1 {
         Banny721TokenUriResolver v4Resolver = Banny721TokenUriResolver(v4ResolverAddress);
         Banny721TokenUriResolver fallbackV4Resolver = Banny721TokenUriResolver(fallbackV4ResolverAddress);
         
-        // Ethereum migration chunk 1/5 - 67 items
+        // Ethereum migration chunk 1/6 - 60 items
         
         // Step 1: Assets are already minted to this contract by the deployer
         
@@ -84,7 +83,7 @@ contract MigrationContractEthereum1 {
             sortedMintedIds.upc2[3] = 2000000004; // Token ID: 2 * 1000000000 + 4
             sortedMintedIds.upc2[4] = 2000000005; // Token ID: 2 * 1000000000 + 5
             sortedMintedIds.upc2[5] = 2000000006; // Token ID: 2 * 1000000000 + 6
-        // Populate UPC 3 minted tokenIds (17 items)
+        // Populate UPC 3 minted tokenIds (13 items)
             sortedMintedIds.upc3[0] = 3000000001; // Token ID: 3 * 1000000000 + 1
             sortedMintedIds.upc3[1] = 3000000002; // Token ID: 3 * 1000000000 + 2
             sortedMintedIds.upc3[2] = 3000000003; // Token ID: 3 * 1000000000 + 3
@@ -98,15 +97,10 @@ contract MigrationContractEthereum1 {
             sortedMintedIds.upc3[10] = 3000000011; // Token ID: 3 * 1000000000 + 11
             sortedMintedIds.upc3[11] = 3000000012; // Token ID: 3 * 1000000000 + 12
             sortedMintedIds.upc3[12] = 3000000013; // Token ID: 3 * 1000000000 + 13
-            sortedMintedIds.upc3[13] = 3000000014; // Token ID: 3 * 1000000000 + 14
-            sortedMintedIds.upc3[14] = 3000000015; // Token ID: 3 * 1000000000 + 15
-            sortedMintedIds.upc3[15] = 3000000016; // Token ID: 3 * 1000000000 + 16
-            sortedMintedIds.upc3[16] = 3000000017; // Token ID: 3 * 1000000000 + 17
-        // Populate UPC 5 minted tokenIds (4 items)
+        // Populate UPC 5 minted tokenIds (3 items)
             sortedMintedIds.upc5[0] = 5000000001; // Token ID: 5 * 1000000000 + 1
             sortedMintedIds.upc5[1] = 5000000002; // Token ID: 5 * 1000000000 + 2
             sortedMintedIds.upc5[2] = 5000000003; // Token ID: 5 * 1000000000 + 3
-            sortedMintedIds.upc5[3] = 5000000004; // Token ID: 5 * 1000000000 + 4
         // Populate UPC 6 minted tokenIds (3 items)
             sortedMintedIds.upc6[0] = 6000000001; // Token ID: 6 * 1000000000 + 1
             sortedMintedIds.upc6[1] = 6000000002; // Token ID: 6 * 1000000000 + 2
@@ -131,9 +125,8 @@ contract MigrationContractEthereum1 {
             sortedMintedIds.upc21[0] = 21000000001; // Token ID: 21 * 1000000000 + 1
         // Populate UPC 23 minted tokenIds (1 items)
             sortedMintedIds.upc23[0] = 23000000001; // Token ID: 23 * 1000000000 + 1
-        // Populate UPC 25 minted tokenIds (2 items)
+        // Populate UPC 25 minted tokenIds (1 items)
             sortedMintedIds.upc25[0] = 25000000001; // Token ID: 25 * 1000000000 + 1
-            sortedMintedIds.upc25[1] = 25000000002; // Token ID: 25 * 1000000000 + 2
         // Populate UPC 26 minted tokenIds (3 items)
             sortedMintedIds.upc26[0] = 26000000001; // Token ID: 26 * 1000000000 + 1
             sortedMintedIds.upc26[1] = 26000000002; // Token ID: 26 * 1000000000 + 2
@@ -166,8 +159,6 @@ contract MigrationContractEthereum1 {
             sortedMintedIds.upc47[0] = 47000000001; // Token ID: 47 * 1000000000 + 1
         // Populate UPC 48 minted tokenIds (1 items)
             sortedMintedIds.upc48[0] = 48000000001; // Token ID: 48 * 1000000000 + 1
-        // Populate UPC 49 minted tokenIds (1 items)
-            sortedMintedIds.upc49[0] = 49000000001; // Token ID: 49 * 1000000000 + 1
         // Step 1.5: Approve resolver to transfer all tokens owned by this contract
         // The resolver needs approval to transfer outfits and backgrounds to itself during decoration
         IERC721(address(hook)).setApprovalForAll(address(resolver), true);
@@ -185,7 +176,7 @@ contract MigrationContractEthereum1 {
             resolver.decorateBannyWith(
                 address(hook),
                 1000000001,
-                5000000002,
+                5000000001,
                 outfitIds
             );
             
@@ -258,7 +249,7 @@ contract MigrationContractEthereum1 {
             resolver.decorateBannyWith(
                 address(hook),
                 2000000005,
-                5000000003,
+                5000000002,
                 outfitIds
             );
             
@@ -277,12 +268,12 @@ contract MigrationContractEthereum1 {
         {
             uint256[] memory outfitIds = new uint256[](2);
             outfitIds[0] = 19000000003; // V4: 19000000019 -> V5: 19000000003
-            outfitIds[1] = 25000000002; // V4: 25000000009 -> V5: 25000000002
+            outfitIds[1] = 25000000001; // V4: 25000000009 -> V5: 25000000001
 
             resolver.decorateBannyWith(
                 address(hook),
                 2000000006,
-                5000000004,
+                5000000003,
                 outfitIds
             );
             
@@ -494,30 +485,6 @@ contract MigrationContractEthereum1 {
             
         }
         
-        // Dress Banny 3000000017 (Orange)
-        {
-            uint256[] memory outfitIds = new uint256[](2);
-            outfitIds[0] = 25000000001; // V4: 25000000005 -> V5: 25000000001
-            outfitIds[1] = 49000000001; // V4: 49000000002 -> V5: 49000000001
-
-            resolver.decorateBannyWith(
-                address(hook),
-                3000000017,
-                5000000001,
-                outfitIds
-            );
-            
-            MigrationHelper.verifyV4AssetMatch(
-                resolver,
-                v4Resolver,
-                fallbackV4Resolver,
-                address(hook),
-                v4HookAddress,
-                3000000017
-            );
-            
-        }
-        
         // Step 3: Transfer all assets to rightful owners using constructor data
         // Generate token IDs in the same order as items appear (matching mint order)
         // Token ID format: UPC * 1000000000 + unitNumber
@@ -546,10 +513,6 @@ contract MigrationContractEthereum1 {
         generatedTokenIds[17] = 3000000011; // Token ID (V4: 3000000011)
         generatedTokenIds[18] = 3000000012; // Token ID (V4: 3000000012)
         generatedTokenIds[19] = 3000000013; // Token ID (V4: 3000000013)
-        generatedTokenIds[20] = 3000000014; // Token ID (V4: 3000000014)
-        generatedTokenIds[21] = 3000000015; // Token ID (V4: 3000000015)
-        generatedTokenIds[22] = 3000000016; // Token ID (V4: 3000000016)
-        generatedTokenIds[23] = 3000000017; // Token ID (V4: 3000000017)
         
         uint256 successfulTransfers = 0;
         uint256 skippedResolverOwned = 0;
