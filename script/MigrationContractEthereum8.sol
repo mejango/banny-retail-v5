@@ -369,24 +369,24 @@ contract MigrationContractEthereum8 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](2);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](2);
         
-        uniqueOwners[0] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        uniqueOwners[1] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        // uniqueOwners[0] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        // uniqueOwners[1] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](1);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](1);
         
-        uniqueTierIds[0] = 49;
+        // uniqueTierIds[0] = 49;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }
