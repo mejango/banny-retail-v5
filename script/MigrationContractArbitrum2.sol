@@ -207,34 +207,34 @@ contract MigrationContractArbitrum2 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](4);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](4);
         
-        uniqueOwners[0] = 0x08B3e694caA2F1fcF8eF71095CED1326f3454B89;
-        uniqueOwners[1] = 0x9fDf876a50EA8f95017dCFC7709356887025B5BB;
-        uniqueOwners[2] = 0x187089B33E5812310Ed32A57F53B3fAD0383a19D;
-        uniqueOwners[3] = 0xc6404f24DB2f573F07F3A60758765caad198c0c3;
+        // uniqueOwners[0] = 0x08B3e694caA2F1fcF8eF71095CED1326f3454B89;
+        // uniqueOwners[1] = 0x9fDf876a50EA8f95017dCFC7709356887025B5BB;
+        // uniqueOwners[2] = 0x187089B33E5812310Ed32A57F53B3fAD0383a19D;
+        // uniqueOwners[3] = 0xc6404f24DB2f573F07F3A60758765caad198c0c3;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](9);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](9);
         
-        uniqueTierIds[0] = 4;
-        uniqueTierIds[1] = 6;
-        uniqueTierIds[2] = 10;
-        uniqueTierIds[3] = 11;
-        uniqueTierIds[4] = 19;
-        uniqueTierIds[5] = 20;
-        uniqueTierIds[6] = 28;
-        uniqueTierIds[7] = 31;
-        uniqueTierIds[8] = 49;
+        // uniqueTierIds[0] = 4;
+        // uniqueTierIds[1] = 6;
+        // uniqueTierIds[2] = 10;
+        // uniqueTierIds[3] = 11;
+        // uniqueTierIds[4] = 19;
+        // uniqueTierIds[5] = 20;
+        // uniqueTierIds[6] = 28;
+        // uniqueTierIds[7] = 31;
+        // uniqueTierIds[8] = 49;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

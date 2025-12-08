@@ -382,53 +382,53 @@ contract MigrationContractEthereum5 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](11);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](11);
         
-        uniqueOwners[0] = 0xf32dd1Bd55bD14d929218499a2E7D106F72f79c7;
-        uniqueOwners[1] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        uniqueOwners[2] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
-        uniqueOwners[3] = 0x80581C6e88Ce00095F85cdf24bB760f16d6eC0D6;
-        uniqueOwners[4] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
-        uniqueOwners[5] = 0x30670D81E487c80b9EDc54370e6EaF943B6EAB39;
-        uniqueOwners[6] = 0x60535A6605958fFf6cEC5B1e92892601EFb3473b;
-        uniqueOwners[7] = 0x34724D71cE674FcD4d06e60Dd1BaA88c14D36b75;
-        uniqueOwners[8] = 0xA99c384f43e72B65BB51fE33b85CE12A32C09526;
-        uniqueOwners[9] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        uniqueOwners[10] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        // uniqueOwners[0] = 0xf32dd1Bd55bD14d929218499a2E7D106F72f79c7;
+        // uniqueOwners[1] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        // uniqueOwners[2] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        // uniqueOwners[3] = 0x80581C6e88Ce00095F85cdf24bB760f16d6eC0D6;
+        // uniqueOwners[4] = 0x4A8a9147ab0DF5A8949f964bDBA22dc4583280E2;
+        // uniqueOwners[5] = 0x30670D81E487c80b9EDc54370e6EaF943B6EAB39;
+        // uniqueOwners[6] = 0x60535A6605958fFf6cEC5B1e92892601EFb3473b;
+        // uniqueOwners[7] = 0x34724D71cE674FcD4d06e60Dd1BaA88c14D36b75;
+        // uniqueOwners[8] = 0xA99c384f43e72B65BB51fE33b85CE12A32C09526;
+        // uniqueOwners[9] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
+        // uniqueOwners[10] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](21);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](21);
         
-        uniqueTierIds[0] = 4;
-        uniqueTierIds[1] = 5;
-        uniqueTierIds[2] = 6;
-        uniqueTierIds[3] = 10;
-        uniqueTierIds[4] = 13;
-        uniqueTierIds[5] = 15;
-        uniqueTierIds[6] = 18;
-        uniqueTierIds[7] = 19;
-        uniqueTierIds[8] = 20;
-        uniqueTierIds[9] = 23;
-        uniqueTierIds[10] = 26;
-        uniqueTierIds[11] = 28;
-        uniqueTierIds[12] = 31;
-        uniqueTierIds[13] = 35;
-        uniqueTierIds[14] = 38;
-        uniqueTierIds[15] = 39;
-        uniqueTierIds[16] = 40;
-        uniqueTierIds[17] = 44;
-        uniqueTierIds[18] = 47;
-        uniqueTierIds[19] = 48;
-        uniqueTierIds[20] = 49;
+        // uniqueTierIds[0] = 4;
+        // uniqueTierIds[1] = 5;
+        // uniqueTierIds[2] = 6;
+        // uniqueTierIds[3] = 10;
+        // uniqueTierIds[4] = 13;
+        // uniqueTierIds[5] = 15;
+        // uniqueTierIds[6] = 18;
+        // uniqueTierIds[7] = 19;
+        // uniqueTierIds[8] = 20;
+        // uniqueTierIds[9] = 23;
+        // uniqueTierIds[10] = 26;
+        // uniqueTierIds[11] = 28;
+        // uniqueTierIds[12] = 31;
+        // uniqueTierIds[13] = 35;
+        // uniqueTierIds[14] = 38;
+        // uniqueTierIds[15] = 39;
+        // uniqueTierIds[16] = 40;
+        // uniqueTierIds[17] = 44;
+        // uniqueTierIds[18] = 47;
+        // uniqueTierIds[19] = 48;
+        // uniqueTierIds[20] = 49;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

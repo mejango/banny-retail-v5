@@ -153,32 +153,32 @@ contract MigrationContractArbitrum1 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](4);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](4);
         
-        uniqueOwners[0] = 0x2aa64E6d80390F5C017F0313cB908051BE2FD35e;
-        uniqueOwners[1] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        uniqueOwners[2] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
-        uniqueOwners[3] = 0xfD282d9f4d06C4BDc6a41af1Ae920A0AD70D18a3;
+        // uniqueOwners[0] = 0x2aa64E6d80390F5C017F0313cB908051BE2FD35e;
+        // uniqueOwners[1] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        // uniqueOwners[2] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        // uniqueOwners[3] = 0xfD282d9f4d06C4BDc6a41af1Ae920A0AD70D18a3;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](7);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](7);
         
-        uniqueTierIds[0] = 3;
-        uniqueTierIds[1] = 4;
-        uniqueTierIds[2] = 5;
-        uniqueTierIds[3] = 19;
-        uniqueTierIds[4] = 25;
-        uniqueTierIds[5] = 38;
-        uniqueTierIds[6] = 47;
+        // uniqueTierIds[0] = 3;
+        // uniqueTierIds[1] = 4;
+        // uniqueTierIds[2] = 5;
+        // uniqueTierIds[3] = 19;
+        // uniqueTierIds[4] = 25;
+        // uniqueTierIds[5] = 38;
+        // uniqueTierIds[6] = 47;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

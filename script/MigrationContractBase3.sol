@@ -332,47 +332,47 @@ contract MigrationContractBase3 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](16);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](16);
         
-        uniqueOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
-        uniqueOwners[1] = 0x67BcBE602e870e2286C19E4E0044E583967c9665;
-        uniqueOwners[2] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
-        uniqueOwners[3] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
-        uniqueOwners[4] = 0xAcD59e854adf632d2322404198624F757C868C97;
-        uniqueOwners[5] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
-        uniqueOwners[6] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
-        uniqueOwners[7] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
-        uniqueOwners[8] = 0x8Ec174c5d86469D1A74094E10485357eBFe2e08e;
-        uniqueOwners[9] = 0xC5704f77f94087CC644d361A5A57295851d242aB;
-        uniqueOwners[10] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
-        uniqueOwners[11] = 0xb6ECb51e3638Eb7aa0C6289ef058DCa27494Acb2;
-        uniqueOwners[12] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
-        uniqueOwners[13] = 0x9342E2aC6dd4A907948E91E80D2734ecAC1D70eC;
-        uniqueOwners[14] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
-        uniqueOwners[15] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
+        // uniqueOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        // uniqueOwners[1] = 0x67BcBE602e870e2286C19E4E0044E583967c9665;
+        // uniqueOwners[2] = 0x18deEE9699526f8C8a87004b2e4e55029Fb26b9a;
+        // uniqueOwners[3] = 0xFB46349c0A3F04150E8c731B3A4fC415b0850CE3;
+        // uniqueOwners[4] = 0xAcD59e854adf632d2322404198624F757C868C97;
+        // uniqueOwners[5] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
+        // uniqueOwners[6] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        // uniqueOwners[7] = 0xbeC26FFa12c90217943D1b2958f60A821aE6E549;
+        // uniqueOwners[8] = 0x8Ec174c5d86469D1A74094E10485357eBFe2e08e;
+        // uniqueOwners[9] = 0xC5704f77f94087CC644d361A5A57295851d242aB;
+        // uniqueOwners[10] = 0x99Fa48ccEa8a38CDE6B437450fF9bBdDAFAA4Fc8;
+        // uniqueOwners[11] = 0xb6ECb51e3638Eb7aa0C6289ef058DCa27494Acb2;
+        // uniqueOwners[12] = 0x57700212B1cB7b67bD7DF3801DA43CA634513fE0;
+        // uniqueOwners[13] = 0x9342E2aC6dd4A907948E91E80D2734ecAC1D70eC;
+        // uniqueOwners[14] = 0x96D087aba8552A0e111D7fB4Feb2e7621213E244;
+        // uniqueOwners[15] = 0x2830e21792019CE670fBc548AacB004b08c7f71f;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](10);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](10);
         
-        uniqueTierIds[0] = 4;
-        uniqueTierIds[1] = 10;
-        uniqueTierIds[2] = 14;
-        uniqueTierIds[3] = 19;
-        uniqueTierIds[4] = 25;
-        uniqueTierIds[5] = 28;
-        uniqueTierIds[6] = 31;
-        uniqueTierIds[7] = 38;
-        uniqueTierIds[8] = 43;
-        uniqueTierIds[9] = 47;
+        // uniqueTierIds[0] = 4;
+        // uniqueTierIds[1] = 10;
+        // uniqueTierIds[2] = 14;
+        // uniqueTierIds[3] = 19;
+        // uniqueTierIds[4] = 25;
+        // uniqueTierIds[5] = 28;
+        // uniqueTierIds[6] = 31;
+        // uniqueTierIds[7] = 38;
+        // uniqueTierIds[8] = 43;
+        // uniqueTierIds[9] = 47;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

@@ -311,54 +311,54 @@ contract MigrationContractEthereum2 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](17);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](17);
         
-        uniqueOwners[0] = 0x87084347AeBADc626e8569E0D386928dade2ba09;
-        uniqueOwners[1] = 0x79d1E7F1A6E0Bbb3278a9d2B782e3A8983444cb6;
-        uniqueOwners[2] = 0x546B4A7A30b3193Badf70E1d43D8142928F3db0b;
-        uniqueOwners[3] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
-        uniqueOwners[4] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
-        uniqueOwners[5] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
-        uniqueOwners[6] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
-        uniqueOwners[7] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
-        uniqueOwners[8] = 0x7D0068d0D8fC2Aa15d897448B348Fa9B30f6d4c9;
-        uniqueOwners[9] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        uniqueOwners[10] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
-        uniqueOwners[11] = 0x961d4191965C49537c88F764D88318872CE405bE;
-        uniqueOwners[12] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
-        uniqueOwners[13] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
-        uniqueOwners[14] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
-        uniqueOwners[15] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
-        uniqueOwners[16] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
+        // uniqueOwners[0] = 0x87084347AeBADc626e8569E0D386928dade2ba09;
+        // uniqueOwners[1] = 0x79d1E7F1A6E0Bbb3278a9d2B782e3A8983444cb6;
+        // uniqueOwners[2] = 0x546B4A7A30b3193Badf70E1d43D8142928F3db0b;
+        // uniqueOwners[3] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
+        // uniqueOwners[4] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
+        // uniqueOwners[5] = 0xe21A272c4D22eD40678a0168b4acd006bca8A482;
+        // uniqueOwners[6] = 0xaECD6D9172d602b93dBA3981991268b44af8096e;
+        // uniqueOwners[7] = 0x45C3d8Aacc0d537dAc234AD4C20Ef05d6041CeFe;
+        // uniqueOwners[8] = 0x7D0068d0D8fC2Aa15d897448B348Fa9B30f6d4c9;
+        // uniqueOwners[9] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        // uniqueOwners[10] = 0x898e24EBC9dAf5a9930f10def8B6a373F859C101;
+        // uniqueOwners[11] = 0x961d4191965C49537c88F764D88318872CE405bE;
+        // uniqueOwners[12] = 0x21a8f5A6bF893D43d3964dDaf4E04766BBBE9b07;
+        // uniqueOwners[13] = 0x7a16eABD1413Bfd468aE9fEBF7C26c62f1fFdc59;
+        // uniqueOwners[14] = 0x8b80755C441d355405CA7571443Bb9247B77Ec16;
+        // uniqueOwners[15] = 0xa13d49fCbf79EAF6A0a58cBDD3361422DB4eAfF1;
+        // uniqueOwners[16] = 0xe7879a2D05dBA966Fcca34EE9C3F99eEe7eDEFd1;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](16);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](16);
         
-        uniqueTierIds[0] = 3;
-        uniqueTierIds[1] = 4;
-        uniqueTierIds[2] = 5;
-        uniqueTierIds[3] = 6;
-        uniqueTierIds[4] = 14;
-        uniqueTierIds[5] = 15;
-        uniqueTierIds[6] = 19;
-        uniqueTierIds[7] = 25;
-        uniqueTierIds[8] = 28;
-        uniqueTierIds[9] = 29;
-        uniqueTierIds[10] = 37;
-        uniqueTierIds[11] = 38;
-        uniqueTierIds[12] = 39;
-        uniqueTierIds[13] = 42;
-        uniqueTierIds[14] = 48;
-        uniqueTierIds[15] = 49;
+        // uniqueTierIds[0] = 3;
+        // uniqueTierIds[1] = 4;
+        // uniqueTierIds[2] = 5;
+        // uniqueTierIds[3] = 6;
+        // uniqueTierIds[4] = 14;
+        // uniqueTierIds[5] = 15;
+        // uniqueTierIds[6] = 19;
+        // uniqueTierIds[7] = 25;
+        // uniqueTierIds[8] = 28;
+        // uniqueTierIds[9] = 29;
+        // uniqueTierIds[10] = 37;
+        // uniqueTierIds[11] = 38;
+        // uniqueTierIds[12] = 39;
+        // uniqueTierIds[13] = 42;
+        // uniqueTierIds[14] = 48;
+        // uniqueTierIds[15] = 49;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

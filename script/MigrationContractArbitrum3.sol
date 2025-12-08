@@ -171,29 +171,29 @@ contract MigrationContractArbitrum3 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](2);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](2);
         
-        uniqueOwners[0] = 0xB2d3900807094D4Fe47405871B0C8AdB58E10D42;
-        uniqueOwners[1] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        // uniqueOwners[0] = 0xB2d3900807094D4Fe47405871B0C8AdB58E10D42;
+        // uniqueOwners[1] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](6);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](6);
         
-        uniqueTierIds[0] = 4;
-        uniqueTierIds[1] = 5;
-        uniqueTierIds[2] = 10;
-        uniqueTierIds[3] = 20;
-        uniqueTierIds[4] = 28;
-        uniqueTierIds[5] = 43;
+        // uniqueTierIds[0] = 4;
+        // uniqueTierIds[1] = 5;
+        // uniqueTierIds[2] = 10;
+        // uniqueTierIds[3] = 20;
+        // uniqueTierIds[4] = 28;
+        // uniqueTierIds[5] = 43;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

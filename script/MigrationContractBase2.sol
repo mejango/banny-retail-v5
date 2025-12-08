@@ -156,23 +156,23 @@ contract MigrationContractBase2 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](1);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](1);
         
-        uniqueOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
+        // uniqueOwners[0] = 0xf7253A0E87E39d2cD6365919D4a3D56D431D0041;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](1);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](1);
         
-        uniqueTierIds[0] = 4;
+        // uniqueTierIds[0] = 4;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }

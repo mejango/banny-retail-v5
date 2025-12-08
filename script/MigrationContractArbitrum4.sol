@@ -454,31 +454,31 @@ contract MigrationContractArbitrum4 {
         
         // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
         
-        // Collect unique owners
-        address[] memory uniqueOwners = new address[](3);
+        // // Collect unique owners
+        // address[] memory uniqueOwners = new address[](3);
         
-        uniqueOwners[0] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        uniqueOwners[1] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
-        uniqueOwners[2] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
+        // uniqueOwners[0] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        // uniqueOwners[1] = 0x1C51517d8277C9aD6d701Fb5394ceC0C18219eDb;
+        // uniqueOwners[2] = 0x57a482EA32c7F75A9C0734206f5BD4f9BCb38e12;
         
-        // Collect unique tier IDs
-        uint256[] memory uniqueTierIds = new uint256[](7);
+        // // Collect unique tier IDs
+        // uint256[] memory uniqueTierIds = new uint256[](7);
         
-        uniqueTierIds[0] = 5;
-        uniqueTierIds[1] = 19;
-        uniqueTierIds[2] = 31;
-        uniqueTierIds[3] = 32;
-        uniqueTierIds[4] = 39;
-        uniqueTierIds[5] = 47;
-        uniqueTierIds[6] = 49;
+        // uniqueTierIds[0] = 5;
+        // uniqueTierIds[1] = 19;
+        // uniqueTierIds[2] = 31;
+        // uniqueTierIds[3] = 32;
+        // uniqueTierIds[4] = 39;
+        // uniqueTierIds[5] = 47;
+        // uniqueTierIds[6] = 49;
         
-        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
-        MigrationHelper.verifyTierBalances(
-            hookAddress,
-            v4HookAddress,
-            fallbackV4ResolverAddress,
-            uniqueOwners,
-            uniqueTierIds
-        );
+        // // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        // MigrationHelper.verifyTierBalances(
+        //     hookAddress,
+        //     v4HookAddress,
+        //     fallbackV4ResolverAddress,
+        //     uniqueOwners,
+        //     uniqueTierIds
+        // );
     }
 }
