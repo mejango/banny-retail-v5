@@ -102,14 +102,23 @@ function generateScriptForFile(inputFile, outputFile) {
     ethereumUpcCountsFromChunks.forEach((count, upc) => {
         ethereumUpcStartingUnitNumbers.set(upc, count + 1);
     });
-    // Calculate unused assets tier IDs for Ethereum
+    // Calculate unused assets tier IDs for Ethereum (split into 2 chunks)
     const ethereumUnusedData = generateUnusedAssetsContract({ id: 1, name: 'Ethereum', numChunks: 6 }, ethereumItems, ethereumUpcStartingUnitNumbers, ethereumProcessedTokenIds);
-    let ethereumUnusedTierIds = [];
+    let ethereumUnusedTierIds7 = [];
+    let ethereumUnusedTierIds8 = [];
     if (ethereumUnusedData && ethereumUnusedData.unusedItems.length > 0) {
+        const allUnusedTierIds = [];
         ethereumUnusedData.unusedItems.forEach(item => {
-            ethereumUnusedTierIds.push(item.upc);
+            allUnusedTierIds.push(item.upc);
         });
-        ethereumChunkTierIds.push(ethereumUnusedTierIds);
+        // Split into two chunks
+        const midPoint = Math.ceil(allUnusedTierIds.length / 2);
+        ethereumUnusedTierIds7 = allUnusedTierIds.slice(0, midPoint);
+        ethereumUnusedTierIds8 = allUnusedTierIds.slice(midPoint);
+        ethereumChunkTierIds.push(ethereumUnusedTierIds7);
+        if (ethereumUnusedTierIds8.length > 0) {
+            ethereumChunkTierIds.push(ethereumUnusedTierIds8);
+        }
     }
 
     const baseTierIds = [];
@@ -294,7 +303,8 @@ function generateBatchScripts(inputFile) {
         ethereumProcessedTokenIds
     );
     
-    let ethereumChunk4TierIds = [];
+    let ethereumChunk7TierIds = [];
+    let ethereumChunk8TierIds = [];
     if (ethereumUnusedContractData && ethereumUnusedContractData.unusedItems.length > 0) {
         const tierIdQuantities = new Map();
         ethereumUnusedContractData.unusedItems.forEach(item => {
@@ -302,12 +312,18 @@ function generateBatchScripts(inputFile) {
             tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
         });
         const uniqueUpcs = Array.from(tierIdQuantities.keys()).sort((a, b) => a - b);
+        const allTierIds = [];
         uniqueUpcs.forEach(upc => {
             const quantity = tierIdQuantities.get(upc);
             for (let i = 0; i < quantity; i++) {
-                ethereumChunk4TierIds.push(upc);
+                allTierIds.push(upc);
             }
         });
+        
+        // Split into two chunks
+        const midPoint = Math.ceil(allTierIds.length / 2);
+        ethereumChunk7TierIds = allTierIds.slice(0, midPoint);
+        ethereumChunk8TierIds = allTierIds.slice(midPoint);
     }
 
     const baseChunkTierIds = [];
@@ -458,7 +474,7 @@ function generateBatchScripts(inputFile) {
 
     // Build transfer data functions for all batches
     const tierIds = {
-        ethereumChunkTierIds: [...ethereumChunkTierIds, ethereumChunk4TierIds],
+        ethereumChunkTierIds: [...ethereumChunkTierIds, ethereumChunk7TierIds, ethereumChunk8TierIds],
         baseChunkTierIds,
         optimismTierIds,
         arbitrumChunkTierIds
@@ -606,10 +622,17 @@ function generateBatchScripts(inputFile) {
         ethereum: ethereumChunkTierIds[5]
     }, allTransferDataFunctions, items);
 
-    // Generate Batch 7 script (Ethereum 7 - unused assets)
-    if (ethereumChunk4TierIds.length > 0) {
+    // Generate Batch 7 script (Ethereum 7 - unused assets part 1)
+    if (ethereumChunk7TierIds.length > 0) {
         generateBatchScript(7, {
-            ethereum: ethereumChunk4TierIds
+            ethereum: ethereumChunk7TierIds
+        }, allTransferDataFunctions, items);
+    }
+    
+    // Generate Batch 8 script (Ethereum 8 - unused assets part 2)
+    if (ethereumChunk8TierIds.length > 0) {
+        generateBatchScript(8, {
+            ethereum: ethereumChunk8TierIds
         }, allTransferDataFunctions, items);
     }
 }
@@ -627,8 +650,8 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
     // Determine which imports are needed
     let imports = '';
     if (hasEthereum) {
-        // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets) maps to contract 7
-        const ethereumContractNum = batchNumber === 7 ? 7 : batchNumber;
+        // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets part 1) maps to contract 7, batch 8 (unused assets part 2) maps to contract 8
+        const ethereumContractNum = (batchNumber === 7 || batchNumber === 8) ? batchNumber : batchNumber;
         imports += `import {MigrationContractEthereum${ethereumContractNum}} from "./MigrationContractEthereum${ethereumContractNum}.sol";\n`;
     }
     if (hasOptimism) {
@@ -790,8 +813,8 @@ function generateBatchScript(batchNumber, tierIds, transferDataFunctions, items)
         `;
 
     if (hasEthereum) {
-        // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets) maps to contract 7
-        const ethereumContractNum = batchNumber === 7 ? 7 : batchNumber;
+        // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets part 1) maps to contract 7, batch 8 (unused assets part 2) maps to contract 8
+        const ethereumContractNum = (batchNumber === 7 || batchNumber === 8) ? batchNumber : batchNumber;
         processMigrationFunction += `
         if (chainId == 1) {
             // Ethereum - Batch ${batchNumber} only
@@ -965,8 +988,8 @@ ${generatePriceMap(items)}
     // Filter transfer data functions to only include what's needed for this batch
     let batchTransferDataFunctions = '';
     if (hasEthereum) {
-        // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets) maps to contract 7
-        const ethereumContractNum = batchNumber === 7 ? 7 : batchNumber;
+        // Ethereum batches 1-6 map to contracts 1-6, batch 7 (unused assets part 1) maps to contract 7, batch 8 (unused assets part 2) maps to contract 8
+        const ethereumContractNum = (batchNumber === 7 || batchNumber === 8) ? batchNumber : batchNumber;
         const regex = new RegExp(`function _getEthereumTransferOwners${ethereumContractNum}\\(\\)[\\s\\S]*?return transferOwners;\\s*\\}`, 'g');
         const match = transferDataFunctions.match(regex);
         if (match) {
@@ -1466,21 +1489,63 @@ function generateContractVersion(items, tierIds = null) {
                 
                 const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers, processedTokenIds);
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
-                    const chunkIndex = chain.numChunks;
-                    transferDataFunctions += `
+                    // For Ethereum, split unused assets into two contracts (7 and 8)
+                    if (chain.id === 1) {
+                        const midPoint = Math.ceil(unusedContractData.unusedItems.length / 2);
+                        const unusedItems7 = unusedContractData.unusedItems.slice(0, midPoint);
+                        const unusedItems8 = unusedContractData.unusedItems.slice(midPoint);
+                        
+                        // Generate function 7
+                        transferDataFunctions += `
+    function _get${chain.name}TransferOwners7() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](${unusedItems7.length});
+        `;
+
+                        unusedItems7.forEach((item, index) => {
+                            transferDataFunctions += `
+        transferOwners[${index}] = ${toChecksumAddress(item.owner)};`;
+                        });
+
+                        transferDataFunctions += `
+        return transferOwners;
+    }
+    `;
+                        
+                        // Generate function 8 if there are items for contract 8
+                        if (unusedItems8.length > 0) {
+                            transferDataFunctions += `
+    function _get${chain.name}TransferOwners8() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](${unusedItems8.length});
+        `;
+
+                            unusedItems8.forEach((item, index) => {
+                                transferDataFunctions += `
+        transferOwners[${index}] = ${toChecksumAddress(item.owner)};`;
+                            });
+
+                            transferDataFunctions += `
+        return transferOwners;
+    }
+    `;
+                        }
+                    } else {
+                        // For other chains (Base, Arbitrum), generate single function
+                        const chunkIndex = chain.numChunks;
+                        transferDataFunctions += `
     function _get${chain.name}TransferOwners${chunkIndex + 1}() internal pure returns (address[] memory) {
         address[] memory transferOwners = new address[](${unusedContractData.unusedItems.length});
         `;
 
-                    unusedContractData.unusedItems.forEach((item, index) => {
-                        transferDataFunctions += `
+                        unusedContractData.unusedItems.forEach((item, index) => {
+                            transferDataFunctions += `
         transferOwners[${index}] = ${toChecksumAddress(item.owner)};`;
-                    });
+                        });
 
-                    transferDataFunctions += `
+                        transferDataFunctions += `
         return transferOwners;
     }
     `;
+                    }
                 }
             }
         } else {
@@ -1518,6 +1583,7 @@ import {MigrationContractEthereum4} from "./MigrationContractEthereum4.sol";
 import {MigrationContractEthereum5} from "./MigrationContractEthereum5.sol";
 import {MigrationContractEthereum6} from "./MigrationContractEthereum6.sol";
 import {MigrationContractEthereum7} from "./MigrationContractEthereum7.sol";
+import {MigrationContractEthereum8} from "./MigrationContractEthereum8.sol";
 import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";
 import {MigrationContractBase1} from "./MigrationContractBase1.sol";
 import {MigrationContractBase2} from "./MigrationContractBase2.sol";
@@ -1654,10 +1720,11 @@ contract AirdropOutfitsScript is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
-            // Ethereum - 6 chunks (plus optional unused assets chunk)
+            // Ethereum - 6 chunks (plus optional unused assets chunks 7 and 8)
             ${(() => {
                 const regularChunks = tierIds.ethereumChunkTierIds.slice(0, 6);
-                const unusedChunk = tierIds.ethereumChunkTierIds.length > 6 ? tierIds.ethereumChunkTierIds[6] : null;
+                const unusedChunk7 = tierIds.ethereumChunkTierIds.length > 6 ? tierIds.ethereumChunkTierIds[6] : null;
+                const unusedChunk8 = tierIds.ethereumChunkTierIds.length > 7 ? tierIds.ethereumChunkTierIds[7] : null;
                 let code = '';
                 
                 // Generate code for regular chunks (1-6)
@@ -1685,12 +1752,12 @@ contract AirdropOutfitsScript is Script, Sphinx {
             `;
                 });
                 
-                // Generate code for unused assets chunk (7) if it exists
-                if (unusedChunk && unusedChunk.length > 0) {
+                // Generate code for unused assets chunk 7 if it exists
+                if (unusedChunk7 && unusedChunk7.length > 0) {
                     code += `
-            // Deploy and execute contract 7 (unused outfits/backgrounds)
-            uint16[] memory tierIds7 = new uint16[](${unusedChunk.length});
-            ${generateTierIdLoops(unusedChunk, 'tierIds7')}
+            // Deploy and execute contract 7 (unused outfits/backgrounds - part 1)
+            uint16[] memory tierIds7 = new uint16[](${unusedChunk7.length});
+            ${generateTierIdLoops(unusedChunk7, 'tierIds7')}
             address[] memory transferOwners7 = _getEthereumTransferOwners7();
             MigrationContractEthereum7 migrationContract7 = new MigrationContractEthereum7(transferOwners7);
             console.log("Ethereum migration contract 7 deployed at:", address(migrationContract7));
@@ -1706,6 +1773,30 @@ contract AirdropOutfitsScript is Script, Sphinx {
             console.log("Minted", tierIds7.length, "tokens to contract 7");
             
             migrationContract7.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            `;
+                }
+                
+                // Generate code for unused assets chunk 8 if it exists
+                if (unusedChunk8 && unusedChunk8.length > 0) {
+                    code += `
+            // Deploy and execute contract 8 (unused outfits/backgrounds - part 2)
+            uint16[] memory tierIds8 = new uint16[](${unusedChunk8.length});
+            ${generateTierIdLoops(unusedChunk8, 'tierIds8')}
+            address[] memory transferOwners8 = _getEthereumTransferOwners8();
+            MigrationContractEthereum8 migrationContract8 = new MigrationContractEthereum8(transferOwners8);
+            console.log("Ethereum migration contract 8 deployed at:", address(migrationContract8));
+            
+            // Mint chunk 8 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds8,
+                address(migrationContract8)
+            );
+            console.log("Minted", tierIds8.length, "tokens to contract 8");
+            
+            migrationContract8.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             `;
                 }
                 
@@ -2132,19 +2223,66 @@ function generateChainSpecificContracts(inputFile) {
                 const unusedContractData = generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbersMap, processedTokenIds, totalProcessedInChunks);
                 
                 if (unusedContractData && unusedContractData.unusedItems.length > 0) {
-                    const fileName = chain.fileName.replace('.sol', `${chain.numChunks + 1}.sol`);
-                    const outputPath = path.join(__dirname, '..', fileName);
-                    fs.writeFileSync(outputPath, unusedContractData.contract);
-                    
-                    console.log(`Generated ${fileName} with ${unusedContractData.unusedItems.length} unused outfits/backgrounds to transfer`);
-                    
-                    // Track unused items processed
-                    const chainTotal = chainTotals.get(chain.id);
-                    chainTotal.processed += unusedContractData.unusedItems.length;
+                    // For Ethereum, split unused assets into two contracts (7 and 8)
+                    if (chain.id === 1) {
+                        const midPoint = Math.ceil(unusedContractData.unusedItems.length / 2);
+                        const unusedItems7 = unusedContractData.unusedItems.slice(0, midPoint);
+                        const unusedItems8 = unusedContractData.unusedItems.slice(midPoint);
+                        
+                        // Generate contract 7
+                        const contract7 = generateUnusedAssetsContractFromItems(chain, unusedItems7, upcStartingUnitNumbersMap, 7);
+                        const fileName7 = chain.fileName.replace('.sol', '7.sol');
+                        const outputPath7 = path.join(__dirname, '..', fileName7);
+                        fs.writeFileSync(outputPath7, contract7);
+                        console.log(`Generated ${fileName7} with ${unusedItems7.length} unused outfits/backgrounds to transfer`);
+                        
+                        // Update UPC starting numbers for contract 8
+                        const upcCountsFromContract7 = new Map();
+                        unusedItems7.forEach(item => {
+                            const upc = item.upc;
+                            upcCountsFromContract7.set(upc, (upcCountsFromContract7.get(upc) || 0) + 1);
+                        });
+                        const upcStartingUnitNumbersFor8 = new Map(upcStartingUnitNumbersMap);
+                        upcCountsFromContract7.forEach((count, upc) => {
+                            const currentStart = upcStartingUnitNumbersFor8.get(upc) || 1;
+                            upcStartingUnitNumbersFor8.set(upc, currentStart + count);
+                        });
+                        
+                        // Generate contract 8
+                        if (unusedItems8.length > 0) {
+                            const contract8 = generateUnusedAssetsContractFromItems(chain, unusedItems8, upcStartingUnitNumbersFor8, 8);
+                            const fileName8 = chain.fileName.replace('.sol', '8.sol');
+                            const outputPath8 = path.join(__dirname, '..', fileName8);
+                            fs.writeFileSync(outputPath8, contract8);
+                            console.log(`Generated ${fileName8} with ${unusedItems8.length} unused outfits/backgrounds to transfer`);
+                        }
+                        
+                        // Track unused items processed
+                        const chainTotal = chainTotals.get(chain.id);
+                        chainTotal.processed += unusedContractData.unusedItems.length;
+                    } else {
+                        // For other chains (Base, Arbitrum), generate single contract
+                        const fileName = chain.fileName.replace('.sol', `${chain.numChunks + 1}.sol`);
+                        const outputPath = path.join(__dirname, '..', fileName);
+                        fs.writeFileSync(outputPath, unusedContractData.contract);
+                        
+                        console.log(`Generated ${fileName} with ${unusedContractData.unusedItems.length} unused outfits/backgrounds to transfer`);
+                        
+                        // Track unused items processed
+                        const chainTotal = chainTotals.get(chain.id);
+                        chainTotal.processed += unusedContractData.unusedItems.length;
+                    }
                     
                     // Report filtered items for debugging
                     if (unusedContractData.filteredCount > 0) {
                         console.log(`  (${unusedContractData.filteredCount} items filtered out: resolver-owned, zero-address, or already processed)`);
+                        if (unusedContractData.filteredItems && unusedContractData.filteredItems.length > 0) {
+                            console.log(`  Filtered items details:`);
+                            unusedContractData.filteredItems.forEach(item => {
+                                const reasons = item.reasons.join(', ');
+                                console.log(`    - Token ID: ${item.tokenId}, UPC: ${item.upc}, Category: ${item.category}, Owner: ${item.owner}, Reasons: ${reasons}`);
+                            });
+                        }
                     }
                 } else {
                     console.log(`No unused assets found for ${chain.name}, skipping unused assets contract`);
@@ -2873,24 +3011,75 @@ function generateUnusedAssetsContract(chain, chainItems, upcStartingUnitNumbers 
     // Find unused outfits and backgrounds
     // Also filter out items owned by resolver (these are being worn/used)
     // AND filter out items already processed in chunks 1-3 (or 1-2 for Base)
+    // Track filtered items for logging
+    const filteredItems = [];
+    
     const unusedOutfits = outfits.filter(outfit => {
         const tokenId = Number(outfit.tokenId);
         const owner = outfit.owner.toLowerCase();
-        return !usedOutfitIds.has(tokenId) &&
-               !processedTokenIds.has(tokenId) && // Exclude items already processed in chunks 1-3
-               owner !== '0x0000000000000000000000000000000000000000' &&
-               owner !== v4ResolverAddress.toLowerCase() &&
-               owner !== v4ResolverFallback.toLowerCase();
+        const reasons = [];
+        
+        if (usedOutfitIds.has(tokenId)) {
+            reasons.push('being-worn');
+        }
+        if (processedTokenIds.has(tokenId)) {
+            reasons.push('already-processed');
+        }
+        if (owner === '0x0000000000000000000000000000000000000000') {
+            reasons.push('zero-address');
+        }
+        if (owner === v4ResolverAddress.toLowerCase()) {
+            reasons.push('resolver-owned');
+        }
+        if (owner === v4ResolverFallback.toLowerCase()) {
+            reasons.push('resolver-owned');
+        }
+        
+        if (reasons.length > 0) {
+            filteredItems.push({
+                tokenId: outfit.tokenId,
+                upc: outfit.upc,
+                owner: outfit.owner,
+                category: 'outfit',
+                reasons: reasons
+            });
+            return false;
+        }
+        return true;
     });
     
     const unusedBackgrounds = backgrounds.filter(bg => {
         const tokenId = Number(bg.tokenId);
         const owner = bg.owner.toLowerCase();
-        return !usedBackgroundIds.has(tokenId) &&
-               !processedTokenIds.has(tokenId) && // Exclude items already processed in chunks 1-3
-               owner !== '0x0000000000000000000000000000000000000000' &&
-               owner !== v4ResolverAddress.toLowerCase() &&
-               owner !== v4ResolverFallback.toLowerCase();
+        const reasons = [];
+        
+        if (usedBackgroundIds.has(tokenId)) {
+            reasons.push('being-worn');
+        }
+        if (processedTokenIds.has(tokenId)) {
+            reasons.push('already-processed');
+        }
+        if (owner === '0x0000000000000000000000000000000000000000') {
+            reasons.push('zero-address');
+        }
+        if (owner === v4ResolverAddress.toLowerCase()) {
+            reasons.push('resolver-owned');
+        }
+        if (owner === v4ResolverFallback.toLowerCase()) {
+            reasons.push('resolver-owned');
+        }
+        
+        if (reasons.length > 0) {
+            filteredItems.push({
+                tokenId: bg.tokenId,
+                upc: bg.upc,
+                owner: bg.owner,
+                category: 'background',
+                reasons: reasons
+            });
+            return false;
+        }
+        return true;
     });
     
     const unusedItems = [...unusedOutfits, ...unusedBackgrounds];
@@ -3064,8 +3253,134 @@ contract MigrationContract${chain.name}${chain.numChunks + 1} {
         transferData,
         tierIdQuantities,
         unusedItems: sortedUnusedItems,
-        filteredCount: filteredCount
+        filteredCount: filteredCount,
+        filteredItems: filteredItems
     };
+}
+
+function generateUnusedAssetsContractFromItems(chain, unusedItems, upcStartingUnitNumbers, contractNumber) {
+    if (unusedItems.length === 0) {
+        return null;
+    }
+    
+    // Sort unused items by UPC to match mint order
+    const sortedUnusedItems = [...unusedItems].sort((a, b) => {
+        if (a.upc !== b.upc) {
+            return a.upc - b.upc;
+        }
+        return unusedItems.indexOf(a) - unusedItems.indexOf(b);
+    });
+    
+    // Calculate tier ID quantities for unused items
+    const tierIdQuantities = new Map();
+    sortedUnusedItems.forEach(item => {
+        const upc = item.upc;
+        tierIdQuantities.set(upc, (tierIdQuantities.get(upc) || 0) + 1);
+    });
+    
+    // Build transfer data array
+    const transferData = sortedUnusedItems.map((item, index) => ({
+        tokenIndex: index,
+        owner: item.owner,
+        tokenId: item.tokenId,
+        upc: item.upc
+    }));
+    
+    let contract = `// SPDX-License-Identifier: MIT
+pragma solidity 0.8.23;
+
+import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {JB721TiersHook} from "@bananapus/721-hook-v5/src/JB721TiersHook.sol";
+import {Banny721TokenUriResolver} from "../src/Banny721TokenUriResolver.sol";
+import {MigrationHelper} from "./helpers/MigrationHelper.sol";
+
+/// @notice Migration contract for ${chain.name} to handle standalone outfits and backgrounds
+/// that are not worn/used by any banny. These assets are minted to this contract
+/// and then transferred directly to their owners.
+contract MigrationContract${chain.name}${contractNumber} {
+    address[] private transferOwners;
+    
+    constructor(address[] memory _transferOwners) {
+        transferOwners = _transferOwners;
+    }
+    
+    function executeMigration(
+        address hookAddress,
+        address resolverAddress,
+        address v4HookAddress,
+        address v4ResolverAddress,
+        address fallbackV4ResolverAddress
+    ) external {
+        
+        // Validate addresses
+        require(hookAddress != address(0), "Hook address not set");
+        require(resolverAddress != address(0), "Resolver address not set");
+        require(v4HookAddress != address(0), "V4 Hook address not set");
+        require(v4ResolverAddress != address(0), "V4 Resolver address not set");
+        require(fallbackV4ResolverAddress != address(0), "V4 fallback resolver address not set");
+        
+        JB721TiersHook hook = JB721TiersHook(hookAddress);
+        IERC721 v4Hook = IERC721(v4HookAddress);
+        
+        // ${chain.name} migration - Standalone outfits and backgrounds (${sortedUnusedItems.length} items)
+        // These are assets that are NOT being worn/used by any banny
+        
+        // Assets are already minted to this contract by the deployer
+        // V5 token IDs are calculated based on mint order (continuing from previous chunks)
+        // V4 token IDs are the original token IDs from V4
+        
+        // Generate token IDs - store both V5 minted token IDs and original V4 token IDs
+        uint256[] memory v5TokenIds = new uint256[](transferOwners.length);
+        uint256[] memory v4TokenIds = new uint256[](transferOwners.length);
+        ${generateTokenIdArrayForUnused(sortedUnusedItems, tierIdQuantities, upcStartingUnitNumbers)}
+        
+        uint256 successfulTransfers = 0;
+        
+        for (uint256 i = 0; i < transferOwners.length; i++) {
+            uint256 v5TokenId = v5TokenIds[i];
+            uint256 v4TokenId = v4TokenIds[i];
+            
+            // Verify V4 ownership using the original V4 token ID
+            address v4Owner = v4Hook.ownerOf(v4TokenId);
+            address expectedOwner = transferOwners[i];
+            
+            require(
+                v4Owner != address(v4ResolverAddress),
+                "Token owned by main resolver in V4 - should not be in unused assets contract"
+            );
+            
+            if (v4Owner == address(fallbackV4ResolverAddress)) {
+                require(
+                    expectedOwner != address(v4ResolverAddress) && expectedOwner != address(fallbackV4ResolverAddress),
+                    "Token owned by fallback resolver in V4 but expected owner is also a resolver - should not be in unused assets contract"
+                );
+            } else {
+                require(v4Owner == expectedOwner, "V4/V5 ownership mismatch for token");
+            }
+            
+            require(hook.ownerOf(v5TokenId) == address(this), "Contract does not own token");
+            
+            IERC721(address(hook)).safeTransferFrom(
+                address(this), 
+                transferOwners[i], 
+                v5TokenId
+            );
+            successfulTransfers++;
+        }
+        
+        require(
+            successfulTransfers == transferOwners.length,
+            "Not all items were transferred"
+        );
+        
+        require(hook.balanceOf(address(this)) == 0, "Contract still owns tokens after migration");
+        
+        // Verify tier balances: V5 should never exceed V4 (except for tiers owned by fallback resolver in V4)
+        ${generateTierBalanceVerification(transferData, tierIdQuantities)}
+    }
+}`;
+    
+    return contract;
 }
 
 function generateTokenIdArrayForUnused(unusedItems, tierIdQuantities, upcStartingUnitNumbers) {

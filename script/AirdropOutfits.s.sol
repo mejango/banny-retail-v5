@@ -10,6 +10,7 @@ import {MigrationContractEthereum4} from "./MigrationContractEthereum4.sol";
 import {MigrationContractEthereum5} from "./MigrationContractEthereum5.sol";
 import {MigrationContractEthereum6} from "./MigrationContractEthereum6.sol";
 import {MigrationContractEthereum7} from "./MigrationContractEthereum7.sol";
+import {MigrationContractEthereum8} from "./MigrationContractEthereum8.sol";
 import {MigrationContractOptimism} from "./MigrationContractOptimism.sol";
 import {MigrationContractBase1} from "./MigrationContractBase1.sol";
 import {MigrationContractBase2} from "./MigrationContractBase2.sol";
@@ -146,7 +147,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
         
         // Deploy the appropriate chain-specific migration contract with transfer data
         if (chainId == 1) {
-            // Ethereum - 6 chunks (plus optional unused assets chunk)
+            // Ethereum - 6 chunks (plus optional unused assets chunks 7 and 8)
             
             // Deploy and execute contract 1
             uint16[] memory tierIds1 = new uint16[](60);
@@ -666,8 +667,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
             
             migrationContract6.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
-            // Deploy and execute contract 7 (unused outfits/backgrounds)
-            uint16[] memory tierIds7 = new uint16[](280);
+            // Deploy and execute contract 7 (unused outfits/backgrounds - part 1)
+            uint16[] memory tierIds7 = new uint16[](140);
             
             // Add 2 instances of tier ID 5
             for (uint256 i = 0; i < 2; i++) {
@@ -781,8 +782,8 @@ contract AirdropOutfitsScript is Script, Sphinx {
             for (uint256 i = 0; i < 1; i++) {
                 tierIds7[137 + i] = 48;
             }
-            // Add 142 instances of tier ID 49
-            for (uint256 i = 0; i < 142; i++) {
+            // Add 2 instances of tier ID 49
+            for (uint256 i = 0; i < 2; i++) {
                 tierIds7[138 + i] = 49;
             }
             address[] memory transferOwners7 = _getEthereumTransferOwners7();
@@ -800,6 +801,29 @@ contract AirdropOutfitsScript is Script, Sphinx {
             console.log("Minted", tierIds7.length, "tokens to contract 7");
             
             migrationContract7.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
+            
+            // Deploy and execute contract 8 (unused outfits/backgrounds - part 2)
+            uint16[] memory tierIds8 = new uint16[](140);
+            
+            // Add 140 instances of tier ID 49
+            for (uint256 i = 0; i < 140; i++) {
+                tierIds8[0 + i] = 49;
+            }
+            address[] memory transferOwners8 = _getEthereumTransferOwners8();
+            MigrationContractEthereum8 migrationContract8 = new MigrationContractEthereum8(transferOwners8);
+            console.log("Ethereum migration contract 8 deployed at:", address(migrationContract8));
+            
+            // Mint chunk 8 assets to the contract address via pay()
+            _mintViaPay(
+                terminal,
+                hook,
+                projectId,
+                tierIds8,
+                address(migrationContract8)
+            );
+            console.log("Minted", tierIds8.length, "tokens to contract 8");
+            
+            migrationContract8.executeMigration(hookAddress, resolverAddress, v4HookAddress, v4ResolverAddress, v4ResolverFallback);
             
         } else if (chainId == 10) {
             // Optimism tier IDs
@@ -1653,7 +1677,7 @@ contract AirdropOutfitsScript is Script, Sphinx {
     }
     
     function _getEthereumTransferOwners7() internal pure returns (address[] memory) {
-        address[] memory transferOwners = new address[](280);
+        address[] memory transferOwners = new address[](140);
         
         transferOwners[0] = 0x1Ae766cc5947e1E4C3538EE1F3f47063D2B40E79;
         transferOwners[1] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
@@ -1795,146 +1819,152 @@ contract AirdropOutfitsScript is Script, Sphinx {
         transferOwners[137] = 0x15b61e9b0637f45dc0858f083cd240267924125d;
         transferOwners[138] = 0x08cF1208e638a5A3623be58d600e35c6199baa9C;
         transferOwners[139] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[140] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[141] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[142] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[143] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[144] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[145] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[146] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[147] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[148] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[149] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[150] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[151] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[152] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[153] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[154] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[155] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[156] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[157] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[158] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[159] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[160] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[161] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[162] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[163] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[164] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[165] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[166] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[167] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[168] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[169] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[170] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[171] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[172] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[173] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[174] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[175] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[176] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[177] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[178] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[179] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[180] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[181] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[182] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[183] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[184] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[185] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[186] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[187] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[188] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[189] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[190] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[191] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[192] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[193] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[194] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[195] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[196] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[197] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[198] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[199] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[200] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[201] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[202] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[203] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[204] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[205] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[206] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[207] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[208] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
-        transferOwners[209] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[210] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[211] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[212] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[213] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[214] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[215] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[216] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[217] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[218] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[219] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[220] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[221] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[222] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[223] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[224] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[225] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[226] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[227] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[228] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[229] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[230] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[231] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[232] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[233] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[234] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[235] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[236] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[237] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[238] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[239] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[240] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[241] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[242] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[243] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[244] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[245] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[246] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[247] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[248] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[249] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[250] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[251] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[252] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[253] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[254] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[255] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[256] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[257] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[258] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[259] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[260] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[261] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[262] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[263] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[264] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[265] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[266] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[267] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[268] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[269] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[270] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[271] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[272] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[273] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[274] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[275] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[276] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[277] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[278] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
-        transferOwners[279] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        return transferOwners;
+    }
+    
+    function _getEthereumTransferOwners8() internal pure returns (address[] memory) {
+        address[] memory transferOwners = new address[](140);
+        
+        transferOwners[0] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[1] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[2] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[3] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[4] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[5] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[6] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[7] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[8] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[9] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[10] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[11] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[12] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[13] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[14] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[15] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[16] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[17] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[18] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[19] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[20] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[21] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[22] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[23] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[24] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[25] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[26] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[27] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[28] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[29] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[30] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[31] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[32] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[33] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[34] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[35] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[36] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[37] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[38] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[39] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[40] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[41] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[42] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[43] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[44] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[45] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[46] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[47] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[48] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[49] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[50] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[51] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[52] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[53] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[54] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[55] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[56] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[57] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[58] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[59] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[60] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[61] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[62] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[63] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[64] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[65] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[66] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[67] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[68] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
+        transferOwners[69] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[70] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[71] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[72] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[73] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[74] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[75] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[76] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[77] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[78] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[79] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[80] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[81] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[82] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[83] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[84] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[85] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[86] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[87] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[88] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[89] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[90] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[91] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[92] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[93] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[94] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[95] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[96] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[97] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[98] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[99] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[100] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[101] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[102] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[103] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[104] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[105] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[106] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[107] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[108] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[109] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[110] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[111] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[112] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[113] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[114] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[115] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[116] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[117] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[118] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[119] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[120] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[121] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[122] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[123] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[124] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[125] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[126] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[127] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[128] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[129] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[130] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[131] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[132] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[133] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[134] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[135] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[136] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[137] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[138] = 0x7C3F14075F6477fea1aF6cf59f325afDfcD3Ddf7;
+        transferOwners[139] = 0x823b92d6a4b2AED4b15675c7917c9f922ea8ADAD;
         return transferOwners;
     }
     

@@ -72,7 +72,7 @@ contract AirdropOutfitsBatch7Script is Script, Sphinx {
         
         if (chainId == 1) {
             // Ethereum - Batch 7 only
-            uint16[] memory tierIds7 = new uint16[](280);
+            uint16[] memory tierIds7 = new uint16[](140);
             
             // Add 2 instances of tier ID 5
             for (uint256 i = 0; i < 2; i++) {
@@ -186,8 +186,8 @@ contract AirdropOutfitsBatch7Script is Script, Sphinx {
             for (uint256 i = 0; i < 1; i++) {
                 tierIds7[137 + i] = 48;
             }
-            // Add 142 instances of tier ID 49
-            for (uint256 i = 0; i < 142; i++) {
+            // Add 2 instances of tier ID 49
+            for (uint256 i = 0; i < 2; i++) {
                 tierIds7[138 + i] = 49;
             }
             address[] memory transferOwners7 = _getEthereumTransferOwners7();
