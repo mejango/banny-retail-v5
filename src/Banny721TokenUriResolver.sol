@@ -529,6 +529,8 @@ contract Banny721TokenUriResolver is
             return "Legs";
         } else if (category == _NECKLACE_CATEGORY) {
             return "Necklace";
+        } else if (category == _EYES_CATEGORY) {
+            return "Eyes";
         } else if (category == _GLASSES_CATEGORY) {
             return "Glasses";
         } else if (category == _MOUTH_CATEGORY) {
@@ -1105,7 +1107,7 @@ contract Banny721TokenUriResolver is
                 hasSuit = true;
             } else if (
                 (
-                    outfitProductCategory == _GLASSES_CATEGORY || outfitProductCategory == _MOUTH_CATEGORY
+                    outfitProductCategory == _EYES_CATEGORY || outfitProductCategory == _GLASSES_CATEGORY || outfitProductCategory == _MOUTH_CATEGORY
                         || outfitProductCategory == _HEADTOP_CATEGORY
                 ) && hasHead
             ) {

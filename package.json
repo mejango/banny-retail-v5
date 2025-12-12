@@ -1,6 +1,6 @@
 {
     "name": "@bannynet/core-v5",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -33,6 +33,8 @@
         "deploy:mainnets:airdrop:batch6": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch6.s.sol --networks mainnets",
         "deploy:testnets:airdrop:batch7": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch7.s.sol --networks testnets",
         "deploy:mainnets:airdrop:batch7": "source ./.env && npx sphinx propose ./script/AirdropOutfitsBatch7.s.sol --networks mainnets",
+        "deploy:testnets:fix:1": "source ./.env && npx sphinx propose ./script/1.Fix.s.sol --networks testnets",
+        "deploy:mainnets:fix:1": "source ./.env && npx sphinx propose ./script/1.Fix.s.sol --networks mainnets",
         "artifacts": "source ./.env && npx sphinx artifacts --org-id 'ea165b21-7cdc-4d7b-be59-ecdd4c26bee4' --project-name 'banny-core-v5'"
     },
     "dependencies": {
